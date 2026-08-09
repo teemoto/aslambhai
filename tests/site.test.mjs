@@ -4,13 +4,13 @@ import test from "node:test";
 
 test("builds the key static routes", async () => {
   for (const file of ["index.html", "projects/index.html", "about/index.html", "articles/resilient-frontend-architecture/index.html", "rss.xml", "sitemap-index.xml"]) {
-    await access(new URL(`../dist/client/${file}`, import.meta.url));
+    await access(new URL(`../dist/${file}`, import.meta.url));
   }
 });
 
 test("renders metadata and article content", async () => {
-  const home = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
-  const article = await readFile(new URL("../dist/client/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const article = await readFile(new URL("../dist/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
   assert.match(home, /name="codex-preview" content="development"/);
   assert.match(home, /class="logo-mark"/);
   assert.match(home, /property="og:image"/);
@@ -20,11 +20,11 @@ test("renders metadata and article content", async () => {
 });
 
 test("keeps article metadata aligned and share tools available while reading", async () => {
-  const article = await readFile(new URL("../dist/client/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
+  const article = await readFile(new URL("../dist/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
   const stylesheet = article.match(/href="([^"]+\.css)"/)?.[1];
   assert.ok(stylesheet, "Expected a generated stylesheet");
-  const styles = await readFile(new URL(`../dist/client${stylesheet}`, import.meta.url), "utf8");
-  const script = await readFile(new URL("../dist/client/scripts/site.js", import.meta.url), "utf8");
+  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
+  const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
 
   assert.equal((article.match(/class="byline-meta"/g) ?? []).length, 2);
   assert.match(article, /class="byline-meta"[^>]*>.*10 min read<\/span>/s);
@@ -38,21 +38,21 @@ test("keeps article metadata aligned and share tools available while reading", a
 });
 
 test("keeps the side-panel reopen control hidden while the panel is expanded", async () => {
-  const home = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
   assert.ok(stylesheet, "Expected a generated stylesheet");
-  const styles = await readFile(new URL(`../dist/client${stylesheet}`, import.meta.url), "utf8");
+  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
 
   assert.match(home, /data-rail-reopen[^>]*hidden/);
   assert.match(styles, /\[hidden\]\{display:none!important\}/);
 });
 
 test("animates the desktop side panel over half a second", async () => {
-  const home = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
   assert.ok(stylesheet, "Expected a generated stylesheet");
-  const styles = await readFile(new URL(`../dist/client${stylesheet}`, import.meta.url), "utf8");
-  const script = await readFile(new URL("../dist/client/scripts/site.js", import.meta.url), "utf8");
+  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
+  const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
 
   assert.match(styles, /transition:grid-template-columns \.5s ease/);
   assert.match(styles, /\.home-grid\.rail-closed\{grid-template-columns:minmax\(0,1fr\) minmax\(0,0fr\)\}/);
@@ -60,10 +60,10 @@ test("animates the desktop side panel over half a second", async () => {
 });
 
 test("uses an unobstructed minimalist side-panel control", async () => {
-  const home = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
   assert.ok(stylesheet, "Expected a generated stylesheet");
-  const styles = await readFile(new URL(`../dist/client${stylesheet}`, import.meta.url), "utf8");
+  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
 
   assert.match(home, /aria-label="Collapse side panel"[^>]*>.*m9 18 6-6-6-6/s);
   assert.match(styles, /\.rail-toggle\{[^}]*left:12px[^}]*width:32px[^}]*border:0/);
@@ -71,39 +71,39 @@ test("uses an unobstructed minimalist side-panel control", async () => {
 });
 
 test("renders the personal footer message", async () => {
-  const home = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   assert.match(home, /Built with ❤️ and ☕/);
   assert.doesNotMatch(home, /Built in public through Anabasis/);
 });
 
 test("publishes the complete logo identity", async () => {
   for (const file of ["brand/aslam-bhai-mark.png", "brand/social-card.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png"]) {
-    assert.ok((await stat(new URL(`../dist/client/${file}`, import.meta.url))).size > 1_000);
+    assert.ok((await stat(new URL(`../dist/${file}`, import.meta.url))).size > 1_000);
   }
 });
 
 test("publishes the downloadable résumé", async () => {
-  const resume = new URL("../dist/client/resume/tanvir-aslam-mohammed-resume.pdf", import.meta.url);
+  const resume = new URL("../dist/resume/tanvir-aslam-mohammed-resume.pdf", import.meta.url);
   assert.ok((await stat(resume)).size > 100_000);
-  const about = await readFile(new URL("../dist/client/about/index.html", import.meta.url), "utf8");
+  const about = await readFile(new URL("../dist/about/index.html", import.meta.url), "utf8");
   assert.match(about, /tanvir-aslam-mohammed-resume\.pdf/);
 });
 
 test("keeps the launch surface honest", async () => {
-  const home = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
-  const projects = await readFile(new URL("../dist/client/projects/index.html", import.meta.url), "utf8");
-  const script = await readFile(new URL("../dist/client/scripts/site.js", import.meta.url), "utf8");
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const projects = await readFile(new URL("../dist/projects/index.html", import.meta.url), "utf8");
+  const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(home, /data-static-form|sort-button/);
   assert.doesNotMatch(home, /dispatch|subscribe|subscription/i);
   assert.doesNotMatch(projects, /href="#"/);
   assert.match(projects, /Usable alpha/);
   assert.match(script, /getRegistrations/);
-  await assert.rejects(access(new URL("../dist/client/sw.js", import.meta.url)));
+  await assert.rejects(access(new URL("../dist/sw.js", import.meta.url)));
 });
 
 test("publishes only complete articles", async () => {
-  const articles = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+  const articles = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   assert.match(articles, /resilient-frontend-architecture/);
   assert.doesNotMatch(articles, /Component Boundaries and the Cost of Change|Modern Advertising Stack|RAG, Tooling/);
 });

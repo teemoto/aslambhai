@@ -5,7 +5,6 @@ import sitemap from "@astrojs/sitemap";
 export default defineConfig({
   site: "https://tanviraslam.com",
   output: "static",
-  outDir: ".astro-dist",
   integrations: [mdx(), sitemap()],
   vite: {
     server: {
