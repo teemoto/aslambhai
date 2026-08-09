@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+interface Props { active: "projects" | "about"; eyebrow: string; title: string; intro: string }
+const { active, eyebrow, title, intro } = Astro.props;
+---
+<BaseLayout active={active} title={`${title} · Aslam Bhai`} description={intro}>
+  <main class="static-page">
+    <span class="eyebrow">{eyebrow}</span>
+    <h1>{title}</h1>
+    <p class="page-intro">{intro}</p>
+    <slot />
+  </main>
+</BaseLayout>

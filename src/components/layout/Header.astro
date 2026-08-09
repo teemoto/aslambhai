@@ -1,0 +1,22 @@
+---
+import Icon from "../ui/Icon.astro";
+import LogoMark from "../ui/LogoMark.astro";
+interface Props { active?: "home" | "projects" | "about" }
+const { active } = Astro.props;
+---
+<header class="site-header">
+  <div class="brand-lockup">
+    <a href="/" class="monogram" aria-label="Aslam Bhai home"><LogoMark /></a>
+    <div><a href="/" class="brand-name">Aslam Bhai</a><span class="tagline">Engineering, explained from first principles.</span></div>
+  </div>
+  <nav class="main-nav" id="main-nav" aria-label="Primary navigation">
+    <a class:list={{ active: active === "home" }} href="/">Home</a>
+    <a class:list={{ active: active === "projects" }} href="/projects">Projects</a>
+    <a class:list={{ active: active === "about" }} href="/about">About</a>
+  </nav>
+  <div class="header-tools">
+    <a class="icon-button desktop-tool" href="/rss.xml" aria-label="RSS feed"><Icon name="rss" /></a>
+    <button class="icon-button" data-theme-toggle aria-label="Use dark theme"><span data-theme-icon="moon"><Icon name="moon" /></span><span data-theme-icon="sun" hidden><Icon name="sun" /></span></button>
+    <button class="icon-button mobile-menu" data-menu-toggle aria-label="Open menu" aria-controls="main-nav" aria-expanded="false"><span data-menu-icon="open"><Icon name="menu" /></span><span data-menu-icon="close" hidden><Icon name="close" /></span></button>
+  </div>
+</header>

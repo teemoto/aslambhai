@@ -1,0 +1,23 @@
+:root {
+  --bg: #f1f0e8;
+  --surface: #f7f6f0;
+  --ink: #18342c;
+  --body: #354842;
+  --teal: #287b73;
+  --clay: #b66a4d;
+  --rule: #cdd4ca;
+  --muted: #6a7772;
+  --focus: #287b73;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0d1b2a;
+  --surface: #13263a;
+  --ink: #f4ebdd;
+  --body: #c8d0d1;
+  --teal: #45c2b1;
+  --clay: #d78b70;
+  --rule: #314456;
+  --muted: #a8b3bf;
+  --focus: #45c2b1;
+}

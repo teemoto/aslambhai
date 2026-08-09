@@ -1,0 +1,13 @@
+---
+import Icon from "../ui/Icon.astro";
+import ProjectMini from "../projects/ProjectMini.astro";
+---
+<div class="rail-content">
+  <section class="projects-rail">
+    <span class="eyebrow">Project status</span>
+    <ProjectMini icon="data" name="JSON Bourne" status="Building" />
+    <ProjectMini icon="code" name="Publishing Platform" status="Usable alpha" />
+    <ProjectMini icon="dino" name="Blue Triceratops" status="Exploring" />
+    <a class="text-link" href="/projects">View all projects <Icon name="arrowRight" /></a>
+  </section>
+</div>

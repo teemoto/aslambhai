@@ -1,0 +1,28 @@
+---
+interface Props {
+  decorative?: boolean;
+  class?: string;
+}
+
+const { decorative = true, class: className } = Astro.props;
+---
+
+<span
+  class:list={["logo-mark", className]}
+  role={decorative ? undefined : "img"}
+  aria-label={decorative ? undefined : "Aslam Bhai"}
+  aria-hidden={decorative ? "true" : undefined}
+></span>
+
+<style>
+  .logo-mark {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    flex: 0 0 auto;
+    color: currentColor;
+    background: currentColor;
+    -webkit-mask: url("/brand/aslam-bhai-mark.png") center / contain no-repeat;
+    mask: url("/brand/aslam-bhai-mark.png") center / contain no-repeat;
+  }
+</style>
