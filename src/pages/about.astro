@@ -1,0 +1,8 @@
+---
+import StaticPage from "../components/layout/StaticPage.astro";
+import Icon from "../components/ui/Icon.astro";
+import { site } from "../site.config";
+---
+<StaticPage active="about" eyebrow="About" title="I’m Tanvir. Aslam Bhai is how I explain engineering." intro="I’m a senior frontend engineer and technical lead focused on frontend architecture, engineering systems, ad tech, and AI-native products.">
+  <div class="about-grid"><div><h2>Why this exists</h2><p>Most engineering resources explain what a technology does. I’m more interested in why it exists, which constraints shaped it, where it breaks, and how teams should reason about the tradeoffs.</p><p>Aslam Bhai is my public notebook for that work—and Anabasis is the year-long expedition behind it: learning deeply, building real products, and growing from senior craft into broader engineering leadership.</p><div class="about-actions"><a class="primary-action" href="/resume/tanvir-aslam-mohammed-resume.pdf" target="_blank" rel="noopener noreferrer">View résumé <Icon name="external" /></a><a href={site.github} target="_blank" rel="noopener noreferrer"><Icon name="github" /> GitHub</a><a href={site.linkedin} target="_blank" rel="noopener noreferrer"><Icon name="external" /> LinkedIn</a></div></div><aside><span class="eyebrow">Areas of focus</span><ul><li>Frontend systems and architecture</li><li>AI for engineers</li><li>Ad technology, demystified</li><li>Engineering leadership</li></ul></aside></div>
+</StaticPage>

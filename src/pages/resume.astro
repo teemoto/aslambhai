@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/ui/Icon.astro";
+
+const resumeUrl = "/resume/tanvir-aslam-mohammed-resume.pdf";
+---
+<BaseLayout title="Résumé · Aslam Bhai" description="Tanvir Aslam Mohammed — staff-level frontend engineer and technical lead with 12+ years of experience.">
+  <main class="resume-page">
+    <div class="resume-tools">
+      <a href="/about"><Icon name="arrowLeft" />Back</a>
+      <a href={resumeUrl} download="Tanvir-Aslam-Mohammed-Resume.pdf"><Icon name="download" />Download PDF</a>
+    </div>
+    <article>
+      <h1>Tanvir Aslam Mohammed</h1>
+      <p>Staff-level Frontend Engineer · Technical Lead · Sunnyvale, California</p>
+
+      <h2>Summary</h2>
+      <p>Staff-level frontend engineer and technical lead with 12+ years of experience building frontend platforms, developer infrastructure, and enterprise applications across Amazon and enterprise SaaS organizations. Led platform modernization initiatives supporting 140+ engineers across 10+ teams, reduced release cycles from one week to four hours, and built tooling adopted across 400+ code packages.</p>
+
+      <h2>Experience</h2>
+      <section class="resume-role">
+        <h3>Senior Frontend Engineer / Tech Lead</h3>
+        <p><strong>Amazon Publisher Services</strong> · October 2022–Present · Palo Alto, California</p>
+        <ul>
+          <li>Led frontend platform architecture initiatives across a 10+ team organization supporting 140+ engineers.</li>
+          <li>Drove adoption of a federated microfrontend platform enabling independent deployments and decentralized ownership.</li>
+          <li>Proposed and established a dedicated Frontend Platform Team focused on developer infrastructure and modernization.</li>
+          <li>Architected shared authentication, API gateway, feature-flag, logging, RBAC, shell, and layout services.</li>
+          <li>Led migration of 200K+ lines of JavaScript to TypeScript across 10 engineering teams.</li>
+          <li>Reduced worst-case release cycles from one week to approximately four hours.</li>
+          <li>Built code-review tooling adopted across 400+ code packages.</li>
+          <li>Led development of a greenfield B2B advertising workflow platform for internal and external users.</li>
+          <li>Conducted 200+ technical interviews and mentored engineers in frontend architecture and platform engineering.</li>
+        </ul>
+      </section>
+
+      <section class="resume-role">
+        <h3>Front End Engineer II</h3>
+        <p><strong>Amazon Publisher Services</strong> · March 2019–October 2022 · Palo Alto, California</p>
+        <ul>
+          <li>Founded frontend architecture initiatives for Amazon’s Video Ad Server and APS Streaming TV and Audio applications.</li>
+          <li>Designed and developed the Catalyst microfrontend framework powering APS account-management applications.</li>
+          <li>Served as a founding contributor to the Atmos Design System, including reusable components and accessibility support.</li>
+          <li>Led workflow automation that reduced operational effort for account managers by approximately 70%.</li>
+          <li>Built reporting workflows integrating petabyte-scale ad-exchange datasets for automated publisher payments.</li>
+        </ul>
+      </section>
+
+      <section class="resume-role">
+        <h3>Front End Engineer / Software Development Engineer / Member of Technical Staff</h3>
+        <p><strong>ZL Technologies</strong> · March 2013–March 2019 · Milpitas, California</p>
+        <ul>
+          <li>Led modernization from ExtJS and jQuery to React and Redux across enterprise applications.</li>
+          <li>Designed and launched a log-visualization platform that reduced debugging effort by approximately 50%.</li>
+          <li>Built developer tooling, backend services, testing frameworks, and engineering utilities using Java, Python, JavaScript, Bash, and Selenium.</li>
+          <li>Established frontend engineering standards and onboarding documentation.</li>
+        </ul>
+      </section>
+
+      <h2>Education</h2>
+      <p><strong>Master of Science in Computer and Information Technology</strong><br />University of Pennsylvania · 2012</p>
+      <p><strong>Bachelor of Technology in Computer Science</strong><br />VIT University · 2010</p>
+
+      <h2>Skills</h2>
+      <p>React · TypeScript · JavaScript · Redux · React Query · Zustand · Microfrontends · Module Federation · Design Systems · Accessibility · CI/CD · Webpack · CloudFront · S3 · CDK · Feature Flags · RBAC · API Gateways · Node.js · Ruby on Rails · Java · Python · GraphQL · REST APIs · MySQL · Cassandra · Playwright · Vitest · Jest · React Testing Library · Cypress · Selenium</p>
+    </article>
+  </main>
+</BaseLayout>

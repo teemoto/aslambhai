@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/ui/Icon.astro";
+import ArticleIcon from "../components/articles/ArticleIcon.astro";
+import ArticleRow from "../components/articles/ArticleRow.astro";
+import RailContent from "../components/layout/RailContent.astro";
+
+const articles = (await getCollection("articles", ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+const featured = articles.find(({ data }) => data.featured) ?? articles[0];
+const rest = articles.filter(({ id }) => id !== featured.id);
+const date = featured.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+const topics = ["All", "Frontend", "AI", "Ad Tech", "Leadership"];
+---
+<BaseLayout active="home">
+  <main class="home-grid" data-home-grid>
+    <section class="content-column">
+      <div class="intro"><h1>Engineering at scale.<br />Systems, software, and signal.</h1><p>Articles on resilient frontend systems, applied AI for engineers, and the ad tech stack.</p></div>
+      <div class="discovery" role="search">
+        <label class="search-box"><Icon name="search" /><span class="sr-only">Search articles</span><input data-search-input placeholder="Search articles" /></label>
+        <div class="filter-scroller" aria-label="Filter by topic">{topics.map((topic) => <button class:list={["chip", { selected: topic === "All" }]} data-topic={topic}>{topic}</button>)}</div>
+      </div>
+      <section class="featured" data-article data-search={`${featured.data.title} ${featured.data.description} ${featured.data.topic}`.toLowerCase()} data-topic-value={featured.data.topic} aria-labelledby="featured-title">
+        <span class="eyebrow">Featured article</span><a href={`/articles/${featured.id}`}><h2 id="featured-title">{featured.data.title}</h2></a><p>{featured.data.description}</p>
+        <div class="meta"><span><ArticleIcon kind={featured.data.icon} />{featured.data.topic}</span><span><Icon name="calendar" />{date}</span><span><Icon name="clock" />{featured.data.minutes} min read</span></div>
+      </section>
+      <button class="mobile-rail-toggle" data-mobile-rail-toggle aria-expanded="false">Projects <Icon name="chevronDown" /></button>
+      <div data-mobile-rail hidden><RailContent /></div>
+      <section class="recent"><span class="eyebrow">Recent writing</span>{rest.map((article) => <ArticleRow article={article} />)}<p class="empty-state" data-empty-state hidden>No articles match those filters.</p></section>
+    </section>
+    <aside class="side-rail" data-side-rail><button class="rail-toggle" data-rail-toggle aria-label="Collapse side panel" aria-expanded="true"><Icon name="chevronRight" size={18} /></button><RailContent /></aside>
+    <button class="rail-reopen" data-rail-reopen aria-label="Open project status" hidden><Icon name="chevronLeft" size={18} /></button>
+  </main>
+</BaseLayout>
