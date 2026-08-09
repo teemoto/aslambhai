@@ -3,7 +3,7 @@ import { access, readFile, stat } from "node:fs/promises";
 import test from "node:test";
 
 test("builds the key static routes", async () => {
-  for (const file of ["index.html", "projects/index.html", "about/index.html", "articles/resilient-frontend-architecture/index.html", "rss.xml", "sitemap-index.xml"]) {
+  for (const file of ["index.html", "projects/index.html", "about/index.html", "rss/index.html", "articles/resilient-frontend-architecture/index.html", "rss.xml", "sitemap-index.xml"]) {
     await access(new URL(`../dist/${file}`, import.meta.url));
   }
 });

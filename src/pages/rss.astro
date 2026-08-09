@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/ui/Icon.astro";
+
+const feedUrl = "https://tanviraslam.com/rss.xml";
+---
+
+<BaseLayout title="RSS feed · Aslam Bhai" description="Follow new Aslam Bhai essays in your RSS reader.">
+  <main class="static-page rss-guide">
+    <span class="eyebrow">Follow the writing</span>
+    <h1>RSS feed</h1>
+    <p class="page-intro">RSS lets you follow new essays in the reader you already use, without an account or an inbox.</p>
+
+    <section class="rss-panel" aria-labelledby="rss-how-title">
+      <div>
+        <Icon name="rss" size={30} />
+        <h2 id="rss-how-title">How it works</h2>
+        <ol>
+          <li>Open your preferred RSS reader.</li>
+          <li>Add the feed URL below.</li>
+          <li>New essays will appear there when they are published.</li>
+        </ol>
+      </div>
+      <div class="feed-address">
+        <span class="eyebrow">Feed URL</span>
+        <a href="/rss.xml"><code>{feedUrl}</code><Icon name="external" size={16} /></a>
+        <p>Opening this link directly may show XML. That is the standard format RSS readers use.</p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
