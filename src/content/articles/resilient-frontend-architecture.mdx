@@ -8,7 +8,6 @@ icon: code
 featured: true
 ---
 
-import ResilienceLayers from "../../components/articles/ResilienceLayers.astro";
 import ComparisonTable from "../../components/articles/ComparisonTable.astro";
 import TranslationCards from "../../components/articles/TranslationCards.astro";
 
@@ -134,7 +133,16 @@ No single mechanism protects the whole system. Think again about independent saf
 
 Frontend resilience works across several layers:
 
-<ResilienceLayers />
+<figure class="article-figure resilience-layers-figure">
+  <img
+    src="/images/frontend-resilience-layers.png"
+    alt="Frontend resilience shown as four complementary layers: Experience, Application, Data and Network, and Runtime and Delivery. A vertical observability spine crosses every layer and represents errors, metrics, traces, and user journeys."
+    width="1672"
+    height="941"
+    loading="lazy"
+  />
+  <figcaption>Resilience comes from complementary protections across the stack, with observability supplying evidence from every layer.</figcaption>
+</figure>
 
 The layers are not a request pipeline. They are complementary places to put defenses.
 
