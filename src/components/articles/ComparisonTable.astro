@@ -1,0 +1,24 @@
+---
+interface Row {
+  assumption: string;
+  reality: string;
+  response: string;
+}
+
+interface Props {
+  rows: Row[];
+}
+
+const { rows } = Astro.props;
+---
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr><th scope="col">False assumption</th><th scope="col">Frontend reality</th><th scope="col">Possible design response</th></tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => <tr><th scope="row" data-label="False assumption">{row.assumption}</th><td data-label="Frontend reality">{row.reality}</td><td data-label="Possible design response">{row.response}</td></tr>)}
+    </tbody>
+  </table>
+</div>

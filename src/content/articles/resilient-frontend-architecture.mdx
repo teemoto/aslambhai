@@ -9,6 +9,8 @@ featured: true
 ---
 
 import ResilienceLayers from "../../components/articles/ResilienceLayers.astro";
+import ComparisonTable from "../../components/articles/ComparisonTable.astro";
+import TranslationCards from "../../components/articles/TranslationCards.astro";
 
 A resilient frontend is not one that never fails. That is impossible. Networks drop. APIs change shape. Users leave tabs open for three days. Phones run out of memory. Third-party scripts change. Every so often, a deployment ships a regression.
 
@@ -90,16 +92,16 @@ Once you see the browser as a participant in a distributed system, many frontend
 
 Peter Deutsch's fallacies of distributed computing describe assumptions that developers repeatedly make about networked systems. They were not written specifically for frontends, but they provide a useful lens for examining browser applications.
 
-| False assumption | Frontend reality | Possible design response |
-| --- | --- | --- |
-| The network is reliable | A connection can disappear during a request, and an unknown response does not prove that a mutation failed | Timeouts, bounded retries, idempotent operations, honest uncertain states |
-| Latency is zero | Latency varies by user, device, location, and moment | Explicit loading states, prefetching, caching, and optimistic UI where it is safe |
-| Bandwidth is infinite | Large bundles and payloads increase startup time and impose unequal costs | Code splitting, image and bundle budgets, pagination, response shaping |
-| The network is secure | Transport and remote data cross trust boundaries | TLS, browser security controls, output safety, and runtime validation for untrusted data |
-| Topology does not change | A user can switch networks or reach a different service instance during a flow | Resume from application state and treat connectivity indicators only as hints |
-| There is one administrator | Browsers, CDNs, ISPs, proxies, extensions, and blockers are controlled independently | Avoid fragile assumptions about the path and degrade when optional resources are blocked |
-| Transport cost is zero | Transfer, parsing, allocation, and rendering all consume time and memory | Reduce payloads, paginate or stream where useful, move heavy computation off the main thread when justified |
-| The network is homogeneous | Devices, browsers, networks, and user constraints vary widely | Test representative lower-bound conditions based on the product's audience |
+<ComparisonTable rows={[
+  { assumption: "The network is reliable", reality: "A connection can disappear during a request, and an unknown response does not prove that a mutation failed", response: "Timeouts, bounded retries, idempotent operations, honest uncertain states" },
+  { assumption: "Latency is zero", reality: "Latency varies by user, device, location, and moment", response: "Explicit loading states, prefetching, caching, and optimistic UI where it is safe" },
+  { assumption: "Bandwidth is infinite", reality: "Large bundles and payloads increase startup time and impose unequal costs", response: "Code splitting, image and bundle budgets, pagination, response shaping" },
+  { assumption: "The network is secure", reality: "Transport and remote data cross trust boundaries", response: "TLS, browser security controls, output safety, and runtime validation for untrusted data" },
+  { assumption: "Topology does not change", reality: "A user can switch networks or reach a different service instance during a flow", response: "Resume from application state and treat connectivity indicators only as hints" },
+  { assumption: "There is one administrator", reality: "Browsers, CDNs, ISPs, proxies, extensions, and blockers are controlled independently", response: "Avoid fragile assumptions about the path and degrade when optional resources are blocked" },
+  { assumption: "Transport cost is zero", reality: "Transfer, parsing, allocation, and rendering all consume time and memory", response: "Reduce payloads, paginate or stream where useful, move heavy computation off the main thread when justified" },
+  { assumption: "The network is homogeneous", reality: "Devices, browsers, networks, and user constraints vary widely", response: "Test representative lower-bound conditions based on the product’s audience" },
+]} />
 
 These are not one-to-one translations. A browser has different constraints from a backend service. It is short-lived, resource-constrained, user-controlled, and often has only a local view of system health. The point is not to copy backend patterns mechanically. It is to recognize the underlying failure class and adapt the relevant idea.
 
@@ -107,20 +109,20 @@ These are not one-to-one translations. A browser has different constraints from 
 
 When a frontend problem feels unfamiliar, finding its distributed-systems name gives you better vocabulary for investigating it.
 
-| Distributed-systems concept | Frontend manifestation | Failure it helps address |
-| --- | --- | --- |
-| Replica and cache coherence | Client query cache plus revalidation | Stale data and redundant requests |
-| Explicit state ownership | Server-owned domain state, client-owned drafts, URL-owned navigation state | Divergent copies and unclear authority |
-| Eventual consistency | Showing cached data while a fresh version is fetched | Blocking every read on the latest remote state |
-| Read-your-writes experience | Optimistic updates followed by authoritative reconciliation | A user's action appearing to disappear |
-| Idempotency | Stable operation identifiers supported by the server | Duplicate mutations after retries or lost responses |
-| Backpressure | Debouncing, concurrency limits, and discarding obsolete client work | Request floods and main-thread overload |
-| Bulkhead | Isolated widgets and carefully placed render error boundaries | One failing area taking down the whole experience |
-| Timeout and jittered retry | Bounded retry policy for classified transient failures | Hung requests and synchronized retry storms |
-| Request coalescing | Multiple consumers sharing one in-flight request | Many components fetching the same resource |
-| Ordering and causality | Ignoring or cancelling stale responses | An older response overwriting newer state |
-| Clock skew | Treating the client clock as untrusted for authoritative decisions | Expiration and ordering bugs caused by incorrect local time |
-| Expand-and-contract change | Backward-compatible API and asset deployments | Old tabs communicating with newer services |
+<TranslationCards items={[
+  { concept: "Replica and cache coherence", manifestation: "Client query cache plus revalidation", addresses: "Stale data and redundant requests" },
+  { concept: "Explicit state ownership", manifestation: "Server-owned domain state, client-owned drafts, URL-owned navigation state", addresses: "Divergent copies and unclear authority" },
+  { concept: "Eventual consistency", manifestation: "Showing cached data while a fresh version is fetched", addresses: "Blocking every read on the latest remote state" },
+  { concept: "Read-your-writes experience", manifestation: "Optimistic updates followed by authoritative reconciliation", addresses: "A user’s action appearing to disappear" },
+  { concept: "Idempotency", manifestation: "Stable operation identifiers supported by the server", addresses: "Duplicate mutations after retries or lost responses" },
+  { concept: "Backpressure", manifestation: "Debouncing, concurrency limits, and discarding obsolete client work", addresses: "Request floods and main-thread overload" },
+  { concept: "Bulkhead", manifestation: "Isolated widgets and carefully placed render error boundaries", addresses: "One failing area taking down the whole experience" },
+  { concept: "Timeout and jittered retry", manifestation: "Bounded retry policy for classified transient failures", addresses: "Hung requests and synchronized retry storms" },
+  { concept: "Request coalescing", manifestation: "Multiple consumers sharing one in-flight request", addresses: "Many components fetching the same resource" },
+  { concept: "Ordering and causality", manifestation: "Ignoring or cancelling stale responses", addresses: "An older response overwriting newer state" },
+  { concept: "Clock skew", manifestation: "Treating the client clock as untrusted for authoritative decisions", addresses: "Expiration and ordering bugs caused by incorrect local time" },
+  { concept: "Expand-and-contract change", manifestation: "Backward-compatible API and asset deployments", addresses: "Old tabs communicating with newer services" },
+]} />
 
 Some mappings are close. Others are analogies. Several, especially idempotency and consistency guarantees, require backend cooperation. Disabling a submit button can reduce accidental duplicates, but it cannot make an operation idempotent across retries, refreshes, or multiple tabs. An optimistic update can provide immediate feedback, but it cannot guarantee that a later authoritative read will include the write.
 

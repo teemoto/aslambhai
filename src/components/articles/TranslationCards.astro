@@ -1,0 +1,17 @@
+---
+interface Item {
+  concept: string;
+  manifestation: string;
+  addresses: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="translation-cards" aria-label="Distributed systems concepts translated to frontend practice">
+  {items.map((item) => <article class="translation-card"><h3>{item.concept}</h3><dl><div><dt>Frontend manifestation</dt><dd>{item.manifestation}</dd></div><div><dt>Failure it helps address</dt><dd>{item.addresses}</dd></div></dl></article>)}
+</section>
