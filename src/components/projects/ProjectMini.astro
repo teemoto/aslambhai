@@ -1,9 +1,10 @@
 ---
 import Icon from "../ui/Icon.astro";
+import StatusBadge from "./StatusBadge.astro";
 interface Props { icon: string; name: string; status: string }
 const { icon, name, status } = Astro.props;
 ---
 <div class="project-mini">
   <div class="project-icon">{icon === "dino" ? <span class="dino">△</span> : <Icon name={icon} />}</div>
-  <div><strong>{name}</strong><span><i></i>{status}</span></div>
+  <div><strong>{name}</strong><StatusBadge status={status as "Building" | "Usable alpha" | "Exploring"} /></div>
 </div>

@@ -21,8 +21,9 @@ const topics = ["All", "Frontend", "AI", "Ad Tech", "Leadership"];
         <div class="filter-scroller" aria-label="Filter by topic">{topics.map((topic) => <button class:list={["chip", { selected: topic === "All" }]} data-topic={topic}>{topic}</button>)}</div>
       </div>
       <section class="featured" data-article data-search={`${featured.data.title} ${featured.data.description} ${featured.data.topic}`.toLowerCase()} data-topic-value={featured.data.topic} aria-labelledby="featured-title">
-        <span class="eyebrow">Featured article</span><a href={`/articles/${featured.id}`}><h2 id="featured-title">{featured.data.title}</h2></a><p>{featured.data.description}</p>
-        <div class="meta"><span><ArticleIcon kind={featured.data.icon} />{featured.data.topic}</span><span><Icon name="calendar" />{date}</span><span><Icon name="clock" />{featured.data.minutes} min read</span></div>
+        <div class:list={["featured-copy", { "has-cover": Boolean(featured.data.cover) }]}><span class="eyebrow">Featured article</span><a href={`/articles/${featured.id}`}><h2 id="featured-title">{featured.data.title}</h2></a><p>{featured.data.description}</p>
+          <div class="meta"><span><ArticleIcon kind={featured.data.icon} />{featured.data.topic}</span><span><Icon name="calendar" />{date}</span><span><Icon name="clock" />{featured.data.minutes} min read</span></div></div>
+        {featured.data.cover && <a class="featured-cover" href={`/articles/${featured.id}`} aria-label={`Read ${featured.data.title}`}><img src={featured.data.cover.src} alt={featured.data.cover.alt} width="1672" height="941" loading="eager" /></a>}
       </section>
       <button class="mobile-rail-toggle" data-mobile-rail-toggle aria-expanded="false">Projects <Icon name="chevronDown" /></button>
       <div data-mobile-rail hidden><RailContent /></div>

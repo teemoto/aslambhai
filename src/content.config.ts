@@ -10,6 +10,7 @@ const articles = defineCollection({
     minutes: z.number().int().positive(),
     topic: z.string(),
     icon: z.enum(["code", "ai", "data", "leadership"]),
+    cover: z.object({ src: z.string(), alt: z.string() }).optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),

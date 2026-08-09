@@ -1,0 +1,15 @@
+---
+interface Props { status: "Building" | "Usable alpha" | "Exploring" }
+
+const { status } = Astro.props;
+const descriptions = {
+  Building: "In active development and not yet ready for general use.",
+  "Usable alpha": "Available to use today, while features and details continue to evolve.",
+  Exploring: "Early research and experimentation; the direction is still being tested.",
+};
+const tone = status === "Usable alpha" ? "ready" : status === "Building" ? "building" : "exploring";
+---
+
+<span class:list={["status", `status-${tone}`]} data-tooltip={descriptions[status]} tabindex="0">
+  <i></i><span>{status}</span><span class="sr-only">: {descriptions[status]}</span>
+</span>

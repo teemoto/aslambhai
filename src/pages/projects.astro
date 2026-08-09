@@ -1,5 +1,6 @@
 ---
 import StaticPage from "../components/layout/StaticPage.astro";
+import StatusBadge from "../components/projects/StatusBadge.astro";
 const projects = [
   { name: "JSON Bourne", state: "Building", desc: "A fast, thoughtful workspace for exploring, editing, comparing, and understanding large JSON documents.", tags: ["React", "TypeScript", "Performance"] },
   { name: "Personal Publishing Platform", state: "Usable alpha", desc: "The publishing system behind Aslam Bhai: designed for low-friction writing, excellent reading, and durable ownership.", tags: ["Content", "SEO", "Astro"] },
@@ -7,5 +8,5 @@ const projects = [
 ];
 ---
 <StaticPage active="projects" eyebrow="Work in public" title="Projects" intro="Products and experiments used to turn architectural ideas into working software.">
-  <div class="project-grid">{projects.map((project) => <article class="project-card"><span class="status"><i></i>{project.state}</span><h2>{project.name}</h2><p>{project.desc}</p><div>{project.tags.map((tag) => <span>{tag}</span>)}</div></article>)}</div>
+  <div class="project-grid">{projects.map((project) => <article class="project-card"><StatusBadge status={project.state as "Building" | "Usable alpha" | "Exploring"} /><h2>{project.name}</h2><p>{project.desc}</p><div>{project.tags.map((tag) => <span>{tag}</span>)}</div></article>)}</div>
 </StaticPage>
