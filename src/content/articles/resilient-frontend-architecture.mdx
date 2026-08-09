@@ -1,0 +1,162 @@
+---
+title: "The Art of Resilient Frontends, Part 1: The Mental Model"
+description: A mental model for designing frontends that remain useful when dependencies fail, change, or slow down.
+publishedAt: 2026-08-03
+minutes: 10
+topic: Frontend Architecture
+icon: code
+featured: true
+---
+
+import ResilienceLayers from "../../components/articles/ResilienceLayers.astro";
+
+A resilient frontend is not one that never fails. That is impossible. Networks drop. APIs change shape. Users leave tabs open for three days. Phones run out of memory. Third-party scripts change. Every so often, a deployment ships a regression.
+
+A resilient frontend keeps delivering useful behavior when parts of the system fail, change, or slow down.
+
+Sometimes useful behavior means continuing with reduced functionality. Sometimes it means preserving the user's work. In a high-risk operation, it may simply mean communicating uncertainty and offering a safe next step. Resilience is not the ability to pretend that nothing went wrong. It is the ability to respond without turning one failure into a larger one.
+
+This series uses five recurring disciplines to reason about that response:
+
+```text
+[E]XPECT failure → [C]ONTAIN failure → [O]BSERVE failure → [R]ECOVER → [E]VOLVE
+ assumptions        blast radius        evidence            safe path     learning
+```
+
+Together, they form **ECORE**.
+
+ECORE is not a strict sequence that begins after an incident. We design containment and observability before failure. Recovery can begin while a failure is still being diagnosed. What we learn changes what we expect next time. The five disciplines overlap and reinforce one another.
+
+This first part establishes the mental model behind them.
+
+## Two bridges
+
+Picture two bridges.
+
+Both are designed to handle normal traffic. The first is optimized around those expected conditions. The second is designed for a wider range of stress. It has drainage for heavy rain, expansion joints for temperature changes, barriers that prevent an accident in one lane from spreading, sensors that reveal structural problems, and alternate routes when part of the bridge is unavailable.
+
+On a calm day, both bridges may look equally capable. Their differences become visible under stress because stress exposes the assumptions built into their designs.
+
+Frontend architecture works the same way.
+
+A fragile frontend quietly assumes that:
+
+- The API will respond.
+- The response will have the expected shape.
+- The JavaScript will load.
+- The user has a fast and stable connection.
+- Every deployed asset belongs to the same version.
+- Third-party code will behave.
+
+A resilient frontend makes those assumptions explicit and asks:
+
+> If this assumption fails, what should the product do?
+
+The bridge also gives us the beginnings of ECORE. Designing for storms means we **expect** stress. Lane barriers **contain** damage. Sensors help us **observe** it. Alternate routes let people **recover**. Inspections and repairs help the system **evolve**.
+
+The analogy is not the architecture, but it reveals the principle behind it: resilience is designed into a system through multiple independent protections.
+
+<figure class="article-figure">
+  <img
+    src="/images/two-bridges-resilience-blueprint.webp"
+    alt="A technical blueprint comparing a fragile bridge under storm stress with a resilient bridge protected by drainage, lane barriers, sensors, and an alternate route."
+    width="1600"
+    height="901"
+    loading="lazy"
+  />
+  <figcaption>Under normal conditions, both bridges work. Stress reveals the assumptions built into each design.</figcaption>
+</figure>
+
+## The browser is a node in a distributed system
+
+Here is the mental shift at the center of this series:
+
+> The browser is a node in a distributed system that happens to have a screen attached.
+
+The frontend does not merely "call an API" and display the result. That convenient description hides most of the uncertainty.
+
+The browser often holds a local representation of state owned elsewhere. It exchanges messages with remote services over an unreliable network. Those messages can be delayed, duplicated, rejected, or returned out of order. The local representation can become stale. The user can change it while the server is changing it too. Meanwhile, the page may be running code from a different deployment than the service it is calling.
+
+Not all frontend state is a remote replica. A form draft may belong to the browser. The URL may own navigation state. An offline-first application may accept local writes. The important question is not whether the server is always the source of truth. It is whether ownership is explicit and the system knows how different copies are reconciled.
+
+Once you see the browser as a participant in a distributed system, many frontend failures stop looking like isolated UI bugs. They become familiar problems with established vocabulary.
+
+## The distributed-computing fallacies, in the browser
+
+Peter Deutsch's fallacies of distributed computing describe assumptions that developers repeatedly make about networked systems. They were not written specifically for frontends, but they provide a useful lens for examining browser applications.
+
+| False assumption | Frontend reality | Possible design response |
+| --- | --- | --- |
+| The network is reliable | A connection can disappear during a request, and an unknown response does not prove that a mutation failed | Timeouts, bounded retries, idempotent operations, honest uncertain states |
+| Latency is zero | Latency varies by user, device, location, and moment | Explicit loading states, prefetching, caching, and optimistic UI where it is safe |
+| Bandwidth is infinite | Large bundles and payloads increase startup time and impose unequal costs | Code splitting, image and bundle budgets, pagination, response shaping |
+| The network is secure | Transport and remote data cross trust boundaries | TLS, browser security controls, output safety, and runtime validation for untrusted data |
+| Topology does not change | A user can switch networks or reach a different service instance during a flow | Resume from application state and treat connectivity indicators only as hints |
+| There is one administrator | Browsers, CDNs, ISPs, proxies, extensions, and blockers are controlled independently | Avoid fragile assumptions about the path and degrade when optional resources are blocked |
+| Transport cost is zero | Transfer, parsing, allocation, and rendering all consume time and memory | Reduce payloads, paginate or stream where useful, move heavy computation off the main thread when justified |
+| The network is homogeneous | Devices, browsers, networks, and user constraints vary widely | Test representative lower-bound conditions based on the product's audience |
+
+These are not one-to-one translations. A browser has different constraints from a backend service. It is short-lived, resource-constrained, user-controlled, and often has only a local view of system health. The point is not to copy backend patterns mechanically. It is to recognize the underlying failure class and adapt the relevant idea.
+
+## Babelfish: a translation layer
+
+When a frontend problem feels unfamiliar, finding its distributed-systems name gives you better vocabulary for investigating it.
+
+| Distributed-systems concept | Frontend manifestation | Failure it helps address |
+| --- | --- | --- |
+| Replica and cache coherence | Client query cache plus revalidation | Stale data and redundant requests |
+| Explicit state ownership | Server-owned domain state, client-owned drafts, URL-owned navigation state | Divergent copies and unclear authority |
+| Eventual consistency | Showing cached data while a fresh version is fetched | Blocking every read on the latest remote state |
+| Read-your-writes experience | Optimistic updates followed by authoritative reconciliation | A user's action appearing to disappear |
+| Idempotency | Stable operation identifiers supported by the server | Duplicate mutations after retries or lost responses |
+| Backpressure | Debouncing, concurrency limits, and discarding obsolete client work | Request floods and main-thread overload |
+| Bulkhead | Isolated widgets and carefully placed render error boundaries | One failing area taking down the whole experience |
+| Timeout and jittered retry | Bounded retry policy for classified transient failures | Hung requests and synchronized retry storms |
+| Request coalescing | Multiple consumers sharing one in-flight request | Many components fetching the same resource |
+| Ordering and causality | Ignoring or cancelling stale responses | An older response overwriting newer state |
+| Clock skew | Treating the client clock as untrusted for authoritative decisions | Expiration and ordering bugs caused by incorrect local time |
+| Expand-and-contract change | Backward-compatible API and asset deployments | Old tabs communicating with newer services |
+
+Some mappings are close. Others are analogies. Several, especially idempotency and consistency guarantees, require backend cooperation. Disabling a submit button can reduce accidental duplicates, but it cannot make an operation idempotent across retries, refreshes, or multiple tabs. An optimistic update can provide immediate feedback, but it cannot guarantee that a later authoritative read will include the write.
+
+That distinction matters. Borrow the problem-solving vocabulary, not just the pattern name.
+
+## Resilience is built in layers
+
+No single mechanism protects the whole system. Think again about independent safety systems. Drainage does not replace lane barriers. Barriers do not replace sensors. Each addresses a different failure class, and together they reduce the chance that one problem becomes a catastrophe.
+
+Frontend resilience works across several layers:
+
+<ResilienceLayers />
+
+The layers are not a request pipeline. They are complementary places to put defenses.
+
+- A render error boundary can contain certain failures in a component subtree. It cannot detect a malformed API response or repair a failed mutation.
+- A retry can help with a classified transient network failure. It cannot fix invalid data and may make an outage worse if it is unbounded.
+- TypeScript catches a useful class of development-time inconsistencies. It cannot prove that remote data matches the declared type at runtime.
+- Runtime validation can detect unexpected data. It still needs a product decision about whether to reject, degrade, or recover.
+- A feature flag can limit exposure to a risky change. It needs ownership, monitoring, and a removal plan to remain a safety mechanism.
+
+A system does not need every possible resilience pattern. It needs complementary protections chosen for its actual failure modes and critical user journeys.
+
+## ECORE: a habit of questioning assumptions
+
+We can now return to the five disciplines:
+
+| Discipline | Question |
+| --- | --- |
+| **Expect** | What can fail, slow down, change, or become uncertain? |
+| **Contain** | How do we prevent that failure from spreading? |
+| **Observe** | What evidence will tell us what the user experienced and why? |
+| **Recover** | What safe path remains for the user and the system? |
+| **Evolve** | What should change in the product, architecture, tests, or ownership model afterward? |
+
+ECORE is deliberately simple. It does not replace threat modeling, performance analysis, incident response, or good product design. It gives us a common set of questions to apply across all of them.
+
+Before moving to Part 2, try it on one critical journey in your product. Pick something concrete, such as signing in, publishing a document, submitting an order, or loading a dashboard. List every dependency the journey crosses. Then ask what the user sees if each dependency is slow, unavailable, stale, or returns an unexpected result.
+
+Do not solve every failure yet. First, make the hidden assumptions visible.
+
+That is where resilient design begins.
+
+In Part 2, we will move from **expecting** failure to **containing** it. We will examine how boundaries, explicit UI states, runtime validation, partial success, and graceful degradation keep one broken dependency from taking down the entire experience.

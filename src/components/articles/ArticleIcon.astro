@@ -1,0 +1,6 @@
+---
+import Icon from "../ui/Icon.astro";
+interface Props { kind: "code" | "ai" | "data" | "leadership"; size?: number }
+const { kind, size = 18 } = Astro.props;
+---
+<Icon name={kind} size={size} />

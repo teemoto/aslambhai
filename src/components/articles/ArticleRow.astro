@@ -1,0 +1,14 @@
+---
+import Icon from "../ui/Icon.astro";
+import ArticleIcon from "./ArticleIcon.astro";
+interface Props { article: { id: string; data: { title: string; description: string; topic: string; publishedAt: Date; minutes: number; icon: "code" | "ai" | "data" | "leadership" } } }
+const { article } = Astro.props;
+const date = article.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+---
+<a class="article-row" href={`/articles/${article.id}`} data-article data-search={`${article.data.title} ${article.data.description} ${article.data.topic}`.toLowerCase()} data-topic-value={article.data.topic}>
+  <span class="row-icon"><ArticleIcon kind={article.data.icon} /></span>
+  <strong>{article.data.title}</strong>
+  <span class="row-date"><Icon name="calendar" />{date}</span>
+  <span class="row-time"><Icon name="clock" />{article.data.minutes} min</span>
+  <Icon name="arrowRight" />
+</a>
