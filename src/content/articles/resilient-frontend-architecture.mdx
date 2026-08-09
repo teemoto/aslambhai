@@ -18,10 +18,15 @@ Sometimes useful behavior means continuing with reduced functionality. Sometimes
 
 This series uses five recurring disciplines to reason about that response:
 
-```text
-[E]XPECT failure → [C]ONTAIN failure → [O]BSERVE failure → [R]ECOVER → [E]VOLVE
- assumptions        blast radius        evidence            safe path     learning
-```
+<figure class="article-figure ecore-figure">
+  <img
+    src="/images/ecore-resilience-cycle.png"
+    alt="The ECORE resilience model shown as a continuous cycle: Expect with a storm cloud, Contain with a shield, Observe with an eye and radar, Recover with a bridge, and Evolve with an upward growth arrow."
+    width="1672"
+    height="941"
+  />
+  <figcaption>ECORE is a reinforcing cycle: expect failure, contain its effects, observe what happened, recover safely, and evolve the system.</figcaption>
+</figure>
 
 Together, they form **ECORE**.
 
