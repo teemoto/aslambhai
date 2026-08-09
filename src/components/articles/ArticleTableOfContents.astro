@@ -1,0 +1,20 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+---
+
+<details class="article-toc" open>
+  <summary>In this essay <span>{headings.length} sections</span></summary>
+  <ol>
+    {headings.map((heading) => <li><a href={`#${heading.slug}`}>{heading.text}</a></li>)}
+  </ol>
+</details>

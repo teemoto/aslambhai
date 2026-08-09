@@ -19,7 +19,7 @@ test("renders metadata and article content", async () => {
   assert.match(article, /giscus-container/);
 });
 
-test("keeps article metadata aligned and share tools available while reading", async () => {
+test("keeps article metadata aligned with accessible actions and generated contents", async () => {
   const article = await readFile(new URL("../dist/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
   const stylesheet = article.match(/href="([^"]+\.css)"/)?.[1];
   assert.ok(stylesheet, "Expected a generated stylesheet");
@@ -30,11 +30,15 @@ test("keeps article metadata aligned and share tools available while reading", a
   assert.match(article, /class="byline-meta"[^>]*>.*10 min read<\/span>/s);
   assert.match(article, /class="byline-meta"[^>]*>.*August 3, 2026<\/span>/s);
   assert.match(styles, /\.article-byline>\.byline-meta\{display:inline-flex;align-items:center;gap:8px/);
-  assert.match(styles, /\.share-tools\{position:fixed/);
-  assert.match(styles, /\.share-tools button:hover[^}]*color:#fff[^}]*background:var\(--teal\)/);
-  assert.match(article, /data-tooltip="Copy link"/);
-  assert.match(article, /data-tooltip="View on GitHub"/);
-  assert.match(script, /button\.dataset\.tooltip\s*=\s*"Copied!"/);
+  assert.match(article, /class="article-actions"/);
+  assert.match(article, /Copy link/);
+  assert.match(article, /Author on GitHub/);
+  assert.match(article, /class="article-toc" open/);
+  assert.match(article, /href="#two-bridges"/);
+  assert.match(styles, /\.article-actions\{display:flex/);
+  assert.match(styles, /\.article-toc\{width:min\(100%,820px\)/);
+  assert.doesNotMatch(styles, /\.share-tools/);
+  assert.match(script, /label\.textContent\s*=\s*"Copied"/);
 });
 
 test("keeps the side-panel reopen control hidden while the panel is expanded", async () => {
@@ -106,4 +110,11 @@ test("publishes only complete articles", async () => {
   const articles = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   assert.match(articles, /resilient-frontend-architecture/);
   assert.doesNotMatch(articles, /Component Boundaries and the Cost of Change|Modern Advertising Stack|RAG, Tooling/);
+});
+
+test("formats article dates consistently in UTC", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const article = await readFile(new URL("../dist/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
+  assert.match(home, /Aug 3, 2026/);
+  assert.match(article, /August 3, 2026/);
 });

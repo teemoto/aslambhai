@@ -9,7 +9,7 @@ import RailContent from "../components/layout/RailContent.astro";
 const articles = (await getCollection("articles", ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 const featured = articles.find(({ data }) => data.featured) ?? articles[0];
 const rest = articles.filter(({ id }) => id !== featured.id);
-const date = featured.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+const date = featured.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 const topics = ["All", "Frontend", "AI", "Ad Tech", "Leadership"];
 ---
 <BaseLayout active="home">
@@ -26,7 +26,7 @@ const topics = ["All", "Frontend", "AI", "Ad Tech", "Leadership"];
       </section>
       <button class="mobile-rail-toggle" data-mobile-rail-toggle aria-expanded="false">Projects <Icon name="chevronDown" /></button>
       <div data-mobile-rail hidden><RailContent /></div>
-      <section class="recent"><span class="eyebrow">Recent writing</span>{rest.map((article) => <ArticleRow article={article} />)}<p class="empty-state" data-empty-state hidden>No articles match those filters.</p></section>
+      <section class="recent" aria-label="Recent writing">{rest.length > 0 && <span class="eyebrow">Recent writing</span>}{rest.map((article) => <ArticleRow article={article} />)}<p class="empty-state" data-empty-state hidden>No articles match those filters.</p></section>
     </section>
     <aside class="side-rail" data-side-rail><button class="rail-toggle" data-rail-toggle aria-label="Collapse side panel" aria-expanded="true"><Icon name="chevronRight" size={18} /></button><RailContent /></aside>
     <button class="rail-reopen" data-rail-reopen aria-label="Open project status" hidden><Icon name="chevronLeft" size={18} /></button>

@@ -89,8 +89,13 @@ document.querySelector("[data-print]")?.addEventListener("click", () => window.p
 document.querySelector("[data-copy-link]")?.addEventListener("click", async (event) => {
   await navigator.clipboard.writeText(location.href);
   const button = event.currentTarget;
-  button.dataset.tooltip = "Copied!";
-  setTimeout(() => { button.dataset.tooltip = "Copy link"; }, 1400);
+  const label = button.querySelector("[data-copy-link-label]");
+  label.textContent = "Copied";
+  button.setAttribute("aria-label", "Article link copied");
+  setTimeout(() => {
+    label.textContent = "Copy link";
+    button.setAttribute("aria-label", "Copy article link");
+  }, 1400);
 });
 
 const progress = document.querySelector("[data-reading-progress]");

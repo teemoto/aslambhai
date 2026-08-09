@@ -2,18 +2,19 @@
 import BaseLayout from "./BaseLayout.astro";
 import Icon from "../components/ui/Icon.astro";
 import Comments from "../components/articles/Comments.astro";
+import ArticleTableOfContents from "../components/articles/ArticleTableOfContents.astro";
 import { site } from "../site.config";
-interface Props { title: string; description: string; topic: string; date: Date; minutes: number }
-const { title, description, topic, date, minutes } = Astro.props;
+interface Heading { depth: number; slug: string; text: string }
+interface Props { title: string; description: string; topic: string; date: Date; minutes: number; headings: Heading[] }
+const { title, description, topic, date, minutes, headings } = Astro.props;
 const formattedDate = date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 ---
 <BaseLayout title={`${title} · Aslam Bhai`} description={description} article>
   <div class="reading-progress" data-reading-progress></div>
   <main class="article-page">
     <a class="back-link" href="/"><Icon name="arrowLeft" />Back to articles</a>
-    <header class="article-header"><span class="eyebrow">{topic}</span><h1>{title}</h1><p>{description}</p><div class="article-byline"><div class="avatar">TA</div><div class="article-author"><strong>Tanvir Aslam</strong><span>Senior frontend engineer · Technical writer</span></div><span class="byline-meta"><Icon name="clock" />{minutes} min read</span><span class="byline-meta"><Icon name="calendar" />{formattedDate}</span></div></header>
-    <aside class="share-tools" aria-label="Share this article"><button data-copy-link data-tooltip="Copy link" aria-label="Copy article link"><Icon name="link" /></button><a href={site.github} data-tooltip="View on GitHub" target="_blank" rel="noopener noreferrer" aria-label="View GitHub profile (opens in a new tab)"><Icon name="github" /></a></aside>
-    {title === "Designing a Resilient Frontend Architecture" && <aside class="toc"><strong>In this essay</strong><nav><a href="#change">Architecture is change management</a><a href="#boundaries">Define the boundaries</a><a href="#failure">Design for failure</a><a href="#measure">Measure what matters</a></nav></aside>}
+    <header class="article-header"><span class="eyebrow">{topic}</span><h1>{title}</h1><p>{description}</p><div class="article-byline"><div class="avatar">TA</div><div class="article-author"><strong>Tanvir Aslam</strong><span>Senior frontend engineer · Technical writer</span></div><span class="byline-meta"><Icon name="clock" />{minutes} min read</span><span class="byline-meta"><Icon name="calendar" />{formattedDate}</span></div><div class="article-actions" aria-label="Article actions"><button class="article-action" data-copy-link aria-label="Copy article link"><Icon name="link" /><span data-copy-link-label>Copy link</span></button><a class="article-action" href={site.github} target="_blank" rel="noopener noreferrer"><Icon name="github" />Author on GitHub</a></div></header>
+    {headings.length > 0 && <ArticleTableOfContents headings={headings} />}
     <article class="prose"><slot /></article>
     <Comments />
     <nav class="article-next"><a href="/"><span>All writing</span>Explore more essays</a><a href="/projects"><span>Next</span>Projects in progress</a></nav>

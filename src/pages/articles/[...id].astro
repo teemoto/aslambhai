@@ -7,8 +7,9 @@ export async function getStaticPaths() {
   return articles.map((article) => ({ params: { id: article.id }, props: { article } }));
 }
 const { article } = Astro.props;
-const { Content } = await render(article);
+const { Content, headings } = await render(article);
+const tableOfContents = headings.filter((heading) => heading.depth === 2);
 ---
-<ArticleLayout title={article.data.title} description={article.data.description} topic={article.data.topic} date={article.data.publishedAt} minutes={article.data.minutes}>
+<ArticleLayout title={article.data.title} description={article.data.description} topic={article.data.topic} date={article.data.publishedAt} minutes={article.data.minutes} headings={tableOfContents}>
   <Content />
 </ArticleLayout>
