@@ -13,9 +13,9 @@ const formattedDate = date.toLocaleDateString("en-US", { month: "long", day: "nu
   <div class="reading-progress" data-reading-progress></div>
   <main class="article-page">
     <a class="back-link" href="/"><Icon name="arrowLeft" />Back to articles</a>
-    <header class="article-header"><span class="eyebrow">{topic}</span><h1>{title}</h1><p>{description}</p><div class="article-byline"><div class="avatar">TA</div><div class="article-author"><strong>Tanvir Aslam</strong><span>Senior frontend engineer · Technical writer</span></div><span class="byline-meta"><Icon name="clock" />{minutes} min read</span><span class="byline-meta"><Icon name="calendar" />{formattedDate}</span></div><div class="article-actions" aria-label="Article actions"><button class="article-action" data-copy-link aria-label="Copy article link"><Icon name="link" /><span data-copy-link-label>Copy link</span></button><a class="article-action" href={site.github} target="_blank" rel="noopener noreferrer"><Icon name="github" />Author on GitHub</a></div></header>
+    <header class="article-header"><span class="eyebrow">{topic}</span><h1>{title}</h1><p>{description}</p><div class="article-byline"><div class="avatar">TA</div><div class="article-author"><strong>Tanvir Aslam</strong><span>Senior frontend engineer · Technical writer</span></div><span class="byline-meta"><Icon name="clock" />{minutes} min read</span><span class="byline-meta"><Icon name="calendar" />{formattedDate}</span></div></header>
     {headings.length > 0 && <ArticleTableOfContents headings={headings} />}
-    <article class="prose"><slot /></article>
+    <div class="article-reading-area"><aside class="share-tools" aria-label="Article actions"><button class="article-action" data-copy-link data-tooltip="Copy link" aria-label="Copy article link"><Icon name="link" /><span class="sr-only" data-copy-link-label>Copy link</span></button><a class="article-action" href={site.github} data-tooltip="Author on GitHub" target="_blank" rel="noopener noreferrer" aria-label="Author on GitHub (opens in a new tab)"><Icon name="github" /></a></aside><article class="prose"><slot /></article></div>
     <Comments />
     <nav class="article-next"><a href="/"><span>All writing</span>Explore more essays</a><a href="/projects"><span>Next</span>Projects in progress</a></nav>
   </main>

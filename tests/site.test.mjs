@@ -30,14 +30,15 @@ test("keeps article metadata aligned with accessible actions and generated conte
   assert.match(article, /class="byline-meta"[^>]*>.*10 min read<\/span>/s);
   assert.match(article, /class="byline-meta"[^>]*>.*August 3, 2026<\/span>/s);
   assert.match(styles, /\.article-byline>\.byline-meta\{display:inline-flex;align-items:center;gap:8px/);
-  assert.match(article, /class="article-actions"/);
+  assert.match(article, /class="article-reading-area"/);
+  assert.match(article, /class="share-tools" aria-label="Article actions"/);
   assert.match(article, /Copy link/);
   assert.match(article, /Author on GitHub/);
   assert.match(article, /class="article-toc" open/);
   assert.match(article, /href="#two-bridges"/);
-  assert.match(styles, /\.article-actions\{display:flex/);
+  assert.match(styles, /\.share-tools\{position:sticky;top:130px/);
   assert.match(styles, /\.article-toc\{width:min\(100%,820px\)/);
-  assert.doesNotMatch(styles, /\.share-tools/);
+  assert.match(styles, /\.article-reading-area\{width:min\(100%,900px\)/);
   assert.match(script, /label\.textContent\s*=\s*"Copied"/);
 });
 

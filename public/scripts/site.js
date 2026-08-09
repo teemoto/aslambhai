@@ -91,9 +91,11 @@ document.querySelector("[data-copy-link]")?.addEventListener("click", async (eve
   const button = event.currentTarget;
   const label = button.querySelector("[data-copy-link-label]");
   label.textContent = "Copied";
+  button.dataset.tooltip = "Copied!";
   button.setAttribute("aria-label", "Article link copied");
   setTimeout(() => {
     label.textContent = "Copy link";
+    button.dataset.tooltip = "Copy link";
     button.setAttribute("aria-label", "Copy article link");
   }, 1400);
 });
