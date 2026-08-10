@@ -1,0 +1,22 @@
+---
+const phases = [
+  { title: "Page entry", steps: ["User enters URL", "Browser loads publisher page", "HTML/CSS/JS arrive"] },
+  { title: "Publisher setup", steps: ["Publisher's ad library initializes", "Ad slots are discovered/defined", "Browser gathers permitted context"] },
+  { title: "Ad decision", steps: ["Ad opportunity is sent to ad systems", "Auction / decision happens", "Winning creative is returned"] },
+  { title: "Outcome & measurement", steps: ["Browser renders creative", "Viewability/impression measured", "User may click", "Measurement continues"] },
+];
+---
+
+<figure class="ad-lifecycle-flow" aria-labelledby="ad-lifecycle-caption">
+  <div class="ad-lifecycle-phases">
+    {phases.map((phase, phaseIndex) => (
+      <section class="ad-lifecycle-phase" aria-label={`${phaseIndex + 1}. ${phase.title}`}>
+        <h3><span>{String(phaseIndex + 1).padStart(2, "0")}</span>{phase.title}</h3>
+        <ol>
+          {phase.steps.map((step, stepIndex) => <li><span>{String(phases.slice(0, phaseIndex).reduce((total, item) => total + item.steps.length, 0) + stepIndex + 1).padStart(2, "0")}</span>{step}</li>)}
+        </ol>
+      </section>
+    ))}
+  </div>
+  <figcaption id="ad-lifecycle-caption">A simplified browser-side ad lifecycle, from the first page request through measurement after rendering.</figcaption>
+</figure>

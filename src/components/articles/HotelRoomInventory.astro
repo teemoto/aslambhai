@@ -1,0 +1,14 @@
+---
+const rooms = [
+  { number: "101", type: "King" },
+  { number: "102", type: "Queen" },
+  { number: "103", type: "Suite" },
+];
+---
+
+<figure class="hotel-room-inventory" aria-labelledby="hotel-room-caption">
+  <div class="hotel-room-list">
+    {rooms.map((room) => <section class="hotel-room"><span class="hotel-door" aria-hidden="true"></span><div><h3>Room {room.number}</h3><p>{room.type}</p></div></section>)}
+  </div>
+  <figcaption id="hotel-room-caption">The hotel has defined inventory: each room exists and has a known type, even before a guest is assigned.</figcaption>
+</figure>

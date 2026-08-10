@@ -9,7 +9,7 @@ const articles = defineCollection({
     publishedAt: z.coerce.date(),
     minutes: z.number().int().positive(),
     topic: z.string(),
-    icon: z.enum(["code", "ai", "data", "leadership"]),
+    icon: z.enum(["code", "ai", "data", "leadership", "megaphone", "globe", "other"]),
     cover: z.object({ src: z.string(), alt: z.string() }).optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),

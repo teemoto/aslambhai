@@ -1,0 +1,26 @@
+---
+const origins = [
+  { role: "Publisher", domain: "example-news.com", detail: "The page itself" },
+  { role: "Ad system", domain: "ads.example.com", detail: "Decision & rendering instructions" },
+  { role: "Creative assets", domain: "cdn.advertiser-example.com", detail: "Images, scripts, and media" },
+];
+---
+
+<figure class="cross-origin-delivery" aria-labelledby="cross-origin-caption">
+  <div class="cross-origin-browser">
+    <span class="eyebrow">Browser</span>
+    <strong>One page, several origins</strong>
+  </div>
+  <div class="cross-origin-origins">
+    {origins.map((origin, index) => <section class="cross-origin-card">
+      <span class="cross-origin-number">0{index + 1}</span>
+      <span class="eyebrow">{origin.role}</span>
+      <strong>{origin.domain}</strong>
+      <p>{origin.detail}</p>
+    </section>)}
+  </div>
+  <figcaption id="cross-origin-caption">
+    The browser assembles a single ad-supported page from requests to separate
+    publisher, advertising, and advertiser infrastructure.
+  </figcaption>
+</figure>

@@ -1,0 +1,377 @@
+---
+title: "Lifecycle of an Ad: What Happens After You Open a Webpage?"
+description: A mental model for designing frontends that remain useful when dependencies fail, change, or slow down.
+publishedAt: 2026-08-01
+minutes: 10
+topic: Ad Tech
+icon: megaphone
+cover:
+  src: /images/ecore-resilience-cycle.png
+  alt: The ECORE resilience cycle, illustrated with five connected stages.
+featured: false
+---
+
+import AdLifecycleFlow from "../../components/articles/AdLifecycleFlow.astro";
+import AdInventoryDecision from "../../components/articles/AdInventoryDecision.astro";
+import AdDecisionSystem from "../../components/articles/AdDecisionSystem.astro";
+import AdLoadTimeline from "../../components/articles/AdLoadTimeline.astro";
+import AdViewabilityViewport from "../../components/articles/AdViewabilityViewport.astro";
+import AdRefreshFlow from "../../components/articles/AdRefreshFlow.astro";
+import AttributionFlow from "../../components/articles/AttributionFlow.astro";
+import CrossOriginDelivery from "../../components/articles/CrossOriginDelivery.astro";
+import EngineeringTradeoffs from "../../components/articles/EngineeringTradeoffs.astro";
+import EventLifecycleFunnel from "../../components/articles/EventLifecycleFunnel.astro";
+import FinalAdOutput from "../../components/articles/FinalAdOutput.astro";
+import HeaderBiddingCompetition from "../../components/articles/HeaderBiddingCompetition.astro";
+import AdOpportunitySlot from "../../components/articles/AdOpportunitySlot.astro";
+import AdRequestContext from "../../components/articles/AdRequestContext.astro";
+import AdRequestRoute from "../../components/articles/AdRequestRoute.astro";
+import AdSlotInventory from "../../components/articles/AdSlotInventory.astro";
+import HotelRoomInventory from "../../components/articles/HotelRoomInventory.astro";
+import InfiniteScrollFlow from "../../components/articles/InfiniteScrollFlow.astro";
+import PageRequestFlow from "../../components/articles/PageRequestFlow.astro";
+import TrackingRedirectFlow from "../../components/articles/TrackingRedirectFlow.astro";
+
+# Lifecycle of an Ad: What Happens After You Open a Webpage?
+
+The question we are answering is:
+
+> “I typed a URL, pressed Enter, and a few moments later an ad appeared on the page. What exactly happened?”
+
+_We will stay mostly on the **publisher and browser side**. The massive auction ecosystem behind the ad request will remain a black box for now._
+
+## Mental model
+
+Imagine you visit a website like `example-news.com` and eventually see this:
+
+<figure class="article-figure">
+  <img
+    src="/images/ad-lifecycle-publisher-page.png"
+    alt="A fictional newspaper website with a breaking-news article and a clearly marked display advertisement in the right column."
+    width="1672"
+    height="941"
+    loading="lazy"
+  />
+  <figcaption>
+    To the reader, the display ad appears to be a natural part of the
+    publisher's page.
+  </figcaption>
+</figure>
+
+It looks as if the ad was part of the webpage. For a typical browser-side display ad, the final creative was not part of the original page.
+
+When the page's HTML was generated, the publisher usually did not know which ad would appear. The page did not ship an ad. It shipped a place _where an ad could go_. The actual ad was chosen live for that specific opportunity.
+
+A simplified lifecycle is:
+
+<AdLifecycleFlow />
+
+> The page creates an **opportunity for an ad**, and the actual ad is selected dynamically.
+
+## You enter a URL
+
+Say you visit `https://example-news.com/article/123`. Before advertising becomes relevant, the browser does its usual work:
+
+<PageRequestFlow />
+
+What comes back looks roughly like this:
+
+```html
+<html>
+  <head>
+    <script src="/app.js"></script>
+    <script src="/ads.js"></script>
+  </head>
+
+  <body>
+    <article>...</article>
+
+    <div id="top-banner"></div>
+
+    <article>...</article>
+
+    <div id="sidebar-ad"></div>
+  </body>
+</html>
+```
+
+Look closely. There is no advertisement in that HTML. There are only empty `<div>` elements where advertisements _may_ appear. Those empty containers introduce the first important concept in ad tech: **ad slots**.
+
+## The publisher defines its slots
+
+Think of a newspaper. Before advertisers buy anything, the newspaper knows:
+
+> “This rectangle on page 3 is available for advertising.”
+
+Websites work similarly.
+
+A publisher defines slots and the creative sizes each will accept. For example:
+
+<AdSlotInventory />
+
+Conceptually:
+
+```js
+defineAdSlot({
+  id: "sidebar-ad",
+  sizes: [
+    [300, 250],
+    [300, 600],
+  ],
+});
+```
+
+This says:
+
+> “There is a place where inventory can be offered, and these creative sizes are acceptable.”
+
+It does **not** say which advertiser gets it.
+
+The mental model that makes this click is a hotel.
+
+The hotel knows:
+
+<HotelRoomInventory />
+
+But it does not necessarily know who will occupy those rooms tomorrow.
+
+Similarly:
+
+<AdInventoryDecision />
+
+> An ad slot defines where inventory can be offered. It is not the ad itself. Keep those two ideas apart and half of ad tech stops being confusing.
+
+## The ad library wakes up
+
+Large publishers do not hand-write `fetch("some-ad-server")` for every rectangle on the page. They integrate an advertising library or platform and give it responsibility for orchestrating the process:
+
+```js
+const ads = initializeAdvertising();
+
+ads.defineSlot(/* ... */);
+ads.defineSlot(/* ... */);
+ads.start();
+```
+
+The ad library may coordinate slot registration, consent checks, targeting signals, auctions, rendering, refresh, lazy loading, and measurement. In a real publisher stack, those responsibilities are often distributed across a consent-management platform, an ad-server library, a header-bidding wrapper, identity modules, verification vendors, and publisher-owned code.
+
+Together, these systems turn empty `<div>` elements into revenue.
+
+## Consent and privacy get checked
+
+Before sending anything to advertising systems, the site often has to establish what it is _allowed_ to do. You have seen the banner: “We and our partners use cookies.” That is not just annoying UI. It feeds a real decision.
+
+```js
+const consent = await getConsentState();
+
+requestAds({ consent });
+```
+
+Depending on the applicable law, the user's choices, publisher policy, browser restrictions, and platform capabilities, downstream systems may be allowed to do very different things. These constraints affect what can be stored, which identifiers are available, and whether an ad can be personalized at all.
+
+Consent state is therefore an input to everything that follows.
+
+## The browser builds context
+
+Here is where a second common misconception needs killing. The publisher is not simply shouting, “Give me an ad.” The opportunity carries **context**:
+
+```js
+const adRequest = {
+  slot: "sidebar",
+  sizes: [
+    [300, 250],
+    [300, 600],
+  ],
+  page: "/sports/world-cup",
+  deviceType: "desktop",
+  language: "en",
+  consent: "...",
+};
+```
+
+Real requests are far richer. The systems receiving them may reason about the page's content, the formats that fit, the device and browser, permitted geography, consent state, and publisher-provided targeting values.
+
+It is tempting to imagine every request as Amazon, Google, or Facebook knowing everything about you:
+
+<AdRequestContext />
+
+That is a poor mental model, and privacy changes have made it less accurate over time. In practice, targeting may draw on contextual signals, first-party data, permitted identifiers, audiences or cohorts, geography, campaign rules, and device characteristics.
+
+What can actually be used depends on applicable law, the user's consent, publisher policy, browser restrictions, and the capabilities of the participating platforms. The honest one-line version is this: context is often about the page and the situation, not a complete profile of you.
+
+## The publisher creates an ad opportunity
+
+Now picture the slot sitting empty:
+
+<AdOpportunitySlot />
+
+At this moment, the publisher has one specific opportunity to offer its inventory. This is worth a precise distinction:
+
+- An **ad slot** is the potential place an ad can appear.
+- **Inventory** is the advertising supply a publisher can make available.
+- An **impression opportunity** is one specific chance to fill that slot on this page, in this moment.
+
+The slot is the hotel room. The inventory is the set of room nights the hotel can sell. The impression opportunity is tonight's chance to occupy that room.
+
+## The request leaves the browser
+
+The browser now talks to advertising infrastructure:
+
+<AdRequestRoute />
+
+An enormous amount can happen out there: ad servers, SSPs, exchanges, DSPs, direct deals, campaign systems, and auctions. For this user-perspective model, compress all of it into one box:
+
+<AdDecisionSystem />
+
+Depending on the publisher's setup, multiple demand sources may compete before or during the final ad-server decision. Header bidding is one mechanism used to coordinate that competition.
+
+<HeaderBiddingCompetition />
+
+The exact architecture varies enormously by publisher and stack. We will open this box in the next article when we get to real-time bidding, OpenRTB, floors, and deals. For now, it is a black box that takes an opportunity and returns a winner.
+
+## The winner comes back
+
+Suppose the decision lands on a Nike campaign with a 300×250 creative at a $4.20 CPM. Notice what the response is _not_: it is generally not the final pixels of the ad. It contains instructions or assets that tell the browser what to fetch and how to render the creative:
+
+```json
+{
+  "creative": "...",
+  "width": 300,
+  "height": 250,
+  "tracking": "..."
+}
+```
+
+The exact representation varies by format. It might include markup, JavaScript, a creative URL, native assets, VAST for video, or some other rendering instruction.
+
+## The creative loads
+
+A further network request usually fires, and this detail surprises people. The page came from `example-news.com`, but the ad's assets may come from entirely different infrastructure:
+
+<CrossOriginDelivery />
+
+This is why opening DevTools on an ad-supported page reveals a swarm of network requests tied to displaying a single rectangle.
+
+## The browser renders it, safely
+
+The creative is typically rendered inside an isolated container, most often an iframe:
+
+```html
+<div id="sidebar-ad">
+  <iframe> Advertisement </iframe>
+</div>
+```
+
+Why the isolation? Because the creative is effectively external code. You do not want an advertiser's JavaScript casually reaching into the publisher's scripts, CSS, DOM, authentication, or other ads.
+
+The hotel analogy still fits. The publisher is the hotel. Nike rents room 101 and puts its belongings inside, but it should not be able to enter the other rooms and rearrange the furniture. The iframe is that wall.
+
+The exact isolation model varies. A cross-origin iframe or managed container such as SafeFrame provides stronger separation than a same-origin friendly iframe.
+
+## Why ads show up late
+
+You have watched this happen:
+
+<AdLoadTimeline />
+
+Now you know why. Between your keypress and the visible ad, the browser had to load the publisher page, initialize the ad stack, resolve consent and configuration, create the opportunity, contact the ad infrastructure, wait for a decision, receive a winner, fetch the creative, and render it.
+
+Every link in that chain consumes part of a shared latency budget. “The ad is slow” is almost never one slow API. It is the sum of the entire path.
+
+## Did the user actually see it?
+
+An ad existing in the DOM is not the same as a human seeing it:
+
+<AdViewabilityViewport />
+
+Ad #2 may be fully loaded and completely unseen. The industry therefore cares about **viewability**, and the browser provides primitives such as `IntersectionObserver` that can contribute to measuring it:
+
+```js
+const observer = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    console.log(entry.intersectionRatio); // 0.0 → 1.0
+  }
+});
+
+observer.observe(adElement);
+```
+
+This example illustrates one browser primitive involved in the measurement problem, not a production viewability implementation. A commonly used baseline for display ads is at least 50% of the creative's pixels in view for one continuous second, although the applicable threshold varies by format, creative size, and measurement standard.
+
+More importantly, viewability means the ad had an opportunity to be seen. It does not prove that the user looked at it.
+
+## The events are not the same event
+
+When measurement fires, the system may record an impression according to its counting rules. But be disciplined about vocabulary. Treating these events as interchangeable is how people ship incorrect dashboards:
+
+<EventLifecycleFunnel />
+
+This is a conceptual funnel, not a universal event-order specification. Platforms may define and count render and impression events differently.
+
+Still, the distinction matters. An ad requested is not an ad returned. An ad returned is not necessarily rendered. An impression counted is not necessarily viewable. A viewable impression is not a click, and a click is not a conversion. Each step loses some of the population from the one before it.
+
+## The click and the conversion
+
+Click the Nike ad and you might imagine going straight to `nike.com`. Usually, there is a hop first:
+
+<TrackingRedirectFlow />
+
+That detour lets campaign systems measure engagement. If you later buy the shoes, the advertiser wants to know whether the ad contributed:
+
+<AttributionFlow />
+
+Attribution is a large subject of its own, and modern privacy changes have reshaped it significantly. For now, treat it as the final link in this chain.
+
+## Ads refresh, and pages never end
+
+One slot does not always show one ad forever. A long-lived page may run a fresh auction after a qualifying condition and swap in a new creative:
+
+<AdRefreshFlow />
+
+Infinite scroll extends the same idea:
+
+<InfiniteScrollFlow />
+
+The lifecycle is therefore not limited to once per page load. During a single-page session, it may repeat many times as the user keeps scrolling.
+
+## Where the frontend engineer earns their keep
+
+Step back and the whole system becomes a balancing act between forces that pull against one another:
+
+<EngineeringTradeoffs />
+
+Every lever has a cost.
+
+Requesting ads immediately gives the auction more time and may make ads available sooner, but it competes with the critical resources the page needs to load. It can also waste work on ads nobody sees.
+
+Aggressive lazy loading saves resources and can improve page performance, but the ad may arrive too late and monetization may suffer.
+
+Reserving large ad spaces prevents layout shift, but it leaves ugly gaps when a slot goes unfilled. Collapsing unfilled slots removes the blank space but reintroduces layout movement.
+
+There is rarely a clean win. There is a judgment call tuned to the publisher's priorities.
+
+## Go see it yourself
+
+The fastest way to make this real is to open a major ad-supported publisher with Chrome DevTools.
+
+In the **Network** tab, watch the document request, JavaScript bundles, consent-related calls, ad-library requests, auction traffic, creative resources, and tracking requests.
+
+In the **Elements** tab, inspect the ad. You will often find the `div → iframe → creative` nesting.
+
+In the **Performance** tab, see when the ad JavaScript executed, whether it blocked the main thread, and whether rendering caused layout shift.
+
+The abstract pipeline becomes something you can point at. A future article will use DevTools to trace this lifecycle on a real page.
+
+## The distinction to carry with you
+
+When you see this rectangle:
+
+<FinalAdOutput />
+
+you are looking at the final output of a distributed system.
+
+The browser is the user-facing execution environment of that system. It may establish consent state, create impression opportunities, coordinate client-side auctions, load and isolate creatives, measure viewport exposure, and dispatch tracking events.
+
+Behind it may sit a publisher, an ad library, a consent-management platform, an ad server or SSP, one or more exchanges, one or more DSPs, campaign systems, auction logic, and creative infrastructure. All of them collaborate so that one box can be filled for one opportunity.
+
+The next question is what happens inside that black box: how do dozens of systems compete to decide which advertiser wins that one rectangle, often in less time than it takes you to blink?

@@ -1,0 +1,22 @@
+---
+const events = [
+  { label: "Page loads", time: "300ms" },
+  { label: "Article appears", time: "500ms" },
+  { label: "Blank ad area", time: "700ms" },
+  { label: "Ad appears", time: "Later" },
+];
+---
+
+<figure class="ad-load-timeline" aria-labelledby="ad-load-timeline-caption">
+  <ol>
+    {events.map((event, index) => <li class:list={{ "ad-load-event": true, "ad-load-arrival": index === events.length - 1 }}>
+      <span class="ad-load-time">{event.time}</span>
+      <span class="ad-load-dot" aria-hidden="true"></span>
+      <strong>{event.label}</strong>
+    </li>)}
+  </ol>
+  <figcaption id="ad-load-timeline-caption">
+    To the reader, the page arrives first. The ad slot can remain visibly empty
+    while the advertising path finishes in the background.
+  </figcaption>
+</figure>

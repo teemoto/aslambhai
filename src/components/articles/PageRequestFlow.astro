@@ -1,0 +1,16 @@
+---
+const steps = [
+  { name: "URL", detail: "The destination" },
+  { name: "DNS lookup", detail: "Find the host" },
+  { name: "Connection established", detail: "Open a secure channel" },
+  { name: "HTTP request", detail: "Ask for the page" },
+  { name: "HTML response", detail: "Receive the document" },
+];
+---
+
+<figure class="page-request-flow" aria-labelledby="page-request-caption">
+  <ol>
+    {steps.map((step, index) => <li><span class="page-request-number">{String(index + 1).padStart(2, "0")}</span><strong>{step.name}</strong><span>{step.detail}</span></li>)}
+  </ol>
+  <figcaption id="page-request-caption">Before any ad system participates, the browser resolves the destination and receives the page document.</figcaption>
+</figure>

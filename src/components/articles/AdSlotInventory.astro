@@ -1,0 +1,14 @@
+---
+const slots = [
+  { name: "top-banner", size: "970 × 250", shape: "banner" },
+  { name: "sidebar", size: "300 × 250", shape: "sidebar" },
+  { name: "article-middle", size: "728 × 90", shape: "leaderboard" },
+];
+---
+
+<figure class="ad-slot-inventory" aria-labelledby="ad-slot-caption">
+  <div class="ad-slot-cards">
+    {slots.map((slot) => <section class="ad-slot-card"><div class:list={["ad-slot-preview", slot.shape]} aria-hidden="true"></div><h3>{slot.name}</h3><p>{slot.size}</p></section>)}
+  </div>
+  <figcaption id="ad-slot-caption">The publisher defines each placement's location and accepted creative dimensions before an advertiser is selected.</figcaption>
+</figure>

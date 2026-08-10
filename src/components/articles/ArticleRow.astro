@@ -1,7 +1,7 @@
 ---
 import Icon from "../ui/Icon.astro";
 import ArticleIcon from "./ArticleIcon.astro";
-interface Props { article: { id: string; data: { title: string; description: string; topic: string; publishedAt: Date; minutes: number; icon: "code" | "ai" | "data" | "leadership" } } }
+interface Props { article: { id: string; data: { title: string; description: string; topic: string; publishedAt: Date; minutes: number; icon: "code" | "ai" | "data" | "leadership" | "megaphone" | "globe" | "other" } } }
 const { article } = Astro.props;
 const date = article.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 ---

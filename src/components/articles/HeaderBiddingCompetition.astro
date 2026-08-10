@@ -1,0 +1,28 @@
+---
+const sources = ["Demand A", "Demand B", "Demand C", "Demand D"];
+---
+
+<figure class="header-bidding-competition" aria-labelledby="header-bidding-caption">
+  <div class="header-bidding-source">
+    <span class="eyebrow">Opportunity</span>
+    <strong>Browser / publisher</strong>
+  </div>
+  <div class="header-bidding-arrow header-bidding-arrow-out" aria-hidden="true">→</div>
+  <div class="header-bidding-demand" aria-label="Competing demand sources">
+    {sources.map((source) => <span>{source}</span>)}
+  </div>
+  <div class="header-bidding-arrow header-bidding-arrow-down" aria-hidden="true">↓</div>
+  <div class="header-bidding-bids">
+    <span class="eyebrow">Responses</span>
+    <strong>Bids</strong>
+  </div>
+  <div class="header-bidding-arrow header-bidding-arrow-down" aria-hidden="true">↓</div>
+  <div class="header-bidding-winner">
+    <span class="eyebrow">Selection</span>
+    <strong>Best option</strong>
+  </div>
+  <figcaption id="header-bidding-caption">
+    Header bidding lets several demand sources respond to the same opportunity
+    before the publisher makes its final decision.
+  </figcaption>
+</figure>
