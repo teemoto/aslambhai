@@ -114,7 +114,8 @@ test("keeps the launch surface honest", async () => {
   assert.doesNotMatch(home, /data-static-form|sort-button/);
   assert.doesNotMatch(home, /dispatch|subscribe|subscription/i);
   assert.doesNotMatch(projects, /href="#"/);
-  assert.match(projects, /Usable alpha/);
+  assert.match(projects, /Sakka/);
+  assert.match(projects, /Building/);
   assert.match(script, /getRegistrations/);
   await assert.rejects(access(new URL("../dist/sw.js", import.meta.url)));
 });
