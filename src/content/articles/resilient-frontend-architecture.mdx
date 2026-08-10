@@ -1,7 +1,7 @@
 ---
 title: "The Art of Resilient Frontends, Part 1: The Mental Model"
 description: A mental model for designing frontends that remain useful when dependencies fail, change, or slow down.
-publishedAt: 2026-08-03
+publishedAt: 2026-07-28
 minutes: 10
 topic: Frontend Architecture
 icon: code
@@ -29,7 +29,10 @@ This series uses five recurring disciplines to reason about that response:
     width="1672"
     height="941"
   />
-  <figcaption>ECORE is a reinforcing cycle: expect failure, contain its effects, observe what happened, recover safely, and evolve the system.</figcaption>
+  <figcaption>
+    ECORE is a reinforcing cycle: expect failure, contain its effects, observe
+    what happened, recover safely, and evolve the system.
+  </figcaption>
 </figure>
 
 Together, they form **ECORE**.
@@ -73,7 +76,10 @@ The analogy is not the architecture, but it reveals the principle behind it: res
     height="901"
     loading="lazy"
   />
-  <figcaption>Under normal conditions, both bridges work. Stress reveals the assumptions built into each design.</figcaption>
+  <figcaption>
+    Under normal conditions, both bridges work. Stress reveals the assumptions
+    built into each design.
+  </figcaption>
 </figure>
 
 ## The browser is a node in a distributed system
@@ -97,14 +103,46 @@ Peter Deutsch's fallacies of distributed computing describe assumptions that dev
 <ComparisonTable
   columns={["False assumption", "Frontend reality", "Possible design response"]}
   rows={[
-    ["The network is reliable", "A connection can disappear during a request, and an unknown response does not prove that a mutation failed", "Timeouts, bounded retries, idempotent operations, honest uncertain states"],
-    ["Latency is zero", "Latency varies by user, device, location, and moment", "Explicit loading states, prefetching, caching, and optimistic UI where it is safe"],
-    ["Bandwidth is infinite", "Large bundles and payloads increase startup time and impose unequal costs", "Code splitting, image and bundle budgets, pagination, response shaping"],
-    ["The network is secure", "Transport and remote data cross trust boundaries", "TLS, browser security controls, output safety, and runtime validation for untrusted data"],
-    ["Topology does not change", "A user can switch networks or reach a different service instance during a flow", "Resume from application state and treat connectivity indicators only as hints"],
-    ["There is one administrator", "Browsers, CDNs, ISPs, proxies, extensions, and blockers are controlled independently", "Avoid fragile assumptions about the path and degrade when optional resources are blocked"],
-    ["Transport cost is zero", "Transfer, parsing, allocation, and rendering all consume time and memory", "Reduce payloads, paginate or stream where useful, move heavy computation off the main thread when justified"],
-    ["The network is homogeneous", "Devices, browsers, networks, and user constraints vary widely", "Test representative lower-bound conditions based on the product’s audience"],
+    [
+      "The network is reliable",
+      "A connection can disappear during a request, and an unknown response does not prove that a mutation failed",
+      "Timeouts, bounded retries, idempotent operations, honest uncertain states",
+    ],
+    [
+      "Latency is zero",
+      "Latency varies by user, device, location, and moment",
+      "Explicit loading states, prefetching, caching, and optimistic UI where it is safe",
+    ],
+    [
+      "Bandwidth is infinite",
+      "Large bundles and payloads increase startup time and impose unequal costs",
+      "Code splitting, image and bundle budgets, pagination, response shaping",
+    ],
+    [
+      "The network is secure",
+      "Transport and remote data cross trust boundaries",
+      "TLS, browser security controls, output safety, and runtime validation for untrusted data",
+    ],
+    [
+      "Topology does not change",
+      "A user can switch networks or reach a different service instance during a flow",
+      "Resume from application state and treat connectivity indicators only as hints",
+    ],
+    [
+      "There is one administrator",
+      "Browsers, CDNs, ISPs, proxies, extensions, and blockers are controlled independently",
+      "Avoid fragile assumptions about the path and degrade when optional resources are blocked",
+    ],
+    [
+      "Transport cost is zero",
+      "Transfer, parsing, allocation, and rendering all consume time and memory",
+      "Reduce payloads, paginate or stream where useful, move heavy computation off the main thread when justified",
+    ],
+    [
+      "The network is homogeneous",
+      "Devices, browsers, networks, and user constraints vary widely",
+      "Test representative lower-bound conditions based on the product’s audience",
+    ],
   ]}
 />
 
@@ -114,20 +152,75 @@ These are not one-to-one translations. A browser has different constraints from 
 
 When a frontend problem feels unfamiliar, finding its distributed-systems name gives you better vocabulary for investigating it.
 
-<TranslationCards items={[
-  { concept: "Replica and cache coherence", manifestation: "Client query cache plus revalidation", addresses: "Stale data and redundant requests" },
-  { concept: "Explicit state ownership", manifestation: "Server-owned domain state, client-owned drafts, URL-owned navigation state", addresses: "Divergent copies and unclear authority" },
-  { concept: "Eventual consistency", manifestation: "Showing cached data while a fresh version is fetched", addresses: "Blocking every read on the latest remote state" },
-  { concept: "Read-your-writes experience", manifestation: "Optimistic updates followed by authoritative reconciliation", addresses: "A user’s action appearing to disappear" },
-  { concept: "Idempotency", manifestation: "Stable operation identifiers supported by the server", addresses: "Duplicate mutations after retries or lost responses" },
-  { concept: "Backpressure", manifestation: "Debouncing, concurrency limits, and discarding obsolete client work", addresses: "Request floods and main-thread overload" },
-  { concept: "Bulkhead", manifestation: "Isolated widgets and carefully placed render error boundaries", addresses: "One failing area taking down the whole experience" },
-  { concept: "Timeout and jittered retry", manifestation: "Bounded retry policy for classified transient failures", addresses: "Hung requests and synchronized retry storms" },
-  { concept: "Request coalescing", manifestation: "Multiple consumers sharing one in-flight request", addresses: "Many components fetching the same resource" },
-  { concept: "Ordering and causality", manifestation: "Ignoring or cancelling stale responses", addresses: "An older response overwriting newer state" },
-  { concept: "Clock skew", manifestation: "Treating the client clock as untrusted for authoritative decisions", addresses: "Expiration and ordering bugs caused by incorrect local time" },
-  { concept: "Expand-and-contract change", manifestation: "Backward-compatible API and asset deployments", addresses: "Old tabs communicating with newer services" },
-]} />
+<TranslationCards
+  items={[
+    {
+      concept: "Replica and cache coherence",
+      manifestation: "Client query cache plus revalidation",
+      addresses: "Stale data and redundant requests",
+    },
+    {
+      concept: "Explicit state ownership",
+      manifestation:
+        "Server-owned domain state, client-owned drafts, URL-owned navigation state",
+      addresses: "Divergent copies and unclear authority",
+    },
+    {
+      concept: "Eventual consistency",
+      manifestation: "Showing cached data while a fresh version is fetched",
+      addresses: "Blocking every read on the latest remote state",
+    },
+    {
+      concept: "Read-your-writes experience",
+      manifestation:
+        "Optimistic updates followed by authoritative reconciliation",
+      addresses: "A user’s action appearing to disappear",
+    },
+    {
+      concept: "Idempotency",
+      manifestation: "Stable operation identifiers supported by the server",
+      addresses: "Duplicate mutations after retries or lost responses",
+    },
+    {
+      concept: "Backpressure",
+      manifestation:
+        "Debouncing, concurrency limits, and discarding obsolete client work",
+      addresses: "Request floods and main-thread overload",
+    },
+    {
+      concept: "Bulkhead",
+      manifestation:
+        "Isolated widgets and carefully placed render error boundaries",
+      addresses: "One failing area taking down the whole experience",
+    },
+    {
+      concept: "Timeout and jittered retry",
+      manifestation: "Bounded retry policy for classified transient failures",
+      addresses: "Hung requests and synchronized retry storms",
+    },
+    {
+      concept: "Request coalescing",
+      manifestation: "Multiple consumers sharing one in-flight request",
+      addresses: "Many components fetching the same resource",
+    },
+    {
+      concept: "Ordering and causality",
+      manifestation: "Ignoring or cancelling stale responses",
+      addresses: "An older response overwriting newer state",
+    },
+    {
+      concept: "Clock skew",
+      manifestation:
+        "Treating the client clock as untrusted for authoritative decisions",
+      addresses: "Expiration and ordering bugs caused by incorrect local time",
+    },
+    {
+      concept: "Expand-and-contract change",
+      manifestation: "Backward-compatible API and asset deployments",
+      addresses: "Old tabs communicating with newer services",
+    },
+  ]}
+/>
 
 Some mappings are close. Others are analogies. Several, especially idempotency and consistency guarantees, require backend cooperation. Disabling a submit button can reduce accidental duplicates, but it cannot make an operation idempotent across retries, refreshes, or multiple tabs. An optimistic update can provide immediate feedback, but it cannot guarantee that a later authoritative read will include the write.
 
@@ -147,7 +240,10 @@ Frontend resilience works across several layers:
     height="941"
     loading="lazy"
   />
-  <figcaption>Resilience comes from complementary protections across the stack, with observability supplying evidence from every layer.</figcaption>
+  <figcaption>
+    Resilience comes from complementary protections across the stack, with
+    observability supplying evidence from every layer.
+  </figcaption>
 </figure>
 
 The layers are not a request pipeline. They are complementary places to put defenses.
@@ -169,9 +265,15 @@ We can now return to the five disciplines:
   rows={[
     ["Expect", "What can fail, slow down, change, or become uncertain?"],
     ["Contain", "How do we prevent that failure from spreading?"],
-    ["Observe", "What evidence will tell us what the user experienced and why?"],
+    [
+      "Observe",
+      "What evidence will tell us what the user experienced and why?",
+    ],
     ["Recover", "What safe path remains for the user and the system?"],
-    ["Evolve", "What should change in the product, architecture, tests, or ownership model afterward?"],
+    [
+      "Evolve",
+      "What should change in the product, architecture, tests, or ownership model afterward?",
+    ],
   ]}
 />
 

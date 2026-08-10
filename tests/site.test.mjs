@@ -2,6 +2,17 @@ import assert from "node:assert/strict";
 import { access, readFile, stat } from "node:fs/promises";
 import test from "node:test";
 
+async function resilientArticleDates() {
+  const source = await readFile(new URL("../src/content/articles/resilient-frontend-architecture.mdx", import.meta.url), "utf8");
+  const publishedAt = source.match(/^publishedAt:\s*(\d{4}-\d{2}-\d{2})$/m)?.[1];
+  assert.ok(publishedAt, "Expected the resilient frontend article to have a publication date");
+  const date = new Date(`${publishedAt}T00:00:00Z`);
+  return {
+    full: date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }),
+    short: date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }),
+  };
+}
+
 test("builds the key static routes", async () => {
   for (const file of ["index.html", "projects/index.html", "about/index.html", "rss/index.html", "articles/resilient-frontend-architecture/index.html", "rss.xml", "sitemap-index.xml"]) {
     await access(new URL(`../dist/${file}`, import.meta.url));
@@ -21,6 +32,7 @@ test("renders metadata and article content", async () => {
 
 test("keeps article metadata aligned with accessible actions and generated contents", async () => {
   const article = await readFile(new URL("../dist/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
+  const dates = await resilientArticleDates();
   const stylesheet = article.match(/href="([^"]+\.css)"/)?.[1];
   assert.ok(stylesheet, "Expected a generated stylesheet");
   const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
@@ -28,7 +40,7 @@ test("keeps article metadata aligned with accessible actions and generated conte
 
   assert.equal((article.match(/class="byline-meta"/g) ?? []).length, 2);
   assert.match(article, /class="byline-meta"[^>]*>.*10 min read<\/span>/s);
-  assert.match(article, /class="byline-meta"[^>]*>.*August 3, 2026<\/span>/s);
+  assert.match(article, new RegExp(`class="byline-meta"[^>]*>.*${dates.full}<\\/span>`, "s"));
   assert.match(styles, /\.article-byline>\.byline-meta\{display:inline-flex;align-items:center;gap:8px/);
   assert.match(article, /class="article-reading-area"/);
   assert.match(article, /class="share-tools" aria-label="Article actions"/);
@@ -116,6 +128,7 @@ test("publishes only complete articles", async () => {
 test("formats article dates consistently in UTC", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const article = await readFile(new URL("../dist/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
-  assert.match(home, /Aug 3, 2026/);
-  assert.match(article, /August 3, 2026/);
+  const dates = await resilientArticleDates();
+  assert.match(home, new RegExp(dates.short));
+  assert.match(article, new RegExp(dates.full));
 });
