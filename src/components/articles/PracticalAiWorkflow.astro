@@ -1,0 +1,43 @@
+---
+const stages = [
+  {
+    title: "Think first",
+    description: "Decide the design yourself. Know what correct means before you ask. Never outsource problem definition.",
+  },
+  {
+    title: "Set the context",
+    description: "Give the interface, examples, and binding constraints. Include only what is relevant.",
+  },
+  {
+    title: "Generate small",
+    description: "Ask for a bounded chunk, not the whole feature. Small diffs are reviewable; giant ones get rubber-stamped.",
+  },
+  {
+    title: "Review as a stranger",
+    description: "Read every line. Assume a hallucinated API and a happy-path-only bug until proven otherwise.",
+  },
+  {
+    title: "Verify externally",
+    description: "Use the compiler, types, and tests. Ground truth comes from tools, never the model's say-so.",
+  },
+  {
+    title: "Iterate or reset",
+    description: "Refine the work, or start afresh when the session has stagnated.",
+  },
+];
+---
+
+<figure class="practical-ai-workflow" aria-labelledby="practical-ai-workflow-caption">
+  <ol>
+    {stages.map((stage, index) => (
+      <li>
+        <span>{String(index + 1).padStart(2, "0")}</span>
+        <div>
+          <h3>{stage.title}</h3>
+          <p>{stage.description}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+  <figcaption id="practical-ai-workflow-caption">A practical AI workflow keeps problem definition, review, and verification in the developer's hands.</figcaption>
+</figure>

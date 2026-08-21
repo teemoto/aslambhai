@@ -1,0 +1,34 @@
+<figure class="ai-review-prompts" aria-labelledby="ai-review-prompts-caption">
+  <div class="ai-review-prompts__cards">
+    <section class="ai-review-prompts__card">
+      <span>01</span>
+      <h3>Explain the change</h3>
+      <p>Ask the assistant to explain the implementation as if you were reviewing the change.</p>
+      <ul>
+        <li>Architecture</li>
+        <li>Control flow</li>
+        <li>Important decisions</li>
+        <li>Failure scenarios</li>
+        <li>Tradeoffs</li>
+      </ul>
+    </section>
+    <section class="ai-review-prompts__card ai-review-prompts__card--question">
+      <span>02</span>
+      <h3>Probe uncertainty</h3>
+      <blockquote>Which part of this implementation are you least confident about?</blockquote>
+    </section>
+    <section class="ai-review-prompts__card ai-review-prompts__card--adversarial">
+      <span>03</span>
+      <h3>Run an adversarial review</h3>
+      <p>Ask a skeptical senior reviewer to try to break the solution.</p>
+      <ul>
+        <li>Race conditions</li>
+        <li>Error-handling gaps</li>
+        <li>Security issues</li>
+        <li>Performance regressions</li>
+        <li>Missing tests</li>
+      </ul>
+    </section>
+  </div>
+  <figcaption id="ai-review-prompts-caption">Three prompts that turn an AI implementation into a more deliberate review conversation.</figcaption>
+</figure>

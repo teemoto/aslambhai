@@ -1,0 +1,35 @@
+---
+const systems = [
+  {
+    name: "Compiler",
+    input: "Source code",
+    process: "Deterministic rules",
+    output: "Typed output",
+    note: "The same valid input follows the same rules every time.",
+  },
+  {
+    name: "LLM",
+    input: "Prompt + context",
+    process: "Learned probability",
+    output: "Plausible output",
+    note: "The output may look right, but still needs external verification.",
+  },
+];
+---
+
+<figure class="compiler-llm-comparison" aria-labelledby="compiler-llm-caption">
+  <div class="compiler-llm-comparison__systems">
+    {systems.map((system) => (
+      <section class:list={["compiler-llm-comparison__system", system.name === "LLM" && "compiler-llm-comparison__system--llm"]} aria-label={`${system.name} model`}>
+        <h3>{system.name}</h3>
+        <ol>
+          <li><span>Input</span><strong>{system.input}</strong></li>
+          <li><span>Process</span><strong>{system.process}</strong></li>
+          <li><span>Output</span><strong>{system.output}</strong></li>
+        </ol>
+        <p>{system.note}</p>
+      </section>
+    ))}
+  </div>
+  <figcaption id="compiler-llm-caption">A compiler applies explicit rules; an LLM predicts a likely continuation. The latter requires verification against external evidence.</figcaption>
+</figure>

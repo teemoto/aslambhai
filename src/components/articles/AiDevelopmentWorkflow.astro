@@ -1,0 +1,31 @@
+---
+const workflows = [
+  {
+    eyebrow: "Before AI",
+    title: "The bottleneck is producing code",
+    steps: ["Understand problem", "Research", "Design", "Write code", "Test", "Verify", "Ship"],
+  },
+  {
+    eyebrow: "With AI",
+    title: "The bottleneck moves to judgment",
+    steps: ["Understand problem", "Define constraints", "Discuss with AI", "Choose design", "AI implements", "Verify", "Test", "Iterate", "Ship"],
+  },
+];
+---
+
+<figure class="ai-development-workflow" aria-labelledby="ai-development-workflow-caption">
+  <div class="ai-development-workflow__lanes">
+    {workflows.map((workflow, workflowIndex) => (
+      <section class:list={["ai-development-workflow__lane", workflowIndex === 1 && "ai-development-workflow__lane--ai"]} aria-label={workflow.eyebrow}>
+        <header>
+          <span>{workflow.eyebrow}</span>
+          <h3>{workflow.title}</h3>
+        </header>
+        <ol>
+          {workflow.steps.map((step, stepIndex) => <li><span>{String(stepIndex + 1).padStart(2, "0")}</span><strong>{step}</strong></li>)}
+        </ol>
+      </section>
+    ))}
+  </div>
+  <figcaption id="ai-development-workflow-caption">AI accelerates implementation, but it makes design choices, verification, and iteration more central to the developer's work.</figcaption>
+</figure>
