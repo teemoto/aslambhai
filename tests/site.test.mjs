@@ -30,6 +30,15 @@ test("renders metadata and article content", async () => {
   assert.match(article, /giscus-container/);
 });
 
+test("publishes the TIL category and enforces its short-form reading time", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const contentConfig = await readFile(new URL("../src/content.config.ts", import.meta.url), "utf8");
+
+  assert.match(home, /data-topic="TIL"/);
+  assert.match(contentConfig, /topic === "TIL" && minutes > 5/);
+  assert.match(contentConfig, /TIL articles must be five minutes or less/);
+});
+
 test("publishes the code-configured theme palettes", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];

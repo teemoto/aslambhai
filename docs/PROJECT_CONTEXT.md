@@ -8,7 +8,7 @@ Aslam Bhai is Tanvir Aslam's public technical-writing and project platform. It i
 
 Tanvir has at most three hours a day alongside a full-time job and a toddler. Favor focused scope, weekly shipping, and learning through real deliverables over endless polish cycles.
 
-The primary audience is mid-level and senior frontend engineers. Content covers frontend architecture and resilience, applied AI for engineers, ad tech, technical deep dives, and concise TIL posts. Preserve Tanvir's direct voice. Avoid fluff, generic AI phrasing, and em dashes.
+The primary audience is mid-level and senior frontend engineers. Content covers frontend architecture and resilience, applied AI for engineers, ad tech, technical deep dives, and concise TIL (Today I Learned) posts. TIL posts document a new lesson from that day and are five minutes or less to read. Preserve Tanvir's direct voice. Avoid fluff, generic AI phrasing, and em dashes.
 
 ## Product direction
 

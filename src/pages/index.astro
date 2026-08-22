@@ -5,12 +5,13 @@ import Icon from "../components/ui/Icon.astro";
 import ArticleIcon from "../components/articles/ArticleIcon.astro";
 import ArticleRow from "../components/articles/ArticleRow.astro";
 import RailContent from "../components/layout/RailContent.astro";
+import { articleTopics } from "../content.config";
 
 const articles = (await getCollection("articles", ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 const featured = articles.find(({ data }) => data.featured) ?? articles[0];
 const rest = articles.filter(({ id }) => id !== featured.id);
 const date = featured.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
-const topics = ["All", "Frontend", "AI", "Ad Tech", "Leadership"];
+const topics = ["All", ...articleTopics];
 ---
 <BaseLayout active="home">
   <main class="home-grid" data-home-grid>

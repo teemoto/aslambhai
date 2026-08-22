@@ -1,6 +1,8 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
+export const articleTopics = ["Frontend", "AI", "Ad Tech", "Leadership", "TIL"] as const;
+
 const articles = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/articles" }),
   schema: z.object({
@@ -13,6 +15,10 @@ const articles = defineCollection({
     cover: z.object({ src: z.string(), alt: z.string() }).optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
+  }).superRefine(({ minutes, topic }, context) => {
+    if (topic === "TIL" && minutes > 5) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["minutes"], message: "TIL articles must be five minutes or less." });
+    }
   }),
 });
 
