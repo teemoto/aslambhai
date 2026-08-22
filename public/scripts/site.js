@@ -1,7 +1,12 @@
 const root = document.documentElement;
+const darkThemes = new Set((root.dataset.darkThemes ?? "dark").split(","));
+
+function isDarkTheme(theme) {
+  return darkThemes.has(theme);
+}
 
 function syncThemeButton() {
-  const dark = root.dataset.theme === "dark";
+  const dark = isDarkTheme(root.dataset.theme);
   document.querySelector('[data-theme-icon="moon"]')?.toggleAttribute("hidden", dark);
   document.querySelector('[data-theme-icon="sun"]')?.toggleAttribute("hidden", !dark);
   const button = document.querySelector("[data-theme-toggle]");
@@ -14,7 +19,7 @@ document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
   root.dataset.theme = theme;
   localStorage.setItem("aslam-theme", theme);
   syncThemeButton();
-  document.querySelector("iframe.giscus-frame")?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, "https://giscus.app");
+  document.querySelector("iframe.giscus-frame")?.contentWindow?.postMessage({ giscus: { setConfig: { theme: isDarkTheme(theme) ? "dark" : "light" } } }, "https://giscus.app");
 });
 
 document.querySelector("[data-menu-toggle]")?.addEventListener("click", (event) => {
@@ -109,7 +114,7 @@ if (progress) addEventListener("scroll", () => {
 const giscus = document.querySelector("[data-giscus]");
 if (giscus) {
   const script = document.createElement("script");
-  Object.entries({ src: "https://giscus.app/client.js", "data-repo": "teemoto/aslambhai", "data-repo-id": "R_kgDOTde17Q", "data-category": "General", "data-category-id": "DIC_kwDOTde17c4DBig5", "data-mapping": "pathname", "data-strict": "0", "data-reactions-enabled": "1", "data-emit-metadata": "0", "data-input-position": "bottom", "data-theme": root.dataset.theme === "dark" ? "dark" : "light", "data-lang": "en", "data-loading": "lazy", crossorigin: "anonymous" }).forEach(([key, value]) => script.setAttribute(key, value));
+  Object.entries({ src: "https://giscus.app/client.js", "data-repo": "teemoto/aslambhai", "data-repo-id": "R_kgDOTde17Q", "data-category": "General", "data-category-id": "DIC_kwDOTde17c4DBig5", "data-mapping": "pathname", "data-strict": "0", "data-reactions-enabled": "1", "data-emit-metadata": "0", "data-input-position": "bottom", "data-theme": isDarkTheme(root.dataset.theme) ? "dark" : "light", "data-lang": "en", "data-loading": "lazy", crossorigin: "anonymous" }).forEach(([key, value]) => script.setAttribute(key, value));
   script.async = true;
   giscus.appendChild(script);
 }

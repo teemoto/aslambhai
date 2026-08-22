@@ -21,3 +21,88 @@
   --muted: #a8b3bf;
   --focus: #45c2b1;
 }
+
+/* Additional palettes are selected with data-theme on the root element. */
+:root[data-theme="linen"] {
+  --bg: #f8f0e4;
+  --surface: #fffaf2;
+  --ink: #3d3025;
+  --body: #60483e;
+  --teal: #a34f35;
+  --clay: #bf7a42;
+  --rule: #e0ccbc;
+  --muted: #7b6256;
+  --focus: #a34f35;
+}
+
+:root[data-theme="olive"] {
+  --bg: #eef0e5;
+  --surface: #f8f8f1;
+  --ink: #283624;
+  --body: #485443;
+  --teal: #51755c;
+  --clay: #b56e45;
+  --rule: #d0d7c9;
+  --muted: #667062;
+  --focus: #51755c;
+}
+
+:root[data-theme="sky"] {
+  --bg: #eaf4fb;
+  --surface: #f7fbff;
+  --ink: #17384d;
+  --body: #36566a;
+  --teal: #2179a8;
+  --clay: #c9684b;
+  --rule: #c9ddea;
+  --muted: #5e7889;
+  --focus: #2179a8;
+}
+
+:root[data-theme="white"] {
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --ink: #1c2b38;
+  --body: #435563;
+  --teal: #236f9e;
+  --clay: #ba5b3e;
+  --rule: #d9e0e6;
+  --muted: #657683;
+  --focus: #236f9e;
+}
+
+:root[data-theme="apricot"] {
+  --bg: #fff0e7;
+  --surface: #fff9f5;
+  --ink: #472f27;
+  --body: #67473d;
+  --teal: #a64f32;
+  --clay: #8e6829;
+  --rule: #ebd1c1;
+  --muted: #806057;
+  --focus: #a64f32;
+}
+
+:root[data-theme="butter"] {
+  --bg: #fff7d6;
+  --surface: #fffdf1;
+  --ink: #39331d;
+  --body: #5a5234;
+  --teal: #75600e;
+  --clay: #b56238;
+  --rule: #e6dba9;
+  --muted: #786f4e;
+  --focus: #75600e;
+}
+
+:root[data-theme="midnight"] {
+  --bg: #11131a;
+  --surface: #1a1e28;
+  --ink: #edf0f6;
+  --body: #c5cad5;
+  --teal: #92b4f4;
+  --clay: #e49b75;
+  --rule: #333946;
+  --muted: #a3abba;
+  --focus: #92b4f4;
+}

@@ -30,6 +30,18 @@ test("renders metadata and article content", async () => {
   assert.match(article, /giscus-container/);
 });
 
+test("publishes the code-configured theme palettes", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
+  assert.ok(stylesheet, "Expected a generated stylesheet");
+  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
+
+  assert.match(home, /data-theme-options="light,dark,linen,olive,sky,white,apricot,butter,midnight"/);
+  for (const theme of ["linen", "olive", "sky", "white", "apricot", "butter", "midnight"]) {
+    assert.match(styles, new RegExp(`:root\\[data-theme=${theme}\\]`));
+  }
+});
+
 test("keeps article metadata aligned with accessible actions and generated contents", async () => {
   const article = await readFile(new URL("../dist/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
   const dates = await resilientArticleDates();
