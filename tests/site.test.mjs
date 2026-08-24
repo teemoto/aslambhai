@@ -114,6 +114,19 @@ test("renders the personal footer message", async () => {
   assert.doesNotMatch(home, /Built in public through Anabasis/);
 });
 
+test("links public projects to their GitHub repositories", async () => {
+  const projects = await readFile(new URL("../dist/projects/index.html", import.meta.url), "utf8");
+  for (const [name, repository] of [
+    ["JSON Bourne", "json-bourne"],
+    ["Sakka", "Sakka"],
+    ["Pretend Terminal", "pretend-terminal"],
+  ]) {
+    assert.match(projects, new RegExp(`href="https:\\/\\/github\\.com\\/teemoto\\/${repository}"[^>]*target="_blank"[^>]*rel="noopener noreferrer"`));
+    assert.match(projects, new RegExp(`Open ${name} on GitHub in a new tab`));
+  }
+  assert.match(projects, /Open on GitHub/);
+});
+
 test("publishes the complete logo identity", async () => {
   for (const file of ["brand/aslam-bhai-mark.png", "brand/social-card.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png"]) {
     assert.ok((await stat(new URL(`../dist/${file}`, import.meta.url))).size > 1_000);
