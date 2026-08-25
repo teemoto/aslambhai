@@ -9,6 +9,7 @@ interface Props { title?: string; description?: string; active?: "home" | "proje
 const { title = site.title, description = site.description, active, article = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url);
 const socialImage = new URL("/brand/social-card.png", site.url);
+const registerServiceWorker = import.meta.env.PROD;
 ---
 <!doctype html>
 <html lang="en" data-theme={defaultTheme === "system" ? "light" : defaultTheme} data-theme-options={themeNames.join(",")} data-dark-themes={darkThemeNames.join(",")}>
@@ -47,5 +48,12 @@ const socialImage = new URL("/brand/social-card.png", site.url);
       <Footer />
     </div>
     <script is:inline src="/scripts/site.js"></script>
+    {registerServiceWorker && <script is:inline>
+      if ("serviceWorker" in navigator) {
+        addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+        });
+      }
+    </script>}
   </body>
 </html>

@@ -146,14 +146,19 @@ test("keeps the launch surface honest", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const projects = await readFile(new URL("../dist/projects/index.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
+  const worker = await readFile(new URL("../dist/sw.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(home, /data-static-form|sort-button/);
   assert.doesNotMatch(home, /dispatch|subscribe|subscription/i);
   assert.doesNotMatch(projects, /href="#"/);
   assert.match(projects, /Sakka/);
   assert.match(projects, /Building/);
-  assert.match(script, /getRegistrations/);
-  await assert.rejects(access(new URL("../dist/sw.js", import.meta.url)));
+  assert.doesNotMatch(script, /getRegistrations|unregister/);
+  assert.ok((await stat(new URL("../dist/sw.js", import.meta.url))).size > 1_000);
+  assert.ok((await stat(new URL("../dist/offline\/index.html", import.meta.url))).size > 1_000);
+  assert.match(home, /navigator\.serviceWorker\.register\("\/sw\.js"\)/);
+  assert.match(worker, /aslam-pages|aslam-images/);
+  assert.doesNotMatch(worker, /images\/.*\.(?:png|webp)|tanvir-aslam-mohammed-resume\.pdf/);
 });
 
 test("publishes only complete articles", async () => {

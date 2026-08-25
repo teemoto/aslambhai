@@ -8,7 +8,7 @@ Completed July 27, 2026.
 - Nonfunctional newsletter and Dispatch promotion were removed until a real subscription workflow exists.
 - The nonfunctional sort control and placeholder project-detail links were removed.
 - Project percentages were replaced by meaningful lifecycle states: Exploring, Building, and Usable alpha.
-- The experimental service worker was removed, and existing registrations are retired for returning visitors.
+- Offline reading is supported for previously visited pages. The site does not pre-download every article or support comments offline.
 
 Next: Milestone 2 — complete reading experience.
 
