@@ -5,7 +5,14 @@ import ProjectMini from "../projects/ProjectMini.astro";
 <div class="rail-content">
   <section class="projects-rail">
     <span class="eyebrow">Project status</span>
-    <ProjectMini icon="data" name="JSON Bourne" status="Building" />
+    <ProjectMini
+      icon="code"
+      name="Pretend Terminal"
+      statuses={[
+        { status: "Released", label: "Released v1" },
+        { status: "Building", label: "Building v2" },
+      ]}
+    />
     <ProjectMini icon="code" name="Sakka" status="Building" />
     <ProjectMini icon="dino" name="Blue Triceratops" status="Exploring" />
     <a class="text-link" href="/projects">View all projects <Icon name="arrowRight" /></a>

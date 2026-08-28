@@ -1,10 +1,21 @@
 ---
 import Icon from "../ui/Icon.astro";
 import StatusBadge from "./StatusBadge.astro";
-interface Props { icon: string; name: string; status: string }
-const { icon, name, status } = Astro.props;
+type ProjectStatus = "Building" | "Usable alpha" | "Released" | "Exploring";
+
+interface Props {
+  icon: string;
+  name: string;
+  status?: ProjectStatus;
+  statuses?: { status: ProjectStatus; label: string }[];
+}
+
+const { icon, name, status, statuses = status ? [{ status, label: status }] : [] } = Astro.props;
 ---
 <div class="project-mini">
   <div class="project-icon">{icon === "dino" ? <span class="dino">△</span> : <Icon name={icon} />}</div>
-  <div><strong>{name}</strong><StatusBadge status={status as "Building" | "Usable alpha" | "Exploring"} /></div>
+  <div>
+    <strong>{name}</strong>
+    {statuses.map(({ status, label }) => <StatusBadge status={status} label={label} />)}
+  </div>
 </div>
