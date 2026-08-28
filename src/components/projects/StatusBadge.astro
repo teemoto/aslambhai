@@ -1,7 +1,7 @@
 ---
-interface Props { status: "Building" | "Usable alpha" | "Released" | "Exploring"; focusable?: boolean }
+interface Props { status: "Building" | "Usable alpha" | "Released" | "Exploring"; label?: string; focusable?: boolean }
 
-const { status, focusable = true } = Astro.props;
+const { status, label = status, focusable = true } = Astro.props;
 const descriptions = {
   Building: "In active development and not yet ready for general use.",
   "Usable alpha": "Available to use today, while features and details continue to evolve.",
@@ -12,5 +12,5 @@ const tone = status === "Usable alpha" || status === "Released" ? "ready" : stat
 ---
 
 <span class:list={["status", `status-${tone}`]} data-tooltip={descriptions[status]} tabindex={focusable ? "0" : undefined}>
-  <i></i><span>{status}</span><span class="sr-only">: {descriptions[status]}</span>
+  <i></i><span>{label}</span><span class="sr-only">: {descriptions[status]}</span>
 </span>

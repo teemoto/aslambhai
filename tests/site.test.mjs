@@ -127,6 +127,10 @@ test("links public projects to their GitHub repositories", async () => {
     assert.match(projects, new RegExp(`href="https:\\/\\/github\\.com\\/teemoto\\/${repository}"[^>]*target="_blank"[^>]*rel="noopener noreferrer"`));
     assert.match(projects, new RegExp(`Open ${name} on GitHub in a new tab`));
   }
+  assert.match(projects, /href="https:\/\/teemoto\.github\.io\/pretend-terminal\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/);
+  assert.match(projects, /Open Pretend Terminal demo in a new tab/);
+  assert.match(projects, /Released v1/);
+  assert.match(projects, /Building v2/);
   assert.match(projects, /<span>Released<\/span>/);
   assert.match(projects, /Open on GitHub/);
 });
