@@ -1,0 +1,201 @@
+---
+title: "WTF Are Portals in React?"
+description: "Why React can render UI outside its parent DOM element, and when that is the right tool."
+publishedAt: 2026-08-27
+minutes: 6
+topic: WTF
+icon: wtf
+featured: false
+draft: false
+---
+
+import PortalClippingComparison from "../../components/articles/PortalClippingComparison.astro";
+import AccessibleModalAnatomy from "../../components/articles/AccessibleModalAnatomy.astro";
+import PortalEventTrace from "../../components/articles/PortalEventTrace.astro";
+import PortalPositioningRoles from "../../components/articles/PortalPositioningRoles.astro";
+import PortalStackingContext from "../../components/articles/PortalStackingContext.astro";
+import PortalTrees from "../../components/articles/PortalTrees.astro";
+
+You create a Modal component. It works perfectly in isolation. Then you drop it inside your app, click the button to launch it, and it just goes bonkers: it may get clipped, not appear at all, be constrained by the parent layout, or have parent styles interfere with the modal styles. If you have ever encountered this before, read on.
+
+## Why is this happening?
+
+It can happen for a bunch of reasons. The main ones are:
+
+- A parent might have `overflow: hidden`.
+- `z-index` issues.
+- Constraints from the parent layout.
+- Parent styles interfering with the modal styles.
+
+<PortalClippingComparison />
+
+## Solution
+
+What if we could render the modal somewhere else in the DOM but still keep the React logic in the component? Think of it like ordering room service in a hotel. The button to call for it is in your room. The food is made in the kitchen, in a completely different part of the building. The connection between you and the service still exists; the execution just happens somewhere else.
+
+This is exactly what **React Portals** do. In the analogy, the button is the portal. It's still in the room (component hierarchy), but the service (food) comes from a different location (the kitchen). Sometimes your UI logically belongs in one place, but visually it has to appear somewhere else.
+
+## So what exactly does a portal do?
+
+> A portal lets a React component render its output into a different DOM node, outside its parent hierarchy.
+
+That one sentence hides the distinction that separates people who use portals from people who understand them:
+
+- The **React tree**, your logic, stays exactly the same.
+- The **DOM tree**, the actual rendered output, is what changes.
+
+## Small example
+
+You start with two mount points in your HTML:
+
+```html
+<div id="root"></div>
+<div id="modal-root"></div>
+```
+
+Then render a component into the second one:
+
+```tsx
+// Modal.tsx
+import { createPortal } from "react-dom";
+
+function Modal() {
+  return createPortal(
+    <div className="modal">I am a modal</div>,
+    document.getElementById("modal-root"),
+  );
+}
+```
+
+And use it like any other component:
+
+```tsx
+// App.tsx
+function App() {
+  return (
+    <div>
+      <h1>Main App</h1>
+      <Modal />
+    </div>
+  );
+}
+```
+
+## One component, two trees
+
+This is the part worth drawing out, because it is where the mental model clicks.
+
+<PortalTrees />
+
+Two trees, one component. React logic and DOM rendering have quietly gone their separate ways.
+
+## When should you use this?
+
+Portals are not a trick you sprinkle everywhere. They earn their place in a specific family of problems, all of them: "this thing needs to escape its container."
+
+- Modals, which need to overlay the entire screen and escape a parent's clipping or stacking context.
+- Tooltips, which should not be clipped by whatever parent they happen to sit in.
+- Dropdowns and popovers, especially inside scrollable containers.
+- Toast notifications, which belong to the global UI layer, not to any one component.
+
+## The part that blows people's minds: events still bubble
+
+Keep in mind: the React tree !== DOM tree. This trips a lot of people. Events still bubble through the React tree, not the DOM tree.
+
+Look at this:
+
+```tsx
+function App() {
+  return (
+    <div onClick={() => console.log("App clicked")}>
+      <Modal />
+    </div>
+  );
+}
+```
+
+Even if `Modal` renders all the way over in `document.body`, clicking inside the modal logs:
+
+```text
+App clicked
+```
+
+Why? Because React handles events through its own synthetic event system. The click travels up the tree React knows about, the one in your code, not the one the browser painted. Once you understand the two-tree model, this stops being magic and starts being obvious.
+
+<PortalEventTrace />
+
+This can also surprise you: a click inside a portal can trigger a parent handler. If that is not the behavior you want, stop propagation inside the portal or move the handler higher in the React tree.
+
+## The tradeoffs
+
+Nothing comes free. Here's the honest ledger:
+
+### Pros
+
+- Can escape layout problems caused by `overflow` and the wrong stacking context.
+- Enables proper floating UI.
+- Keeps your logical component hierarchy intact.
+- React state and events keep working normally.
+
+### Cons
+
+- The DOM structure gets harder to reason about.
+- Debugging can get confusing.
+- You have to manage extra DOM nodes.
+- It can introduce accessibility issues if you are not careful.
+- Portals with fixed positioning can break expected scroll behavior.
+- Forgetting to clean up dynamically created nodes.
+
+## Portals do not make your modal accessible
+
+A modal must:
+
+- Trap focus.
+- Handle keyboard navigation.
+- Restore focus when it closes.
+
+Portals do not give you any of this. They move where your UI renders, nothing more. The accessibility work is yours to implement, portal or not.
+
+<AccessibleModalAnatomy />
+
+## The mental model that makes portals useful
+
+Three insights separate people who reach for portals reflexively from people who know exactly what they are for.
+
+1. Portals solve DOM constraints, not state problems. They are purely a rendering escape hatch. If your problem is about data flow, a portal will not touch it.
+
+2. Portals pair with positioning systems. In real apps, you lean on something like Floating UI or Popper.js. The position gets computed first, and then the element is rendered through a portal. Two jobs, two tools.
+
+<PortalPositioningRoles />
+
+3. `z-index` is not enough. The first instinct is to always increase the `z-index`. Think differently. A portal can move the element out of a problematic stacking context, but you still need to manage `z-index` at its destination. Raising the number is treating the symptom. Escaping the stacking context is treating the cause.
+
+<PortalStackingContext />
+
+## A scenario you will actually hit
+
+Picture a complex dashboard. Cards sit inside a scroll container, and each card has its own dropdown.
+
+Without portals, those dropdowns break. They get clipped by the scroll containers. With portals, the dropdowns render correctly, and positioning is handled separately by your positioning layer. The logic stays with the card. The rendering escapes to where it can actually be seen.
+
+<figure class="article-figure">
+  <img
+    src="/images/portal-dashboard-dropdown.png"
+    alt="A campaign analytics dashboard with an open action menu floating above several campaign cards, fully visible outside the card that triggered it."
+    width="1536"
+    height="1024"
+    loading="lazy"
+  />
+  <figcaption>
+    The dropdown belongs to one campaign card, but it can render above the
+    dashboard rather than being clipped by the card's scroll container.
+  </figcaption>
+</figure>
+
+## Conclusion
+
+The key takeaway from this whole article: remember this, and you understand portals.
+
+> Portals let you teleport UI in the DOM while keeping it connected in React.
+
+Here's a thought exercise for you: you have a modal inside a deeply nested component. It needs access to parent state and must overlay the entire app. Why is a portal the perfect solution here? Sit with it before you reach for the code, and provide the answer in the comments.

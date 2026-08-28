@@ -1,6 +1,20 @@
 ---
 import Icon from "../ui/Icon.astro";
-interface Props { kind: "code" | "ai" | "data" | "leadership" | "megaphone" | "globe" | "other"; size?: number }
+interface Props { kind: "code" | "ai" | "data" | "leadership" | "megaphone" | "globe" | "til" | "wtf" | "other"; size?: number }
 const { kind, size = 18 } = Astro.props;
 ---
-<Icon name={kind} size={size} />
+{["til", "wtf"].includes(kind)
+  ? <span class="article-category-mark" style={`font-size:${size}px`}>{kind.toUpperCase()}</span>
+  : <Icon name={kind} size={size} />}
+
+<style>
+  .article-category-mark {
+    align-items: center;
+    color: currentColor;
+    display: inline-flex;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-weight: 700;
+    letter-spacing: -0.08em;
+    line-height: 1;
+  }
+</style>

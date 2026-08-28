@@ -1,0 +1,53 @@
+<figure class="accessible-modal-anatomy" aria-labelledby="accessible-modal-caption">
+  <div class="accessible-modal-anatomy__layout">
+    <div class="accessible-modal-anatomy__scene" aria-hidden="true">
+      <div class="accessible-modal-anatomy__page">
+        <span>Account settings</span>
+        <i></i>
+        <b>Open settings</b>
+      </div>
+      <div class="accessible-modal-anatomy__backdrop"></div>
+      <div class="accessible-modal-anatomy__dialog">
+        <header><strong>Settings</strong><span>Close</span></header>
+        <p>Manage your account preferences.</p>
+        <div class="accessible-modal-anatomy__field"></div>
+        <footer><b>Cancel</b><b>Save changes</b></footer>
+      </div>
+    </div>
+    <ol>
+      <li><span>01</span><div><strong>Name the dialog</strong><p>Give it an accessible label and modal semantics.</p></div></li>
+      <li><span>02</span><div><strong>Keep focus inside</strong><p>Tab should cycle through the dialog, not the page behind it.</p></div></li>
+      <li><span>03</span><div><strong>Handle dismissal</strong><p>Support Escape and a clear close control.</p></div></li>
+      <li><span>04</span><div><strong>Restore the trigger</strong><p>Return focus to the button that opened the dialog.</p></div></li>
+    </ol>
+  </div>
+  <figcaption id="accessible-modal-caption">A portal gives the dialog a safe place to render. It does not provide the focus and keyboard behavior that make a modal accessible.</figcaption>
+</figure>
+
+<style>
+  .accessible-modal-anatomy { margin:38px 0 44px;font-family:"Manrope",sans-serif; }
+  .accessible-modal-anatomy__layout { display:grid;grid-template-columns:minmax(0,1.1fr) minmax(250px,.9fr);gap:20px;align-items:stretch; }
+  .accessible-modal-anatomy__scene { position:relative;min-height:306px;overflow:hidden;border:1px solid var(--rule);background:var(--bg); }
+  .accessible-modal-anatomy__page { position:absolute;inset:0;padding:24px;color:var(--ink);font-family:"Source Serif 4",serif;font-size:23px;font-weight:600; }
+  .accessible-modal-anatomy__page i { display:block;width:72%;height:9px;margin-top:22px;background:var(--rule); }
+  .accessible-modal-anatomy__page b { display:inline-block;margin-top:24px;padding:9px 11px;background:var(--ink);color:var(--bg);font-family:"Manrope",sans-serif;font-size:11px; }
+  .accessible-modal-anatomy__backdrop { position:absolute;inset:0;background:color-mix(in srgb,var(--ink) 58%,transparent); }
+  .accessible-modal-anatomy__dialog { position:absolute;top:50%;left:50%;display:grid;gap:16px;width:min(78%,330px);padding:18px;border:1px solid var(--teal);background:var(--surface);box-shadow:0 16px 28px color-mix(in srgb,var(--ink) 35%,transparent);transform:translate(-50%,-50%); }
+  .accessible-modal-anatomy__dialog header,.accessible-modal-anatomy__dialog footer { display:flex;align-items:center;justify-content:space-between;gap:12px; }
+  .accessible-modal-anatomy__dialog header strong { color:var(--ink);font-family:"Source Serif 4",serif;font-size:24px;font-weight:600; }
+  .accessible-modal-anatomy__dialog header span { padding:5px 7px;border:1px solid var(--rule);color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase; }
+  .accessible-modal-anatomy__dialog p { margin:0;color:var(--muted);font-size:11px;line-height:1.5; }
+  .accessible-modal-anatomy__field { height:30px;border:1px solid var(--rule);background:var(--bg); }
+  .accessible-modal-anatomy__dialog footer { padding-top:3px; }
+  .accessible-modal-anatomy__dialog footer b { padding:8px 10px;border:1px solid var(--rule);color:var(--muted);font-size:10px; }
+  .accessible-modal-anatomy__dialog footer b:last-child { border-color:var(--teal);background:var(--teal);color:var(--surface); }
+  .accessible-modal-anatomy ol { display:grid;align-content:center;gap:0;margin:0;padding:0;list-style:none;border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 55%,transparent); }
+  .accessible-modal-anatomy li { display:grid;grid-template-columns:30px 1fr;gap:11px;padding:15px;border-bottom:1px solid var(--rule); }
+  .accessible-modal-anatomy li:last-child { border-bottom:0; }
+  .accessible-modal-anatomy li>span { color:var(--teal);font-size:10px;font-weight:700;letter-spacing:.07em; }
+  .accessible-modal-anatomy li strong { display:block;color:var(--ink);font-family:"Source Serif 4",serif;font-size:18px;font-weight:600;line-height:1.15; }
+  .accessible-modal-anatomy li p { margin:5px 0 0;color:var(--muted);font-size:10px;line-height:1.45; }
+  .accessible-modal-anatomy figcaption { margin-top:10px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center; }
+  @media (max-width:620px) { .accessible-modal-anatomy__layout { grid-template-columns:1fr;gap:12px; }.accessible-modal-anatomy__scene { min-height:286px; }.accessible-modal-anatomy ol { grid-template-columns:1fr 1fr; }.accessible-modal-anatomy li:nth-child(odd) { border-right:1px solid var(--rule); }.accessible-modal-anatomy li:nth-last-child(-n+2) { border-bottom:0; } }
+  @media (max-width:420px) { .accessible-modal-anatomy ol { grid-template-columns:1fr; }.accessible-modal-anatomy li:nth-child(odd) { border-right:0; }.accessible-modal-anatomy li:not(:last-child) { border-bottom:1px solid var(--rule); } }
+</style>

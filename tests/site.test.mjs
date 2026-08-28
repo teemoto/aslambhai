@@ -30,11 +30,13 @@ test("renders metadata and article content", async () => {
   assert.match(article, /giscus-container/);
 });
 
-test("publishes the TIL category and enforces its short-form reading time", async () => {
+test("publishes the TIL and WTF article categories", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const contentConfig = await readFile(new URL("../src/content.config.ts", import.meta.url), "utf8");
 
   assert.match(home, /data-topic="TIL"/);
+  assert.match(home, /data-topic="WTF"/);
+  assert.match(contentConfig, /"til", "wtf"/);
   assert.match(contentConfig, /topic === "TIL" && minutes > 5/);
   assert.match(contentConfig, /TIL articles must be five minutes or less/);
 });

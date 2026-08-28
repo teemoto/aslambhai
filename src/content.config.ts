@@ -1,7 +1,7 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
-export const articleTopics = ["Frontend", "AI", "Ad Tech", "Leadership", "TIL"] as const;
+export const articleTopics = ["Frontend", "AI", "Ad Tech", "Leadership", "TIL", "WTF"] as const;
 
 const articles = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/articles" }),
@@ -11,7 +11,7 @@ const articles = defineCollection({
     publishedAt: z.coerce.date(),
     minutes: z.number().int().positive(),
     topic: z.string(),
-    icon: z.enum(["code", "ai", "data", "leadership", "megaphone", "globe", "other"]),
+    icon: z.enum(["code", "ai", "data", "leadership", "megaphone", "globe", "til", "wtf", "other"]),
     cover: z.object({ src: z.string(), alt: z.string() }).optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),

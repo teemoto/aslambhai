@@ -1,0 +1,67 @@
+<figure class="portal-stacking-context" aria-labelledby="portal-stacking-caption">
+  <header>
+    <span class="eyebrow">Why <code>z-index</code> alone fails</span>
+    <strong>Numbers compete inside their own stacking context.</strong>
+  </header>
+  <div class="portal-stacking-context__stage" aria-hidden="true">
+    <span class="portal-stacking-context__root">Root page stacking context</span>
+
+    <div class="portal-stacking-context__layer portal-stacking-context__layer--portal">
+      <span><code>#modal-root</code></span>
+      <strong>Modal</strong>
+      <b><code>z-index: 3</code></b>
+    </div>
+
+    <div class="portal-stacking-context__layer portal-stacking-context__layer--header">
+      <span>Site header</span>
+      <b><code>z-index: 2</code></b>
+    </div>
+
+    <div class="portal-stacking-context__layer portal-stacking-context__layer--card">
+      <span>Dashboard card</span>
+      <b><code>z-index: 1</code></b>
+      <small>Creates its own stacking context</small>
+      <div class="portal-stacking-context__trapped-modal">
+        <strong>Modal</strong>
+        <b><code>z-index: 9999</code></b>
+        <span>Still contained here</span>
+      </div>
+    </div>
+  </div>
+  <div class="portal-stacking-context__key">
+    <span class="portal-stacking-context__swatch portal-stacking-context__swatch--trapped"></span>
+    <span>The child modal cannot out-rank its card's parent layer.</span>
+    <span class="portal-stacking-context__swatch portal-stacking-context__swatch--portal"></span>
+    <span>A portal moves it to a sibling layer where its own <code>z-index</code> can be managed.</span>
+  </div>
+  <figcaption id="portal-stacking-caption">A portal can escape a problematic stacking context, but it does not remove the need to choose an appropriate layer at the destination.</figcaption>
+</figure>
+
+<style>
+  .portal-stacking-context { margin:38px 0 44px;font-family:"Manrope",sans-serif; }
+  .portal-stacking-context>header { margin-bottom:14px; }
+  .portal-stacking-context .eyebrow { color:var(--teal);font-size:10px; }
+  .portal-stacking-context header strong { display:block;margin-top:7px;color:var(--ink);font-family:"Source Serif 4",serif;font-size:24px;font-weight:600;line-height:1.15; }
+  .portal-stacking-context header code,.portal-stacking-context code { font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.9em; }
+  .portal-stacking-context__stage { position:relative;min-height:325px;padding:48px 20px 20px;border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 55%,transparent); }
+  .portal-stacking-context__root { position:absolute;top:16px;left:20px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase; }
+  .portal-stacking-context__layer { position:absolute;display:flex;align-items:center;gap:12px;min-width:0;padding:13px 16px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);font-size:12px;box-shadow:0 6px 12px color-mix(in srgb,var(--ink) 7%,transparent); }
+  .portal-stacking-context__layer>span { font-weight:700; }
+  .portal-stacking-context__layer b { margin-left:auto;color:var(--muted);font-size:11px;font-weight:600;white-space:nowrap; }
+  .portal-stacking-context__layer--header { z-index:2;top:116px;left:9%;right:9%; }
+  .portal-stacking-context__layer--card { z-index:1;bottom:20px;left:16%;right:16%;min-height:102px;padding-bottom:52px;background:color-mix(in srgb,var(--clay) 7%,var(--bg)); }
+  .portal-stacking-context__layer--card small { position:absolute;bottom:15px;left:16px;color:var(--clay);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase; }
+  .portal-stacking-context__trapped-modal { position:absolute;right:16px;bottom:20px;display:grid;gap:3px;min-width:154px;padding:11px 13px;border:1px solid var(--clay);background:var(--surface);box-shadow:0 8px 15px color-mix(in srgb,var(--ink) 13%,transparent); }
+  .portal-stacking-context__trapped-modal strong { font-family:"Source Serif 4",serif;font-size:18px;font-weight:600; }
+  .portal-stacking-context__trapped-modal b { color:var(--clay);font-size:10px; }
+  .portal-stacking-context__trapped-modal span { color:var(--muted);font-size:10px; }
+  .portal-stacking-context__layer--portal { z-index:3;top:56px;right:6%;min-width:202px;border-color:var(--teal);background:color-mix(in srgb,var(--teal) 9%,var(--surface)); }
+  .portal-stacking-context__layer--portal>span { color:var(--teal);font-size:10px;letter-spacing:.05em; }
+  .portal-stacking-context__layer--portal strong { font-family:"Source Serif 4",serif;font-size:20px;font-weight:600; }
+  .portal-stacking-context__key { display:grid;grid-template-columns:auto 1fr;column-gap:9px;row-gap:8px;margin-top:13px;color:var(--muted);font-size:11px;line-height:1.45; }
+  .portal-stacking-context__swatch { width:12px;height:12px;margin-top:2px;border:1px solid var(--rule); }
+  .portal-stacking-context__swatch--trapped { border-color:var(--clay);background:color-mix(in srgb,var(--clay) 15%,var(--surface)); }
+  .portal-stacking-context__swatch--portal { border-color:var(--teal);background:color-mix(in srgb,var(--teal) 15%,var(--surface)); }
+  figcaption { margin-top:10px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center; }
+  @media (max-width:620px) { .portal-stacking-context__stage { min-height:366px;padding:44px 14px 14px; }.portal-stacking-context__root { left:14px; }.portal-stacking-context__layer--portal { top:54px;right:14px;left:30%; }.portal-stacking-context__layer--header { top:136px;left:14px;right:14px; }.portal-stacking-context__layer--card { right:14px;bottom:14px;left:14px;min-height:118px; }.portal-stacking-context__trapped-modal { right:12px;bottom:14px;min-width:130px; }.portal-stacking-context__layer { padding:11px 12px; } }
+</style>

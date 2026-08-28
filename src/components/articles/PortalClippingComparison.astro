@@ -1,0 +1,204 @@
+---
+const scenarios = [
+  {
+    label: "Without a portal",
+    title: "The modal stays inside its card",
+    detail: "The card clips anything that extends beyond its boundary.",
+    portal: false,
+  },
+  {
+    label: "With a portal",
+    title: "The modal renders at the page level",
+    detail: "The React relationship stays put; the DOM placement changes.",
+    portal: true,
+  },
+];
+---
+
+<figure class="portal-clipping-comparison" aria-labelledby="portal-clipping-caption">
+  <div class="portal-clipping-comparison__panels">
+    {scenarios.map((scenario) => (
+      <section class:list={["portal-clipping-comparison__panel", scenario.portal && "portal-clipping-comparison__panel--portal"]}>
+        <header>
+          <span class="eyebrow">{scenario.label}</span>
+          <h3>{scenario.title}</h3>
+        </header>
+        <div class="portal-clipping-comparison__stage" aria-hidden="true">
+          <div class="portal-clipping-comparison__card">
+            <span class="portal-clipping-comparison__card-label">Scrollable card</span>
+            <span class="portal-clipping-comparison__trigger">Open settings</span>
+            {!scenario.portal && <div class="portal-clipping-comparison__modal portal-clipping-comparison__modal--clipped"><strong>Settings</strong><span>This part is clipped</span></div>}
+          </div>
+          {scenario.portal
+            ? <div class="portal-clipping-comparison__root"><span>#modal-root</span><div class="portal-clipping-comparison__modal"><strong>Settings</strong><span>Fully visible</span></div></div>
+            : <span class="portal-clipping-comparison__boundary">overflow: hidden</span>}
+        </div>
+        <p>{scenario.detail}</p>
+      </section>
+    ))}
+  </div>
+  <figcaption id="portal-clipping-caption">A portal changes where the modal is placed in the DOM, allowing it to escape the card that would otherwise clip it.</figcaption>
+</figure>
+
+<style>
+  .portal-clipping-comparison {
+    margin: 38px 0 44px;
+    font-family: "Manrope", sans-serif;
+  }
+
+  .portal-clipping-comparison__panels {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .portal-clipping-comparison__panel {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+
+  .portal-clipping-comparison__panel--portal {
+    border-color: var(--teal);
+    background: color-mix(in srgb, var(--teal) 7%, var(--surface));
+  }
+
+  .portal-clipping-comparison__panel header {
+    min-height: 72px;
+  }
+
+  .portal-clipping-comparison__panel .eyebrow {
+    color: var(--teal);
+    font-size: 10px;
+  }
+
+  .portal-clipping-comparison__panel h3 {
+    margin: 7px 0 0;
+    color: var(--ink);
+    font-family: "Source Serif 4", serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.12;
+  }
+
+  .portal-clipping-comparison__stage {
+    position: relative;
+    min-height: 210px;
+    margin: 18px 0 16px;
+    padding: 18px;
+    border: 1px solid var(--rule);
+    background: var(--bg);
+  }
+
+  .portal-clipping-comparison__card {
+    position: relative;
+    height: 145px;
+    padding: 16px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .portal-clipping-comparison__card-label,
+  .portal-clipping-comparison__root > span,
+  .portal-clipping-comparison__boundary {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .portal-clipping-comparison__trigger {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 8px 10px;
+    background: var(--ink);
+    color: var(--bg);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .portal-clipping-comparison__modal {
+    display: grid;
+    gap: 5px;
+    min-width: 150px;
+    padding: 13px 14px;
+    border: 1px solid var(--teal);
+    background: var(--surface);
+    box-shadow: 0 12px 20px color-mix(in srgb, var(--ink) 18%, transparent);
+  }
+
+  .portal-clipping-comparison__modal strong {
+    color: var(--ink);
+    font-family: "Source Serif 4", serif;
+    font-size: 19px;
+    font-weight: 600;
+  }
+
+  .portal-clipping-comparison__modal span {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .portal-clipping-comparison__modal--clipped {
+    position: absolute;
+    z-index: 1;
+    top: 88px;
+    right: 14px;
+  }
+
+  .portal-clipping-comparison__boundary {
+    position: absolute;
+    right: 18px;
+    bottom: 15px;
+    padding: 4px 6px;
+    background: var(--clay);
+    color: var(--surface);
+  }
+
+  .portal-clipping-comparison__root {
+    position: absolute;
+    z-index: 1;
+    right: 9px;
+    bottom: 10px;
+    display: grid;
+    gap: 6px;
+    width: 174px;
+    padding: 9px;
+    border: 1px dashed var(--teal);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+  }
+
+  .portal-clipping-comparison__root > span {
+    color: var(--teal);
+  }
+
+  .portal-clipping-comparison__panel > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  figcaption {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  @media (max-width: 620px) {
+    .portal-clipping-comparison__panels {
+      grid-template-columns: 1fr;
+    }
+
+    .portal-clipping-comparison__panel header {
+      min-height: 0;
+    }
+  }
+</style>

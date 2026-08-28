@@ -1,0 +1,47 @@
+<figure class="portal-positioning-roles" aria-labelledby="portal-positioning-roles-caption">
+  <div class="portal-positioning-roles__roles">
+    <section class="portal-positioning-roles__role">
+      <header><span class="eyebrow">Positioning system</span><strong>Where should it sit?</strong></header>
+      <ul>
+        <li><code>Measure</code><span>the trigger and viewport</span></li>
+        <li><code>Calculate</code><span><code>x</code>, <code>y</code>, and placement</span></li>
+        <li><code>Adjust</code><span>for flip, shift, and collision</span></li>
+      </ul>
+      <small>Example: Floating UI or Popper</small>
+    </section>
+
+    <section class="portal-positioning-roles__role portal-positioning-roles__role--portal">
+      <header><span class="eyebrow">Portal</span><strong>Where should it render?</strong></header>
+      <ul>
+        <li><code>Place</code><span>the overlay in <code>#modal-root</code></span></li>
+        <li><code>Escape</code><span>clipping and a parent context</span></li>
+        <li><code>Preserve</code><span>React ownership and events</span></li>
+      </ul>
+      <small>Example: <code>createPortal()</code></small>
+    </section>
+  </div>
+  <div class="portal-positioning-roles__result"><span>Result</span><strong>A correctly placed overlay that is free to render above the UI.</strong></div>
+  <figcaption id="portal-positioning-roles-caption">Positioning calculates coordinates. A portal controls DOM placement. Production floating UI often needs both.</figcaption>
+</figure>
+
+<style>
+  .portal-positioning-roles { margin:38px 0 44px;font-family:"Manrope",sans-serif; }
+  .portal-positioning-roles__roles { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px; }
+  .portal-positioning-roles__role { min-width:0;padding:22px;border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 55%,transparent); }
+  .portal-positioning-roles__role--portal { border-color:var(--teal);background:color-mix(in srgb,var(--teal) 7%,var(--surface)); }
+  .portal-positioning-roles__role .eyebrow { color:var(--teal);font-size:10px; }
+  .portal-positioning-roles__role header strong { display:block;margin-top:7px;color:var(--ink);font-family:"Source Serif 4",serif;font-size:25px;font-weight:600;line-height:1.1; }
+  .portal-positioning-roles__role ul { display:grid;gap:8px;margin:22px 0 18px;padding:0;list-style:none; }
+  .portal-positioning-roles__role li { display:grid;grid-template-columns:78px 1fr;gap:10px;align-items:baseline;padding:11px 12px;border:1px solid var(--rule);background:var(--bg); }
+  .portal-positioning-roles code { color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.92em;font-weight:700; }
+  .portal-positioning-roles li>span { color:var(--muted);font-size:11px;line-height:1.4; }
+  .portal-positioning-roles__role small { display:block;padding-top:13px;border-top:1px solid var(--rule);color:var(--muted);font-size:10px;letter-spacing:.06em;text-transform:uppercase; }
+  .portal-positioning-roles__role small code { font-size:1em;letter-spacing:0;text-transform:none; }
+  .portal-positioning-roles__result { position:relative;width:min(100% - 64px,480px);margin:0 auto;padding:17px 20px;border:1px solid var(--teal);background:var(--teal);color:var(--surface);text-align:center; }
+  .portal-positioning-roles__result::before { content:"";position:absolute;right:50%;bottom:100%;height:24px;border-left:1px solid var(--teal); }
+  .portal-positioning-roles__result::after { content:"";position:absolute;right:calc(50% - 3px);bottom:calc(100% + 2px);width:6px;height:6px;border-right:1px solid var(--teal);border-bottom:1px solid var(--teal);transform:rotate(45deg); }
+  .portal-positioning-roles__result>span { display:block;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase; }
+  .portal-positioning-roles__result strong { font-family:"Source Serif 4",serif;font-size:20px;font-weight:600;line-height:1.2; }
+  .portal-positioning-roles figcaption { margin-top:10px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center; }
+  @media (max-width:620px) { .portal-positioning-roles__roles { grid-template-columns:1fr;gap:12px; }.portal-positioning-roles__role { padding:18px; }.portal-positioning-roles__result { width:calc(100% - 36px); }.portal-positioning-roles__result::before { height:18px; } }
+</style>
