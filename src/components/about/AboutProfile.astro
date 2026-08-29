@@ -1,0 +1,23 @@
+---
+import Icon from "../ui/Icon.astro";
+import { aboutProfile } from "../../data/about";
+import { site } from "../../site.config";
+---
+
+<div class="about-grid">
+  <div>
+    <h2>Why this exists</h2>
+    {aboutProfile.whyThisExists.map((paragraph) => <p>{paragraph}</p>)}
+    <div class="about-actions">
+      <a class="primary-action" href="/resume/tanvir-aslam-mohammed-resume.pdf" target="_blank" rel="noopener noreferrer">View résumé <Icon name="external" /></a>
+      <a href={site.github} target="_blank" rel="noopener noreferrer"><Icon name="github" /> GitHub</a>
+      <a href={site.linkedin} target="_blank" rel="noopener noreferrer"><Icon name="external" /> LinkedIn</a>
+    </div>
+  </div>
+  <aside>
+    <span class="eyebrow">Areas of focus</span>
+    <ul>
+      {aboutProfile.focusAreas.map(({ name }) => <li>{name}</li>)}
+    </ul>
+  </aside>
+</div>

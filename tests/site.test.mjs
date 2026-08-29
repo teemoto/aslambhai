@@ -14,7 +14,7 @@ async function resilientArticleDates() {
 }
 
 test("builds the key static routes", async () => {
-  for (const file of ["index.html", "projects/index.html", "about/index.html", "rss/index.html", "articles/resilient-frontend-architecture/index.html", "rss.xml", "sitemap-index.xml"]) {
+  for (const file of ["index.html", "projects/index.html", "about/index.html", "about/read/index.html", "about/terminal/index.html", "rss/index.html", "articles/resilient-frontend-architecture/index.html", "rss.xml", "sitemap-index.xml"]) {
     await access(new URL(`../dist/${file}`, import.meta.url));
   }
 });
@@ -144,8 +144,24 @@ test("publishes the complete logo identity", async () => {
 test("publishes the downloadable résumé", async () => {
   const resume = new URL("../dist/resume/tanvir-aslam-mohammed-resume.pdf", import.meta.url);
   assert.ok((await stat(resume)).size > 100_000);
+  const aboutRead = await readFile(new URL("../dist/about/read/index.html", import.meta.url), "utf8");
+  assert.match(aboutRead, /tanvir-aslam-mohammed-resume\.pdf/);
+});
+
+test("lets visitors choose one About experience at a time", async () => {
   const about = await readFile(new URL("../dist/about/index.html", import.meta.url), "utf8");
-  assert.match(about, /tanvir-aslam-mohammed-resume\.pdf/);
+  const aboutRead = await readFile(new URL("../dist/about/read/index.html", import.meta.url), "utf8");
+  const aboutTerminal = await readFile(new URL("../dist/about/terminal/index.html", import.meta.url), "utf8");
+
+  assert.match(about, /href="\/about\/read"/);
+  assert.match(about, /href="\/about\/terminal"/);
+  assert.doesNotMatch(about, /about-terminal-mount/);
+  assert.match(aboutRead, /Why this exists/);
+  assert.doesNotMatch(aboutRead, /about-terminal-mount/);
+  assert.match(aboutTerminal, /about-terminal-mount/);
+  assert.doesNotMatch(aboutTerminal, /Why this exists/);
+  assert.match(aboutTerminal, /href="https:\/\/teemoto\.github\.io\/pretend-terminal\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/);
+  assert.match(aboutTerminal, /Built using <a[^>]*>Pretend Terminal<\/a>/);
 });
 
 test("keeps the launch surface honest", async () => {

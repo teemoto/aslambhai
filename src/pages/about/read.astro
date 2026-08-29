@@ -1,0 +1,10 @@
+---
+import AboutProfile from "../../components/about/AboutProfile.astro";
+import StaticPage from "../../components/layout/StaticPage.astro";
+import { aboutProfile } from "../../data/about";
+---
+
+<StaticPage active="about" eyebrow="About · Reading view" title={aboutProfile.title} intro={aboutProfile.intro}>
+  <AboutProfile />
+  <p class="about-mode-return"><a href="/about/terminal">Prefer a terminal? Explore this profile through commands.</a></p>
+</StaticPage>

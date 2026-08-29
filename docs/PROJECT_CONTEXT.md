@@ -15,6 +15,7 @@ The primary audience is mid-level and senior frontend engineers. Content covers 
 - Keep the site static-first, content-first, and dependency-light.
 - Preserve the established Aslam Bhai visual identity and responsive behavior.
 - The homepage emphasizes published articles. Core sections are Home, Projects, and About.
+- About uses a mode chooser: a readable profile at `/about/read` and a separate Pretend Terminal experience at `/about/terminal`.
 - Publishing remains Git-based until a concrete requirement justifies a CMS integration.
 - GitHub Pages deploys every push to `main`. `tanviraslam.com` is the canonical domain; `aslambh.ai` permanently redirects to it.
 - Do not publish placeholder articles or simulated content.

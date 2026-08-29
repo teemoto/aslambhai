@@ -1,0 +1,119 @@
+<section class="about-terminal" aria-labelledby="about-terminal-title">
+  <div class="about-terminal-heading">
+    <div>
+      <span class="eyebrow">Try it</span>
+      <h2 id="about-terminal-title">Explore the profile from the prompt</h2>
+    </div>
+    <p>Use <kbd>help</kbd> to see the available commands.</p>
+  </div>
+  <div id="about-terminal-mount"></div>
+</section>
+
+<script>
+  import { createTerminal } from "@pretend-terminal/core";
+  import "@pretend-terminal/core/styles.css";
+  import { aboutProfile } from "../../data/about";
+
+  const mount = document.querySelector<HTMLElement>("#about-terminal-mount");
+
+  if (mount) {
+    const terminal = createTerminal(mount, {
+      ariaLabel: "Tanvir's profile terminal",
+      prompt: "tanvir@aslam-bhai:~ $",
+      height: "25rem",
+      theme: {
+        background: "var(--ink)",
+        surface: "color-mix(in srgb, var(--ink) 88%, var(--surface))",
+        text: "var(--bg)",
+        muted: "color-mix(in srgb, var(--bg) 68%, var(--ink))",
+        border: "color-mix(in srgb, var(--bg) 26%, var(--ink))",
+        promptUser: "var(--clay)",
+        promptHost: "var(--teal)",
+        promptPath: "var(--bg)",
+        promptSymbol: "var(--teal)",
+        accent: "var(--teal)",
+        success: "var(--teal)",
+        error: "var(--clay)",
+        radius: "0",
+      },
+      commands: [
+        {
+          name: "welcome",
+          description: "Show the profile terminal introduction",
+          response: {
+            type: "lines",
+            lines: [
+              "Welcome to Tanvir's profile terminal.",
+              'Type "help" to explore the available information.',
+            ],
+          },
+        },
+        {
+          name: "about",
+          aliases: ["whoami"],
+          description: "Learn about Tanvir and Aslam Bhai",
+          response: {
+            type: "lines",
+            lines: [
+              aboutProfile.summary,
+              ...aboutProfile.whyThisExists,
+            ],
+          },
+        },
+        {
+          name: "focus",
+          description: "List areas of focus",
+          response: {
+            type: "table",
+            headers: ["Area", "Perspective"],
+            rows: aboutProfile.focusAreas.map(({ name, perspective }) => [name, perspective]),
+          },
+        },
+        {
+          name: "projects",
+          description: "Open the projects page",
+          response: {
+            type: "link",
+            label: "Browse projects",
+            href: "/projects",
+          },
+        },
+        {
+          name: "resume",
+          aliases: ["cv"],
+          description: "Open Tanvir's résumé",
+          response: {
+            type: "link",
+            label: "View résumé (PDF)",
+            href: "/resume/tanvir-aslam-mohammed-resume.pdf",
+            openInNewTab: true,
+          },
+        },
+        {
+          name: "contact",
+          description: "Show professional links",
+          response: [
+            {
+              type: "link",
+              label: "GitHub",
+              href: "https://github.com/teemoto",
+              openInNewTab: true,
+            },
+            {
+              type: "link",
+              label: "LinkedIn",
+              href: "https://www.linkedin.com/in/tanviraslam/",
+              openInNewTab: true,
+            },
+          ],
+        },
+      ],
+      messages: {
+        unknownCommand:
+          'Command "{command}" is not available. Type "help" to see the options.',
+      },
+    });
+
+    void terminal.run("welcome");
+  }
+</script>
