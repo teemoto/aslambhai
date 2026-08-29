@@ -173,6 +173,19 @@ test("lets visitors choose one About experience at a time", async () => {
   assert.match(aboutTerminal, /Built using <a[^>]*>Pretend Terminal<\/a>/);
 });
 
+test("keeps utility routes out of search results", async () => {
+  const terminal = await readFile(new URL("../dist/about/terminal/index.html", import.meta.url), "utf8");
+  const offline = await readFile(new URL("../dist/offline/index.html", import.meta.url), "utf8");
+  const notFound = await readFile(new URL("../dist/404.html", import.meta.url), "utf8");
+  const sitemap = await readFile(new URL("../dist/sitemap-0.xml", import.meta.url), "utf8");
+
+  assert.match(terminal, /name="robots" content="noindex,follow"/);
+  assert.match(terminal, /rel="canonical" href="https:\/\/tanviraslam\.com\/about\/read\/"/);
+  assert.match(offline, /name="robots" content="noindex,follow"/);
+  assert.match(notFound, /name="robots" content="noindex,follow"/);
+  assert.doesNotMatch(sitemap, /about\/terminal|offline/);
+});
+
 test("keeps the launch surface honest", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const projects = await readFile(new URL("../dist/projects/index.html", import.meta.url), "utf8");

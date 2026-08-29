@@ -8,7 +8,9 @@ export default defineConfig({
   output: "static",
   integrations: [
     mdx(),
-    sitemap(),
+    sitemap({
+      filter: (page) => !["/about/terminal/", "/offline/"].includes(new URL(page).pathname),
+    }),
     AstroPWA({
       manifest: false,
       registerType: "autoUpdate",
