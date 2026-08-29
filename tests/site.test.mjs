@@ -41,6 +41,15 @@ test("publishes the TIL and WTF article categories", async () => {
   assert.match(contentConfig, /TIL articles must be five minutes or less/);
 });
 
+test("keeps article metadata accurate and project statuses readable", async () => {
+  const adLifecycle = await readFile(new URL("../src/content/articles/ad-lifecycle-browser.mdx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../src/styles/global.css", import.meta.url), "utf8");
+
+  assert.match(adLifecycle, /description: A step-by-step tour of how an ad reaches a webpage/);
+  assert.match(styles, /\.status\s*\{[^}]*font-weight:700[^}]*color:var\(--ink\)/);
+  assert.doesNotMatch(styles, /\.status-(?:building|ready|exploring)\{color:/);
+});
+
 test("publishes the code-configured theme palettes", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
