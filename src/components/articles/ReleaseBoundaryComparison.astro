@@ -1,0 +1,27 @@
+<figure class="release-boundary-comparison">
+  <div class="release-boundary-comparison__columns">
+    <section class="release-boundary-comparison__local">
+      <header><span>Local confidence</span><strong>Does the repository work here?</strong></header>
+      <ul>
+        <li><b>Source tests</b><small>Behavior is correct in the monorepo.</small></li>
+        <li><b>Warm dependencies</b><small>Local output and tooling may hide assumptions.</small></li>
+        <li><b>Workspace examples</b><small>Packages resolve directly from source.</small></li>
+      </ul>
+    </section>
+    <div class="release-boundary-comparison__gap" aria-hidden="true"><span>release boundary</span><i>→</i></div>
+    <section class="release-boundary-comparison__consumer">
+      <header><span>Consumer confidence</span><strong>Can a user succeed with the published package?</strong></header>
+      <ul>
+        <li><b>Packed artifact</b><small>Tarball contents and transformed dependencies are correct.</small></li>
+        <li><b>Fresh install</b><small>The package resolves without the monorepo's help.</small></li>
+        <li><b>Strict compiler and browser</b><small>README imports, types, CSS, and runtime behavior work together.</small></li>
+      </ul>
+    </section>
+  </div>
+  <figcaption>Repository checks provide useful evidence. Consumer checks prove the public package contract.</figcaption>
+</figure>
+
+<style>
+  .release-boundary-comparison { margin: 2rem 0; font-family: ui-sans-serif, system-ui, sans-serif; }.release-boundary-comparison__columns { display: grid; grid-template-columns: minmax(0, 1fr) 6rem minmax(0, 1fr); align-items: stretch; }.release-boundary-comparison section { border: 1px solid var(--rule); border-radius: 0.6rem; background: var(--surface); overflow: hidden; }.release-boundary-comparison header { padding: 1rem; border-bottom: 1px solid var(--rule); }.release-boundary-comparison header span { display: block; margin-bottom: 0.3rem; color: var(--muted); font-size: 0.73rem; letter-spacing: 0.04em; text-transform: uppercase; }.release-boundary-comparison header strong { color: var(--ink); font-size: 0.96rem; line-height: 1.35; }.release-boundary-comparison__consumer { border-color: var(--teal) !important; }.release-boundary-comparison ul { display: grid; gap: 0.65rem; margin: 0; padding: 1rem; list-style: none; }.release-boundary-comparison li { padding-left: 0.75rem; border-left: 3px solid var(--rule); }.release-boundary-comparison__consumer li { border-left-color: var(--teal); }.release-boundary-comparison b, .release-boundary-comparison small { display: block; }.release-boundary-comparison b { color: var(--ink); font-size: 0.82rem; }.release-boundary-comparison small { margin-top: 0.14rem; color: var(--body); font-size: 0.75rem; line-height: 1.42; }.release-boundary-comparison__gap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; color: var(--teal); text-align: center; }.release-boundary-comparison__gap span { max-width: 4.5rem; font-size: 0.67rem; line-height: 1.3; text-transform: uppercase; letter-spacing: 0.05em; }.release-boundary-comparison__gap i { font-size: 1.35rem; font-style: normal; }.release-boundary-comparison figcaption { margin-top: 0.65rem; color: var(--muted); font-size: 0.85rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 640px) { .release-boundary-comparison__columns { grid-template-columns: 1fr; gap: 0.8rem; }.release-boundary-comparison__gap { flex-direction: row; }.release-boundary-comparison__gap i { transform: rotate(90deg); } }
+</style>

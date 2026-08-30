@@ -1,0 +1,28 @@
+<figure class="terminal-semantic-state-sequence">
+  <div class="terminal-semantic-state-sequence__window">
+    <div class="terminal-semantic-state-sequence__bar"><span></span><span></span><span></span><strong>terminal</strong></div>
+    <div class="terminal-semantic-state-sequence__body">
+      <p class="terminal-semantic-state-sequence__prompt"><b>visitor@site:~$</b> deploy preview</p>
+      <p class="terminal-semantic-state-sequence__normal">Creating a preview build for portfolio-site.</p>
+      <p class="terminal-semantic-state-sequence__muted">Waiting for the build worker…</p>
+      <p class="terminal-semantic-state-sequence__success">✓ Preview deployed successfully.</p>
+      <p class="terminal-semantic-state-sequence__link">https://preview.example.dev/portfolio-site</p>
+      <p class="terminal-semantic-state-sequence__prompt"><b>visitor@site:~$</b> deploy production</p>
+      <p class="terminal-semantic-state-sequence__error">✕ Production deploy requires an approved release.</p>
+    </div>
+  </div>
+  <ol class="terminal-semantic-state-sequence__legend">
+    <li><i class="terminal-semantic-state-sequence__prompt-dot"></i>Prompt</li>
+    <li><i class="terminal-semantic-state-sequence__normal-dot"></i>Normal output</li>
+    <li><i class="terminal-semantic-state-sequence__muted-dot"></i>Muted status</li>
+    <li><i class="terminal-semantic-state-sequence__success-dot"></i>Success</li>
+    <li><i class="terminal-semantic-state-sequence__link-dot"></i>Link</li>
+    <li><i class="terminal-semantic-state-sequence__error-dot"></i>Error</li>
+  </ol>
+  <figcaption>A terminal theme needs distinct semantic roles so visitors can understand the state of an interaction at a glance.</figcaption>
+</figure>
+
+<style>
+  .terminal-semantic-state-sequence { margin: 2rem 0; }.terminal-semantic-state-sequence__window { overflow: hidden; border: 1px solid var(--rule); border-radius: 0.65rem; background: var(--ink); box-shadow: 0 0.4rem 1rem color-mix(in srgb, var(--ink) 14%, transparent); }.terminal-semantic-state-sequence__bar { display: flex; align-items: center; gap: 0.35rem; min-height: 2.25rem; padding: 0 0.8rem; border-bottom: 1px solid color-mix(in srgb, var(--bg) 22%, transparent); background: color-mix(in srgb, var(--ink) 90%, var(--body)); }.terminal-semantic-state-sequence__bar span { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--clay); }.terminal-semantic-state-sequence__bar span:nth-child(2) { background: var(--rule); }.terminal-semantic-state-sequence__bar span:nth-child(3) { background: var(--teal); }.terminal-semantic-state-sequence__bar strong { margin-left: 0.35rem; color: var(--bg); font: 0.7rem ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; opacity: 0.75; }.terminal-semantic-state-sequence__body { padding: 1.1rem 1.25rem; }.terminal-semantic-state-sequence__body p { margin: 0 0 0.55rem; font: 0.8rem/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }.terminal-semantic-state-sequence__body p:last-child { margin-bottom: 0; }.terminal-semantic-state-sequence__prompt { color: var(--bg); }.terminal-semantic-state-sequence__prompt b { color: var(--teal); }.terminal-semantic-state-sequence__normal { color: color-mix(in srgb, var(--bg) 90%, var(--muted)); }.terminal-semantic-state-sequence__muted { color: color-mix(in srgb, var(--bg) 52%, var(--muted)); }.terminal-semantic-state-sequence__success { color: var(--teal); }.terminal-semantic-state-sequence__link { color: var(--bg); text-decoration: underline; text-decoration-color: var(--teal); text-underline-offset: 0.2em; }.terminal-semantic-state-sequence__error { color: var(--clay); }.terminal-semantic-state-sequence__legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin: 0.8rem 0 0; padding: 0; list-style: none; color: var(--muted); font: 0.72rem ui-sans-serif, system-ui, sans-serif; }.terminal-semantic-state-sequence__legend li { display: flex; align-items: center; gap: 0.35rem; }.terminal-semantic-state-sequence__legend i { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--body); }.terminal-semantic-state-sequence__prompt-dot { background: var(--ink) !important; border: 1px solid var(--rule); }.terminal-semantic-state-sequence__normal-dot { background: var(--body) !important; }.terminal-semantic-state-sequence__muted-dot { background: var(--muted) !important; }.terminal-semantic-state-sequence__success-dot { background: var(--teal) !important; }.terminal-semantic-state-sequence__link-dot { background: var(--bg) !important; border: 1px solid var(--rule); }.terminal-semantic-state-sequence__error-dot { background: var(--clay) !important; }.terminal-semantic-state-sequence figcaption { margin-top: 0.65rem; color: var(--muted); font: 0.85rem/1.45 ui-sans-serif, system-ui, sans-serif; text-align: center; }
+  @media (max-width: 500px) { .terminal-semantic-state-sequence__body { padding: 0.9rem; }.terminal-semantic-state-sequence__body p { font-size: 0.7rem; }.terminal-semantic-state-sequence__legend { gap: 0.45rem 0.75rem; } }
+</style>

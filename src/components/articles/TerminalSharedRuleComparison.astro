@@ -1,0 +1,111 @@
+<figure class="terminal-shared-rule-comparison">
+  <div class="terminal-shared-rule-comparison__rule">
+    <span>One rule in the core</span><code
+      >help → [&#123; type: "lines", lines: [...] &#125;]</code>
+  </div>
+  <div class="terminal-shared-rule-comparison__outputs">
+    <section>
+      <h3>Vanilla DOM</h3><code>renderTranscript(transcript)</code><div
+        class="terminal-shared-rule-comparison__terminal"
+      >
+        <b>visitor@site:~$ help</b><br /><em>Available commands:</em><br
+        />about&nbsp;&nbsp;projects&nbsp;&nbsp;contact
+      </div>
+    </section>
+    <section>
+      <h3>React</h3><code
+        >&lt;Terminal transcript=&#123;transcript&#125; /&gt;</code
+      ><div class="terminal-shared-rule-comparison__terminal">
+        <b>visitor@site:~$ help</b><br /><em>Available commands:</em><br
+        />about&nbsp;&nbsp;projects&nbsp;&nbsp;contact
+      </div>
+    </section>
+  </div>
+  <figcaption>
+    Different renderers have different integration code, but a command produces
+    the same visitor-facing result.
+  </figcaption>
+</figure>
+
+<style>
+  .terminal-shared-rule-comparison {
+    margin: 2rem 0;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+  .terminal-shared-rule-comparison__rule {
+    width: min(100%, 37rem);
+    margin: 0 auto 1.1rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--teal);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    text-align: center;
+  }
+  .terminal-shared-rule-comparison__rule span {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .terminal-shared-rule-comparison code {
+    color: var(--teal);
+    font:
+      0.72rem ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      monospace;
+  }
+  .terminal-shared-rule-comparison__outputs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .terminal-shared-rule-comparison section {
+    padding: 0.9rem;
+    border: 1px solid var(--rule);
+    border-radius: 0.5rem;
+    background: var(--surface);
+  }
+  .terminal-shared-rule-comparison h3 {
+    margin: 0 0 0.35rem;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+  .terminal-shared-rule-comparison__terminal {
+    margin-top: 0.75rem;
+    padding: 0.9rem;
+    border-radius: 0.35rem;
+    background: var(--ink);
+    color: var(--bg);
+    font:
+      0.72rem/1.7 ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      monospace;
+  }
+  .terminal-shared-rule-comparison b {
+    color: var(--teal);
+  }
+  .terminal-shared-rule-comparison em {
+    color: var(--muted);
+    font-style: normal;
+  }
+  .terminal-shared-rule-comparison figcaption {
+    margin-top: 0.65rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+  @media (max-width: 560px) {
+    .terminal-shared-rule-comparison__outputs {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

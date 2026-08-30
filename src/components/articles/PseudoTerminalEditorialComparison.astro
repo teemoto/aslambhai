@@ -1,0 +1,36 @@
+<figure class="pseudo-terminal-editorial-comparison">
+  <div class="pseudo-terminal-editorial-comparison__systems">
+    <section class="pseudo-terminal-editorial-comparison__system pseudo-terminal-editorial-comparison__system--pseudo">
+      <h3>Pseudo-terminal</h3>
+      <p>A configured interaction for a website visitor.</p>
+      <code><span>visitor@site:~$</span> projects<br />→ List configured projects<br /><br /><span>visitor@site:~$</span> deploy<br />→ Unknown command: deploy</code>
+      <strong>Configured vocabulary</strong>
+      <small>Commands and output are defined by the site author.</small>
+    </section>
+    <section class="pseudo-terminal-editorial-comparison__system pseudo-terminal-editorial-comparison__system--shell">
+      <h3>Real shell</h3>
+      <p>A system interface with access to an execution environment.</p>
+      <code><span>user@machine:~$</span> rm -rf ./build<br />→ Executes against the filesystem<br /><br /><span>user@machine:~$</span> curl service<br />→ Can make network requests</code>
+      <strong>Arbitrary execution</strong>
+      <small>Commands act on system resources and need a separate security model.</small>
+    </section>
+  </div>
+  <figcaption>A pseudo-terminal simulates a terminal interaction. A real shell executes within a system environment.</figcaption>
+</figure>
+
+<style>
+  .pseudo-terminal-editorial-comparison { margin: 2rem 0; }
+  .pseudo-terminal-editorial-comparison__systems { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .pseudo-terminal-editorial-comparison__system { border: 1px solid var(--rule); border-top: 4px solid var(--teal); border-radius: 0.75rem; background: var(--surface); overflow: hidden; }
+  .pseudo-terminal-editorial-comparison__system--shell { border-top-color: var(--clay); }
+  h3 { margin: 1rem 1rem 0.25rem; color: var(--ink); font-size: 1.1rem; }
+  p { margin: 0 1rem 1rem; color: var(--muted); font-size: 0.88rem; line-height: 1.45; }
+  code { display: block; margin: 0 0.75rem 0.75rem; padding: 0.85rem; border: 1px solid var(--rule); border-radius: 0.5rem; background: var(--bg); color: var(--body); font-size: 0.76rem; line-height: 1.65; overflow-x: auto; }
+  code span { color: var(--teal); font-weight: 700; }
+  .pseudo-terminal-editorial-comparison__system--shell code span { color: var(--clay); }
+  strong, small { display: block; margin-inline: 1rem; }
+  strong { padding-top: 0.75rem; border-top: 1px solid var(--rule); color: var(--ink); font-size: 0.85rem; }
+  small { margin-top: 0.2rem; margin-bottom: 1rem; color: var(--body); font-size: 0.8rem; line-height: 1.45; }
+  figcaption { margin-top: 0.65rem; color: var(--muted); font-size: 0.85rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 640px) { .pseudo-terminal-editorial-comparison__systems { grid-template-columns: 1fr; } }
+</style>

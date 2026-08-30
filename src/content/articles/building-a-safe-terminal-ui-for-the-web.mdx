@@ -1,0 +1,210 @@
+---
+title: "Building a Safe, Configurable Terminal UI for the Web"
+description: "What building Pretend Terminal taught me about product boundaries, package releases, and proving a UI library works outside its own repository."
+publishedAt: 2026-08-29
+minutes: 10
+topic: Frontend
+icon: code
+featured: false
+draft: false
+---
+
+import ArticleDisclosure from "../../components/articles/ArticleDisclosure.astro";
+import PseudoTerminalEditorialComparison from "../../components/articles/PseudoTerminalEditorialComparison.astro";
+import ReleaseBoundaryComparison from "../../components/articles/ReleaseBoundaryComparison.astro";
+import TerminalSharedRuleComparison from "../../components/articles/TerminalSharedRuleComparison.astro";
+import TerminalSemanticStateSequence from "../../components/articles/TerminalSemanticStateSequence.astro";
+
+<ArticleDisclosure />
+
+# Building a Safe, Configurable Terminal UI for the Web
+
+Terminal interfaces are compelling. They make a portfolio feel interactive, give a product a little personality, and invite people to explore instead of scroll.
+
+They also encourage a dangerous shortcut: building something that looks like a terminal without deciding what it actually is.
+
+Pretend Terminal began with a narrow goal. I wanted a reusable terminal UI for the web that other developers could configure and embed. Not an in-browser shell. Not a remote-command client. Not a component that accepts arbitrary HTML and hopes the consumer uses it responsibly.
+
+You can try the <a href="https://teemoto.github.io/pretend-terminal/" target="_blank" rel="noopener noreferrer">live demo</a> or inspect the <a href="https://github.com/teemoto/pretend-terminal" target="_blank" rel="noopener noreferrer">source on GitHub</a> before reading the decisions behind it.
+
+That boundary ended up shaping almost every implementation and release decision.
+
+This article is a record of the decisions that mattered while building it: what belongs in a framework-neutral core, how a pseudo-terminal stays honest about safety, and why a package is not finished when its unit tests pass.
+
+<PseudoTerminalEditorialComparison />
+
+## Start by naming the thing correctly
+
+The most important product decision was also the simplest:
+
+> Pretend Terminal simulates a terminal interaction. It does not execute shell commands.
+
+That sounds obvious, but it rules out a surprising amount of ambiguity.
+
+In this component, a visitor can type only commands that the site author has configured. Those commands may be static content such as `about` or `projects`. An application can also deliberately provide a dynamic handler. But that handler belongs to the application, with the application's own permissions, network calls, and security model.
+
+The library itself does not access a shell, the filesystem, environment variables, or the network. Its only optional browser storage use is persistence for things like command history and a named theme.
+
+That distinction is not marketing language. It is an architectural boundary.
+
+If a library calls itself safe because it does not run shell commands, but it also encourages arbitrary HTML output, unclear network behavior, or opaque callbacks, the consumer still has to guess where the safety boundary ends. A better contract is specific:
+
+- Static JSON configuration describes static commands and structured output.
+- Dynamic behavior is JavaScript written and owned by the consuming application.
+- Text is rendered as text, not interpreted as HTML.
+- Links are checked against an allowed protocol policy before rendering.
+- Browser persistence is optional and failure to access storage does not stop the terminal from working.
+
+The word "safe" is too broad on its own. A library should explain what it guarantees, what it intentionally does not do, and what remains the application author's responsibility.
+
+## The core should know behavior, not the DOM
+
+The next decision was to build the terminal around a headless transcript engine.
+
+The core knows about commands, command history, autocomplete, themes, structured output, asynchronous execution, and persistence. It produces a transcript of what happened. A renderer turns that transcript into DOM or React elements.
+
+That separation is not just an abstraction exercise. It gives the library one source of truth for behavior while keeping browser and framework concerns at the edge.
+
+The Vanilla adapter translates browser events into engine actions and renders structured transcript data. The React component does the same through React's lifecycle and state model. Neither renderer gets to invent terminal rules.
+
+<TerminalSharedRuleComparison />
+
+This matters most in the awkward cases:
+
+- An unknown command should produce the same useful response in every renderer.
+- A command that returns a rejected promise should produce one canonical visitor-facing error, not an unhandled rejection.
+- Completion suggestions need the same matching and selection rules everywhere.
+- Two terminals on the same page must not share history, output, IDs, or focus state by accident.
+- A React component must survive development-mode lifecycle behavior without destroying an engine it still owns.
+
+The point is not that every UI needs a headless engine. The point is that reusable behavior deserves a single authority. If the DOM adapter and React component each implement a little bit of terminal logic, they will eventually disagree.
+
+## Structured output is a product constraint
+
+A terminal needs more than one-line strings. It needs output that can communicate status, lists, tables, links, and errors.
+
+The tempting API is to accept arbitrary JSX or HTML. It feels flexible because it hands rendering power to the consumer. It also makes portability and safety much harder to reason about.
+
+Pretend Terminal uses structured output instead. A command can return text, lines, status blocks, tables, links, ASCII, and other defined output shapes. The renderer knows how to display each shape safely.
+
+That gives us several benefits at once:
+
+1. The same command configuration can work in a framework-neutral core and a React integration.
+2. JSON configuration remains possible for static terminal content.
+3. The renderer can preserve literal text instead of treating it as markup.
+4. The public API has a finite vocabulary that can be tested end to end.
+
+The last point is easy to underestimate. "We escape text" is not enough if only one output field is tested. A hostile string needs to be checked in command echoes, text lines, table headers, table cells, status messages, links, ASCII output, and the unknown-command path. Safety is a property of the complete rendering path, not a helper function with a reassuring name.
+
+There are tradeoffs. Structured output deliberately excludes rich Markdown and arbitrary custom rendering from v1. That makes some experiences harder to express. But a library should earn complexity from real needs, not import it because another project has it.
+
+## Accessibility is observable behavior
+
+A terminal can look convincing while being painful to use with a keyboard or screen reader. The visual metaphor is not an excuse to ship a fake text box and call it done.
+
+The accessibility work became clearer when framed as outcomes a visitor should experience:
+
+- The terminal has named semantic regions instead of relying on visual context.
+- New output is appended to the transcript and announced without repainting history.
+- Completion suggestions are available as visible feedback and associated with the command input while they are relevant.
+- Focus stays in the command field after an interaction so a visitor can keep typing.
+- Ctrl+L and Cmd+L clear the transcript according to the platform convention.
+- Theme changes preserve readable contrast across normal, muted, success, error, prompt, and link states.
+
+Notice what is missing: a generic claim of compliance. That would be stronger than the evidence. It is better to describe the actual keyboard and screen-reader behavior, test it, and leave room for consumers to review their own content and theme choices.
+
+The same applies to visual design. A terminal theme is not just a list of colors. It is a semantic system. A useful theme preview shows whether normal text, errors, links, prompt text, and muted output still work together. A gallery of swatches cannot answer that.
+
+<TerminalSemanticStateSequence />
+
+## The package boundary is where confidence gets real
+
+Early in a library project, it is easy to believe that passing tests and a successful local example mean the package is ready.
+
+They do not.
+
+Those checks prove that the repository works in one particular environment. Users install a tarball created by a package manager, resolve it through their own toolchain, compile against its public types, load its CSS into a host application, and run it in a browser with different global styles.
+
+That is a different product.
+
+The release work exposed this repeatedly.
+
+One problem appeared when a package tarball preserved a workspace dependency that made it impossible to install outside the monorepo. Another appeared when the published stylesheet subpath worked at runtime but failed under a consumer's strict TypeScript compiler because the export map did not connect the CSS entry point to its declaration file.
+
+Neither defect was visible from the usual source-level test suite. Both were failures at the public boundary.
+
+The useful release checks were therefore concrete:
+
+- Pack each publishable package using the same package manager and publisher path used for the actual release.
+- Inspect the tarball contents, not only the `files` field in `package.json`.
+- Install the packed artifacts in a fresh external consumer application.
+- Compile the README quick starts unchanged.
+- Import the published stylesheet from that consumer.
+- Run the examples after artifacts exist, not only against monorepo source.
+- Verify the registry artifact after publishing, including package versions and tags.
+
+The general rule is simple:
+
+> Test the artifact your users receive with the tools they use to receive it.
+
+That includes documentation. A README snippet is part of the API. If it is meant to be copied into a consumer application, it deserves contract coverage that proves it still compiles and runs.
+
+<ReleaseBoundaryComparison />
+
+## A clean checkout is evidence, not ceremony
+
+Local environments are generous in ways CI and new contributors are not. They have stale build output, globally installed tools, cached dependencies, and invisible assumptions accumulated over time.
+
+A clean checkout tests a different question: can this project reproduce its stated quality bar from the committed source and lockfile alone?
+
+For Pretend Terminal, that meant creating a detached worktree from the pushed commit, installing with a frozen lockfile, then running formatting, linting, type checks, tests, builds, and example builds. It also meant treating generated TypeScript project-reference metadata as generated output rather than source to commit.
+
+This approach caught assumptions that a warm working directory would have hidden. It also made the lockfile's role obvious. A manifest and lockfile are one dependency declaration. Updating a package version in one without the other is not a small bookkeeping error. It is a deployment failure waiting at the first frozen install.
+
+## The browser gets the final vote
+
+Automated tests are essential, but browser-facing work has confidence boundaries that unit tests cannot cross completely.
+
+The demo needed manual acceptance for keyboard behavior, clipboard interactions, reduced-motion settings, narrow viewports, unavailable browser storage, production paths, and portfolio integration. The answer was not a vague instruction to "check it visually." It was a concrete checklist of visitor journeys.
+
+This became particularly useful while dogfooding the package in a separate site. A terminal command input unexpectedly showed the host application's focus ring. The installed package stylesheet looked correct. The browser, however, was serving a stale transformed dependency stylesheet.
+
+Without looking at the mounted element, computed styles, and stylesheet ownership in DevTools, it would have been easy to publish another unnecessary CSS workaround. The better debugging order was:
+
+1. Verify what the browser actually mounted.
+2. Identify which stylesheet owns the winning rule.
+3. Confirm the installed artifact version.
+4. Rebuild the development dependency cache only when the browser evidence supports that explanation.
+
+This is a broader frontend lesson. Source code, `node_modules`, and browser runtime state are three different things. Do not blame consumer CSS until you know which artifact the browser is evaluating.
+
+## The demo should be a consumer, not a second implementation
+
+The public demo was not only marketing. It was a test of whether the package was actually usable.
+
+It used the published packages as an external consumer would. It kept its own site appearance separate from the terminal component's theme. It offered a narrow configuration sandbox that exposed a documented subset of the API without turning visitor input into evaluated code.
+
+That constraint mattered. A demo that lets people enter arbitrary JavaScript may look more powerful, but it teaches the wrong product model and creates a security problem the library never needed. Instead, the sandbox works with data: prompt text, a selected built-in theme, an explicit persistence option, a few CSS tokens, and a declarative command that demonstrates structured output.
+
+The generated Vanilla, React, JSON, and CSS snippets all come from the same normalized portable configuration. Preview-only details stay out of the snippets. Dynamic handlers remain clearly separate because JSON cannot represent application behavior.
+
+That is the same principle as the headless core in a different form: keep one source of truth, then adapt it deliberately for each surface.
+
+## What I would carry into the next library
+
+The terminal UI itself is small. The useful lessons are not.
+
+- Define the product boundary before you choose the API. A pseudo-terminal is not a shell, and that distinction should shape the whole architecture.
+- Keep reusable behavior in one framework-neutral authority when multiple renderers need to agree.
+- Prefer structured, finite contracts when they make portability and safety testable.
+- Describe accessibility as visitor outcomes that can be exercised, not as a broad claim.
+- Treat the packed and published artifact as the product. Repository source is only the input.
+- Make documentation executable wherever practical. Copy-paste paths are integration paths.
+- Use a real consumer application to expose assumptions about CSS, packaging, deployment, and ergonomics.
+- Leave browser acceptance as an explicit final step. Automation can reduce uncertainty, but it cannot eliminate it.
+
+The hard part of shipping a UI library is not rendering a convincing terminal prompt. It is deciding what the component promises, proving that promise at every public boundary, and refusing to confuse a passing local test suite with evidence that users can actually succeed.
+
+That is the work worth doing before the cursor starts blinking.
+
+If you want to explore the result, try the <a href="https://teemoto.github.io/pretend-terminal/" target="_blank" rel="noopener noreferrer">Pretend Terminal demo</a> and have a look at the <a href="https://github.com/teemoto/pretend-terminal" target="_blank" rel="noopener noreferrer">GitHub repository</a>.
