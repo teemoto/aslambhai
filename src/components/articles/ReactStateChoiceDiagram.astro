@@ -1,0 +1,69 @@
+<figure class="react-state-choice-tree" aria-labelledby="react-state-choice-caption">
+  <div class="react-state-choice-tree__root">
+    <span>Start</span>
+    <strong>Does this state have named, coordinated transitions?</strong>
+  </div>
+
+  <div class="react-state-choice-tree__branches">
+    <section class="react-state-choice-tree__branch">
+      <div class="react-state-choice-tree__edge"><span>No</span></div>
+      <div class="react-state-choice-tree__question">
+        <strong>Do distant descendants need this value?</strong>
+      </div>
+      <div class="react-state-choice-tree__leaves">
+        <div class="react-state-choice-tree__leaf">
+          <span>No</span>
+          <strong>Use <code>useState</code></strong>
+        </div>
+        <div class="react-state-choice-tree__leaf react-state-choice-tree__leaf--context">
+          <span>Yes</span>
+          <strong>Use <code>useState</code> + Context</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="react-state-choice-tree__branch">
+      <div class="react-state-choice-tree__edge"><span>Yes</span></div>
+      <div class="react-state-choice-tree__question">
+        <strong>Do distant descendants need this value?</strong>
+      </div>
+      <div class="react-state-choice-tree__leaves">
+        <div class="react-state-choice-tree__leaf">
+          <span>No</span>
+          <strong>Use <code>useReducer</code></strong>
+        </div>
+        <div class="react-state-choice-tree__leaf react-state-choice-tree__leaf--context">
+          <span>Yes</span>
+          <strong>Use <code>useReducer</code> + Context</strong>
+        </div>
+      </div>
+    </section>
+  </div>
+  <figcaption id="react-state-choice-caption">
+    First choose the state owner. Then add Context only when that value needs distribution.
+  </figcaption>
+</figure>
+
+<style>
+  .react-state-choice-tree { margin: 2rem 0; }
+  .react-state-choice-tree__root, .react-state-choice-tree__question, .react-state-choice-tree__leaf { border: 1px solid var(--rule); background: color-mix(in srgb, var(--surface) 65%, transparent); }
+  .react-state-choice-tree__root { width: min(29rem, 100%); margin: 0 auto; padding: 1rem; border-top: 3px solid var(--ink); text-align: center; }
+  .react-state-choice-tree__root span, .react-state-choice-tree__edge span, .react-state-choice-tree__leaf span { display: block; margin-bottom: 0.45rem; color: var(--teal); font-family: "Manrope", sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .react-state-choice-tree strong { color: var(--ink); font-family: "Source Serif 4", serif; font-size: 1.05rem; font-weight: 600; line-height: 1.25; }
+  .react-state-choice-tree code { color: var(--teal); font-family: "Manrope", sans-serif; font-size: 0.86em; }
+  .react-state-choice-tree__branches { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1.7rem; }
+  .react-state-choice-tree__branches::before { position: absolute; top: -0.9rem; left: 25%; width: 50%; border-top: 1px solid var(--rule); content: ""; }
+  .react-state-choice-tree__branch { position: relative; padding-top: 1.2rem; }
+  .react-state-choice-tree__branch::before { position: absolute; top: -0.9rem; left: 50%; height: 0.9rem; border-left: 1px solid var(--rule); content: ""; }
+  .react-state-choice-tree__edge { position: absolute; top: -0.2rem; left: 50%; z-index: 1; padding: 0 0.35rem; background: var(--bg); transform: translateX(-50%); }
+  .react-state-choice-tree__edge span { margin: 0; }
+  .react-state-choice-tree__question { position: relative; padding: 0.9rem 1rem; border-left: 3px solid var(--ink); text-align: center; }
+  .react-state-choice-tree__question::after { position: absolute; top: 100%; left: 50%; height: 0.9rem; border-left: 1px solid var(--rule); content: ""; }
+  .react-state-choice-tree__leaves { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; margin-top: 1.7rem; }
+  .react-state-choice-tree__leaves::before { position: absolute; top: -0.9rem; left: 25%; width: 50%; border-top: 1px solid var(--rule); content: ""; }
+  .react-state-choice-tree__leaf { position: relative; min-height: 5.5rem; padding: 0.85rem; border-top: 3px solid var(--muted); }
+  .react-state-choice-tree__leaf::before { position: absolute; top: -0.9rem; left: 50%; height: 0.9rem; border-left: 1px solid var(--rule); content: ""; }
+  .react-state-choice-tree__leaf--context { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 7%, var(--surface)); }
+  .react-state-choice-tree figcaption { margin-top: 0.65rem; color: var(--muted); font-size: 0.82rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 640px) { .react-state-choice-tree__branches, .react-state-choice-tree__leaves { grid-template-columns: 1fr; }.react-state-choice-tree__branches::before, .react-state-choice-tree__leaves::before { display: none; }.react-state-choice-tree__branch::before { left: 1rem; }.react-state-choice-tree__edge { left: 1rem; transform: none; }.react-state-choice-tree__question::after, .react-state-choice-tree__leaf::before { left: 1rem; }.react-state-choice-tree__leaf { min-height: 0; }.react-state-choice-tree__leaf + .react-state-choice-tree__leaf { margin-top: 0.6rem; }.react-state-choice-tree__leaf + .react-state-choice-tree__leaf::before { display: none; } }
+</style>

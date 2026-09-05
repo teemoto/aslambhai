@@ -1,0 +1,46 @@
+<figure class="context-distribution-diagram" aria-labelledby="context-distribution-caption">
+  <div class="context-distribution-diagram__panels">
+    <section class="context-distribution-diagram__panel">
+      <header><span>Without Context</span><strong>Pass the value through</strong></header>
+      <ol>
+        <li><b>App</b><code>user</code></li>
+        <li><b>Layout</b><code>user</code></li>
+        <li><b>Sidebar</b><code>user</code></li>
+        <li><b>Profile</b><em>uses user</em></li>
+      </ol>
+    </section>
+    <section class="context-distribution-diagram__panel context-distribution-diagram__panel--context">
+      <header><span>With Context</span><strong>Provide where it is needed</strong></header>
+      <ol>
+        <li><b>App</b><code>provides user</code></li>
+        <li><b>Layout</b><i>does not need it</i></li>
+        <li><b>Sidebar</b><i>does not need it</i></li>
+        <li><b>Profile</b><em>reads user</em></li>
+      </ol>
+    </section>
+  </div>
+  <figcaption id="context-distribution-caption">
+    Context removes forwarding work. It does not own the value or its update rules.
+  </figcaption>
+</figure>
+
+<style>
+  .context-distribution-diagram { margin: 2rem 0; }
+  .context-distribution-diagram__panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .context-distribution-diagram__panel { border: 1px solid var(--rule); background: color-mix(in srgb, var(--surface) 65%, transparent); overflow: hidden; }
+  .context-distribution-diagram__panel--context { border-color: var(--teal); }
+  .context-distribution-diagram__panel header { padding: 1rem; border-bottom: 1px solid var(--rule); }
+  .context-distribution-diagram__panel header span { display: block; margin-bottom: 0.3rem; color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .context-distribution-diagram__panel--context header span { color: var(--teal); }
+  .context-distribution-diagram__panel header strong { color: var(--ink); font-family: "Source Serif 4", serif; font-size: 1.1rem; font-weight: 600; }
+  .context-distribution-diagram ol { display: grid; gap: 0.65rem; margin: 0; padding: 1rem; list-style: none; }
+  .context-distribution-diagram li { position: relative; display: flex; align-items: baseline; justify-content: space-between; gap: 0.7rem; min-height: 2.25rem; padding: 0.55rem 0.7rem; border-left: 3px solid var(--rule); background: var(--bg); }
+  .context-distribution-diagram li:not(:last-child)::after { position: absolute; top: calc(100% + 0.08rem); left: 0.75rem; height: 0.5rem; border-left: 1px solid var(--muted); content: ""; }
+  .context-distribution-diagram li:not(:last-child)::before { position: absolute; z-index: 1; top: calc(100% + 0.37rem); left: calc(0.75rem - 2px); width: 4px; height: 4px; border-right: 1px solid var(--muted); border-bottom: 1px solid var(--muted); content: ""; transform: rotate(45deg); }
+  .context-distribution-diagram__panel--context li:first-child, .context-distribution-diagram__panel--context li:last-child { border-left-color: var(--teal); }
+  .context-distribution-diagram b { color: var(--ink); font-family: "Manrope", sans-serif; font-size: 0.76rem; }
+  .context-distribution-diagram code, .context-distribution-diagram em, .context-distribution-diagram i { color: var(--body); font-family: "Manrope", sans-serif; font-size: 0.68rem; font-style: normal; }
+  .context-distribution-diagram code, .context-distribution-diagram em { color: var(--teal); }
+  .context-distribution-diagram figcaption { margin-top: 0.65rem; color: var(--muted); font-size: 0.82rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 640px) { .context-distribution-diagram__panels { grid-template-columns: 1fr; } }
+</style>

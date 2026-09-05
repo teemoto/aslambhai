@@ -1,0 +1,296 @@
+---
+title: "State in React, From First Principles"
+description: "A practical mental model for choosing useState, useReducer, and Context without treating them as interchangeable tools."
+publishedAt: 2026-09-05
+minutes: 8
+topic: Frontend
+icon: code
+featured: false
+draft: false
+---
+
+import ComparisonTable from "../../components/articles/ComparisonTable.astro";
+import ContextDistributionDiagram from "../../components/articles/ContextDistributionDiagram.astro";
+import ReactStateChoiceDiagram from "../../components/articles/ReactStateChoiceDiagram.astro";
+import RequestStateDiagram from "../../components/articles/RequestStateDiagram.astro";
+
+# State in React, From First Principles
+
+Every React developer asks some version of the same question: `useState`, `useReducer`, or Context? Which one should I use?
+
+The useful answer is not a flowchart with arbitrary thresholds. It is understanding what each tool is for. Get that distinction right and you stop guessing. You start designing cleaner systems almost by reflex.
+
+So let’s build the mental model before the mechanics.
+
+## Two jobs, not three interchangeable tools
+
+The trap is to treat these as interchangeable options, like three brands of the same wrench. They are not.
+
+> `useState` and `useReducer` manage state. Context distributes values.
+
+Managing state means deciding what a value is and how it changes. Distributing a value means making an existing value available to components that need it.
+
+Picture a company:
+
+<ComparisonTable
+  columns={["Tool", "What it is"]}
+  rows={[
+    ["useState", "An employee’s personal notes. One owner, quick edits."],
+    ["useReducer", "A team workflow. Requests arrive, and a defined process decides the next state."],
+    ["Context", "A company-wide broadcast channel. It does not decide what happens. It makes a value available across part of the organisation."],
+  ]}
+/>
+
+Hold that picture. Everything below is a variation of it.
+
+If you want the whole article compressed to three lines:
+
+> `useState`: “I update values.”
+>
+> `useReducer`: “I dispatch events.”
+>
+> Context: “I share values.”
+
+## `useState`: the default you reach for first
+
+Use `useState` when the state is local and the updates are easy to describe: a few values, direct updates, and no complicated relationship between transitions.
+
+```tsx
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount((currentCount) => currentCount + 1)}>
+      {count}
+    </button>
+  );
+}
+```
+
+The mental model is: **I have a value, and I update it.**
+
+It is simple, readable, and carries almost no ceremony. That is why it should be the default, not something you graduate away from as your React vocabulary grows.
+
+`useState` can manage objects, arrays, and several related values too. The question is not whether you have crossed some magic number of state variables. The question is whether the rules connecting those values are still obvious where the update happens.
+
+## Where `useState` starts to strain
+
+Watch what happens when one request has three related pieces of state:
+
+```tsx
+const [isLoading, setIsLoading] = useState(false);
+const [data, setData] = useState<Data | null>(null);
+const [error, setError] = useState<Error | null>(null);
+```
+
+Now one operation has to coordinate all three:
+
+```tsx
+setIsLoading(true);
+setError(null);
+
+try {
+  const nextData = await loadData();
+  setData(nextData);
+} catch (nextError) {
+  setError(nextError as Error);
+} finally {
+  setIsLoading(false);
+}
+```
+
+Nothing here is wrong. The problem appears when this same request can be started, retried, cancelled, refreshed, or invalidated from several places. The rules become implicit. Someone has to remember which values change together, and in which order.
+
+That is a good signal to consider a reducer.
+
+<RequestStateDiagram />
+
+## `useReducer`: when state has named rules
+
+Reach for `useReducer` when the transitions are the hard part: several related values, multiple meaningful events, and rules you want to name and centralise.
+
+Here is the same request state with those rules in one place:
+
+```tsx
+type State = {
+  status: "idle" | "loading" | "success" | "error";
+  data: Data | null;
+  error: Error | null;
+};
+
+type Action =
+  | { type: "FETCH_START" }
+  | { type: "FETCH_SUCCESS"; data: Data }
+  | { type: "FETCH_ERROR"; error: Error };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "FETCH_START":
+      return { ...state, status: "loading", error: null };
+    case "FETCH_SUCCESS":
+      return { status: "success", data: action.data, error: null };
+    case "FETCH_ERROR":
+      return { status: "error", data: null, error: action.error };
+  }
+}
+
+const initialState: State = {
+  status: "idle",
+  data: null,
+  error: null,
+};
+
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+The mental model shifts. State no longer changes through scattered assignments. It changes through named events.
+
+You do not set loading and clear an error in every handler and hope you did it consistently. You dispatch `FETCH_START`, and the reducer defines what that event means.
+
+Think of it as the difference between switches and buttons. With `useState`, you flip switches by hand. With `useReducer`, you press one button and the system applies the associated changes.
+
+There is a cost: more code, a steeper initial learning curve, and genuine overkill for a single boolean. What you buy is predictable transitions, one place to debug them, and a model that remains readable as the state machine grows.
+
+## Context: the distribution layer
+
+The most important thing about Context is this:
+
+> Context does not manage state. It makes a value available to a descendant subtree without passing it through every intermediate component.
+
+That value may be state from `useState` or `useReducer`. It may also be a theme, an authenticated user, a feature flag, or a stable callback. Context does not care where the value came from. It only distributes it.
+
+```tsx
+import { createContext, useContext, useState } from "react";
+
+type CounterContextValue = {
+  count: number;
+  increment: () => void;
+};
+
+const CounterContext = createContext<CounterContextValue | null>(null);
+
+function App() {
+  const [count, setCount] = useState(0);
+  const value = {
+    count,
+    increment: () => setCount((currentCount) => currentCount + 1),
+  };
+
+  return (
+    <CounterContext value={value}>
+      <Child />
+    </CounterContext>
+  );
+}
+
+function Child() {
+  const counter = useContext(CounterContext);
+
+  if (!counter) {
+    throw new Error("Child must be rendered inside CounterContext");
+  }
+
+  return <button onClick={counter.increment}>{counter.count}</button>;
+}
+```
+
+The `useState` call still lives in `App`. Context did not create or own the count. It carried a value from `App` to `Child` without threading it through every component in between.
+
+Calling Context “global state management” is usually imprecise. It can distribute a value broadly, but it does not define its transitions, persistence, caching, server synchronisation, or update strategy. Those are separate design decisions.
+
+<ContextDistributionDiagram />
+
+## How they work together
+
+In real applications, you rarely choose only one. A common combination is `useReducer` for state transitions and Context for distribution.
+
+```tsx
+import { createContext, useContext, useReducer } from "react";
+import type { Dispatch, ReactNode } from "react";
+
+const CheckoutStateContext = createContext<State | null>(null);
+const CheckoutDispatchContext = createContext<Dispatch<Action> | null>(null);
+
+function CheckoutProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <CheckoutStateContext value={state}>
+      <CheckoutDispatchContext value={dispatch}>
+        {children}
+      </CheckoutDispatchContext>
+    </CheckoutStateContext>
+  );
+}
+```
+
+This is not Redux by default. It is two React primitives doing their respective jobs: the reducer owns transitions, and Context makes the current state and dispatch function available where they are needed.
+
+## A framework for choosing
+
+<ComparisonTable
+  columns={["Reach for", "When"]}
+  rows={[
+    ["useState", "State is local and the updates are easy to understand at the call site."],
+    ["useReducer", "Several related values change through named events or non-trivial transitions."],
+    ["Context", "A value needs to be read by distant descendants, and passing it through intermediate components would obscure the component tree."],
+  ]}
+/>
+
+The tools are composable. `useReducer` does not replace Context. Context does not replace a reducer. And neither prevents you from keeping simple local state in `useState`.
+
+<ReactStateChoiceDiagram />
+
+## Production examples
+
+Concrete beats abstract:
+
+- **`useState`:** a modal open/closed flag, a controlled input, a toggle switch.
+- **`useReducer`:** a multi-step checkout, complex form state, a workflow with explicit transitions and validation rules.
+- **Context:** a theme, an authenticated user, a feature-flag snapshot, or state and dispatch that several distant components need.
+
+## Context performance: know the actual trade-off
+
+Context has a sharp edge. React compares the provider value with its previous value. If it changed, components that read that context will update.
+
+```tsx
+<CounterContext value={{ count, increment }}>
+  <Child />
+</CounterContext>
+```
+
+That object is new on every render. If the parent renders while `count` is unchanged, the new object still looks different to React. Memoising the value can avoid those unnecessary context updates:
+
+```tsx
+import { useCallback, useMemo, useState } from "react";
+
+const increment = useCallback(
+  () => setCount((currentCount) => currentCount + 1),
+  [],
+);
+
+const value = useMemo(() => ({ count, increment }), [count, increment]);
+```
+
+But do not overstate what this does. When `count` changes, `value` must change, and every component that reads `CounterContext` is expected to update. `useMemo` cannot prevent that.
+
+If some components only dispatch actions, split state from dispatch:
+
+- `CountContext` provides `count`.
+- `DispatchContext` provides `dispatch`.
+
+The dispatch function returned by `useReducer` has a stable identity. Components that only read `DispatchContext` no longer need to update when `count` changes.
+
+Use this only when the render cost or component structure justifies it. Splitting every context pre-emptively is another kind of complexity.
+
+## Final thought
+
+`useState` and `useReducer` manage state. Context distributes values.
+
+So here is a test. You are building a multi-step checkout flow shared across several components. It has real transitions: next step, previous step, and validation before advancing.
+
+What do you reach for, and why?
+
+Work it out from the mental model, not from memory. If you can defend your answer in two sentences, you understand the distinction.
