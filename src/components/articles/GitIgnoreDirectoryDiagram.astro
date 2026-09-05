@@ -1,0 +1,34 @@
+<figure class="git-ignore-directory-diagram" aria-labelledby="git-ignore-directory-caption">
+  <div class="git-ignore-directory-diagram__folder">
+    <span class="git-ignore-directory-diagram__folder-name">logs</span>
+    <div class="git-ignore-directory-diagram__file git-ignore-directory-diagram__file--tracked">
+      <span>.gitignore</span>
+      <small>tracked</small>
+    </div>
+    <div class="git-ignore-directory-diagram__file git-ignore-directory-diagram__file--ignored">
+      <span>app.log</span>
+      <small>ignored</small>
+    </div>
+    <div class="git-ignore-directory-diagram__file git-ignore-directory-diagram__file--ignored">
+      <span>error.log</span>
+      <small>ignored</small>
+    </div>
+  </div>
+  <figcaption id="git-ignore-directory-caption">
+    Commit the nested <code>.gitignore</code>, not the generated log files.
+  </figcaption>
+</figure>
+
+<style>
+  .git-ignore-directory-diagram { margin: 2rem 0; font-family: "Manrope", sans-serif; }
+  .git-ignore-directory-diagram__folder { position: relative; display: grid; gap: 0.5rem; max-width: 27rem; margin: 0 auto; padding: 2.7rem 1rem 1rem; border: 1px solid var(--rule); border-top: 3px solid var(--teal); background: color-mix(in srgb, var(--surface) 65%, transparent); }
+  .git-ignore-directory-diagram__folder::before { position: absolute; top: -0.2rem; left: 1rem; width: 4rem; height: 1.2rem; border: 1px solid var(--rule); border-bottom: 0; background: var(--surface); content: ""; }
+  .git-ignore-directory-diagram__folder-name { position: absolute; top: 0.7rem; left: 1rem; color: var(--ink); font-family: "Source Serif 4", serif; font-size: 1rem; font-weight: 600; }
+  .git-ignore-directory-diagram__file { display: flex; justify-content: space-between; gap: 0.8rem; padding: 0.65rem 0.75rem; background: var(--bg); font-size: 0.75rem; }
+  .git-ignore-directory-diagram__file span { color: var(--ink); }
+  .git-ignore-directory-diagram__file small { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+  .git-ignore-directory-diagram__file--tracked { border-left: 3px solid var(--teal); }.git-ignore-directory-diagram__file--tracked small { color: var(--teal); }
+  .git-ignore-directory-diagram__file--ignored { border-left: 3px solid var(--rule); color: var(--muted); }.git-ignore-directory-diagram__file--ignored span, .git-ignore-directory-diagram__file--ignored small { color: var(--muted); text-decoration: line-through; }
+  .git-ignore-directory-diagram figcaption { margin-top: 0.65rem; color: var(--muted); font-family: "Source Serif 4", serif; font-size: 0.82rem; line-height: 1.45; text-align: center; }
+  .git-ignore-directory-diagram figcaption code { color: var(--teal); font-family: "Manrope", sans-serif; font-size: 0.88em; }
+</style>

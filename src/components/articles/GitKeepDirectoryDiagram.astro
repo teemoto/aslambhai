@@ -1,0 +1,30 @@
+<figure class="git-keep-directory-diagram" aria-labelledby="git-keep-directory-caption">
+  <div class="git-keep-directory-diagram__folder">
+    <span class="git-keep-directory-diagram__folder-name">some-new-empty-folder</span>
+    <div class="git-keep-directory-diagram__file">
+      <span>.gitkeep</span>
+      <small>tracked placeholder file</small>
+    </div>
+  </div>
+  <div class="git-keep-directory-diagram__result">
+    <span aria-hidden="true">✓</span>
+    <strong>Git can store this directory</strong>
+  </div>
+  <figcaption id="git-keep-directory-caption">
+    The file is what Git tracks. The directory appears because it contains that file.
+  </figcaption>
+</figure>
+
+<style>
+  .git-keep-directory-diagram { margin: 2rem 0; font-family: "Manrope", sans-serif; }
+  .git-keep-directory-diagram__folder { position: relative; max-width: 27rem; margin: 0 auto; padding: 2.7rem 1rem 1rem; border: 1px solid var(--rule); border-top: 3px solid var(--teal); background: color-mix(in srgb, var(--surface) 65%, transparent); }
+  .git-keep-directory-diagram__folder::before { position: absolute; top: -0.2rem; left: 1rem; width: 8rem; height: 1.2rem; border: 1px solid var(--rule); border-bottom: 0; background: var(--surface); content: ""; }
+  .git-keep-directory-diagram__folder-name { position: absolute; top: 0.7rem; left: 1rem; color: var(--ink); font-family: "Source Serif 4", serif; font-size: 1rem; font-weight: 600; }
+  .git-keep-directory-diagram__file { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; padding: 0.75rem; border-left: 3px solid var(--teal); background: var(--bg); }
+  .git-keep-directory-diagram__file span { color: var(--teal); font-size: 0.8rem; font-weight: 700; }
+  .git-keep-directory-diagram__file small { color: var(--body); font-size: 0.68rem; }
+  .git-keep-directory-diagram__result { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 0.75rem; color: var(--ink); font-size: 0.78rem; }
+  .git-keep-directory-diagram__result span { display: grid; width: 1.2rem; height: 1.2rem; place-items: center; border: 1px solid var(--teal); color: var(--teal); font-size: 0.75rem; }
+  .git-keep-directory-diagram figcaption { margin-top: 0.65rem; color: var(--muted); font-family: "Source Serif 4", serif; font-size: 0.82rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 480px) { .git-keep-directory-diagram__file { align-items: flex-start; flex-direction: column; gap: 0.25rem; } }
+</style>
