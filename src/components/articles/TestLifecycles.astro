@@ -1,0 +1,65 @@
+---
+const pipeline = ["Change code", "Build in CI", "Deploy to test", "Run E2E suite"];
+---
+
+<div class="test-lifecycles">
+  <figure aria-labelledby="e2e-lifecycle-caption">
+    <figcaption id="e2e-lifecycle-caption"><strong>E2E tests</strong><span>In the delivery pipeline</span></figcaption>
+    <ol class="release-pipeline">
+      {pipeline.map((step, index) => <li><span class="step-number" aria-hidden="true">0{index + 1}</span><strong>{step}</strong></li>)}
+    </ol>
+    <div class="lifecycle-outcomes">
+      <div><span class="outcome-label">✓ Tests pass</span><strong>Deploy to production</strong></div>
+      <div class="failure"><span class="outcome-label">× Tests fail</span><strong>Block deployment</strong></div>
+    </div>
+  </figure>
+
+  <figure aria-labelledby="canary-lifecycle-caption">
+    <figcaption id="canary-lifecycle-caption"><strong>Canaries</strong><span>While production is running</span></figcaption>
+    <div class="canary-loop">
+      <div class="canary-loop__check"><span class="step-number" aria-hidden="true">↻</span><div><span class="outcome-label">Every N minutes</span><strong>Run the critical journey</strong></div></div>
+      <div class="canary-loop__question">Did it succeed?</div>
+      <div class="lifecycle-outcomes">
+        <div><span class="outcome-label">✓ Yes</span><strong>Record success</strong></div>
+        <div class="failure"><span class="outcome-label">× No</span><strong>Record failure · alert</strong></div>
+      </div>
+      <div class="canary-loop__repeat"><span aria-hidden="true">↶</span> Wait for the next run. Repeat.</div>
+    </div>
+  </figure>
+</div>
+
+<style>
+  .test-lifecycles { margin: 2rem 0; font-family: "Manrope", sans-serif; }
+  .test-lifecycles figure { margin: 0; padding: 1.5rem; border: 1px solid var(--rule); background: var(--surface); }
+  .test-lifecycles figure + figure { margin-top: 1.25rem; }
+  .test-lifecycles figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; margin-bottom: 1.5rem; }
+  .test-lifecycles figcaption strong { color: var(--ink); font-size: 1.1rem; }
+  .test-lifecycles figcaption span { color: var(--muted); font-size: .75rem; }
+  .release-pipeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; list-style: none; margin: 0 0 1.5rem; padding: 0; }
+  .release-pipeline li { position: relative; margin: 0; padding: .85rem; background: var(--bg); border-top: 2px solid var(--teal); }
+  .release-pipeline li:not(:last-child)::after { content: "→"; position: absolute; left: 100%; width: 1.25rem; top: 50%; transform: translateY(-50%); text-align: center; color: var(--teal); }
+  .step-number { display: block; color: var(--teal); font-size: .75rem; margin-bottom: .4rem; }
+  .release-pipeline strong, .lifecycle-outcomes strong, .canary-loop__check strong { display: block; color: var(--ink); font-size: .8rem; line-height: 1.5; }
+  .lifecycle-outcomes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .lifecycle-outcomes > div { padding: .8rem 1rem; border-left: 3px solid var(--teal); background: var(--bg); }
+  .lifecycle-outcomes > .failure { border-color: var(--clay); }
+  .outcome-label { display: block; color: var(--body); font-size: .75rem; line-height: 1.5; margin-bottom: .3rem; }
+  .canary-loop { position: relative; padding-left: 1.5rem; border-left: 1px solid var(--teal); }
+  .canary-loop::before { content: ""; position: absolute; top: 0; left: -.3rem; width: .5rem; height: .5rem; border-top: 1px solid var(--teal); border-left: 1px solid var(--teal); transform: rotate(45deg); }
+  .canary-loop__check { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg); border-top: 2px solid var(--teal); }
+  .canary-loop__check .step-number { font-size: 2rem; margin: 0; line-height: 1; }
+  .canary-loop__question { padding: .75rem 0; color: var(--body); text-align: center; font-size: .8rem; }
+  .canary-loop__question::before { content: "↓"; margin-right: .5rem; color: var(--teal); }
+  .canary-loop__repeat { margin-top: 1rem; color: var(--muted); font-size: .75rem; }
+  .canary-loop__repeat span { color: var(--teal); margin-right: .4rem; }
+  @media (max-width: 600px) {
+    .test-lifecycles figure { padding: 1rem; }
+    .test-lifecycles figcaption { flex-direction: column; gap: .15rem; }
+    .release-pipeline { grid-template-columns: 1fr; gap: 1.25rem; }
+    .release-pipeline li { display: flex; align-items: center; gap: .75rem; }
+    .release-pipeline .step-number { margin: 0; }
+    .release-pipeline li:not(:last-child)::after { content: "↓"; top: 100%; left: 50%; height: 1.25rem; transform: translateX(-50%); line-height: 1.25rem; }
+    .lifecycle-outcomes { grid-template-columns: 1fr; gap: .6rem; }
+    .canary-loop { padding-left: 1rem; }
+  }
+</style>

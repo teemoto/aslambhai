@@ -1,0 +1,27 @@
+<figure class="health-response" aria-labelledby="health-response-caption">
+  <div class="health-response__flow">
+    <div class="health-response__request"><span>Request</span><strong>GET /health</strong></div>
+    <span class="health-response__arrow" aria-hidden="true">→</span>
+    <div class="health-response__endpoint"><span>Health endpoint</span><strong>Runs its configured checks</strong></div>
+    <span class="health-response__arrow" aria-hidden="true">→</span>
+    <div class="health-response__result"><span>Response</span><strong><b aria-hidden="true">✓</b> Status: ok</strong></div>
+  </div>
+  <figcaption id="health-response-caption">“OK” only covers what this endpoint checks.</figcaption>
+</figure>
+
+<style>
+  .health-response { margin: 2rem 0; padding: 1.5rem; border: 1px solid var(--rule); background: var(--surface); font-family: "Manrope", sans-serif; }
+  .health-response__flow { display: grid; grid-template-columns: 1fr auto 1.3fr auto 1fr; align-items: stretch; gap: .6rem; }
+  .health-response__flow > div { display: flex; flex-direction: column; justify-content: center; padding: 1rem .75rem; background: var(--bg); border-top: 2px solid var(--rule); }
+  .health-response__flow > div span { color: var(--muted); font-size: .65rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .health-response__flow strong { display: block; margin-top: .4rem; color: var(--ink); font-size: .8rem; line-height: 1.5; }
+  .health-response__flow > .health-response__result { border-color: var(--teal); }
+  .health-response__result b { color: var(--teal); }
+  .health-response__arrow { align-self: center; color: var(--teal); }
+  .health-response figcaption { margin-top: 1.2rem; color: var(--muted); font-size: .75rem; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .health-response { padding: 1rem; }
+    .health-response__flow { grid-template-columns: 1fr; gap: .4rem; }
+    .health-response__arrow { justify-self: center; transform: rotate(90deg); line-height: 1; }
+  }
+</style>

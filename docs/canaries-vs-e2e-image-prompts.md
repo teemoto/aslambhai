@@ -1,0 +1,20 @@
+# Canaries vs E2E image prompts
+
+Generated with the built-in image generation tool. Article assets are saved in `public/images/canaries-vs-e2e/` as WebP files. The login journey and timelines are static Astro components.
+
+## restaurant
+
+Use case: illustration-story. Create a polished editorial illustration for a technical article about E2E tests and synthetic canaries. Wide landscape, two balanced panels, warm paper background, ink outlines, restrained teal and amber accents, subtle print texture, generous whitespace. Left: a restaurant rehearsal before opening, a staff member acting as customer orders, pays and receives a meal, another staff member checks a clipboard. Right: the same restaurant open for business, a designated test customer repeats the same visit, a small clock with circular arrow conveys scheduled repetition. Exact short headings only: "E2E TEST" left and "SYNTHETIC CANARY" right. Subheadings: "Before opening" and "After opening, on a schedule". No other text, no logos, no watermarks. Clear adult editorial art, not childish clip art. Make text large enough for an 820px article column. Save the generated image and return its file path.
+
+## login-system
+
+Use case: infographic-diagram. Create a wide landscape editorial illustration for a technical article, warm ivory paper, fine dark teal ink, muted teal and amber, light print texture, generous whitespace. Title "ONE LOGIN, FIVE PARTS". Show exactly five beautifully drawn objects in a clear single left-to-right connected chain with arrowheads: a web browser window, frontend UI screen, API gateway arch, authentication server with key, database cylinder. Exact large labels underneath in order: "Browser", "Frontend", "API gateway", "Auth service", "Database". Arrows mean conceptual dependency path, do not show alternative routes. Small browser UI has only a person icon and login fields, no tiny text. Sophisticated restrained editorial illustration, consistent scale, generous margins, all labels easy to read at 820px width. No other words, no watermark. Save image and return file path.
+
+## production-failures
+
+Use case: infographic-diagram. Wide editorial illustration for technical article about production login failures. Warm ivory paper, dark teal ink outlines, muted teal and amber with restrained clay red failure marks, subtle print texture. Five equal illustrated vignettes in a spacious balanced layout, three across top and two centered below. Title "SAME CODE. NEW FAILURES." Each vignette depicts a different possible cause, not simultaneous guaranteed failures. Exact labels only: "Auth outage" (authentication server and key with warning), "DNS issue" (domain signpost with broken direction), "Bad config" (settings sliders and warning), "Database outage" (database cylinder disconnected), "Network issue" (severed cable). Each has a distinct large icon-like hand-drawn object, coherent editorial art, no tiny body copy. Clear large type readable at 820px, generous margins, no logo or watermark. Save generated image and return path.
+
+## car-checks
+
+Use case: illustration-story. Create polished editorial four-panel illustration for technical article comparing software checks through a car analogy. Landscape canvas, 2 by 2 equally sized panels with generous gutters. Warm ivory paper, dark teal ink outlines, muted teal car, amber accents, subtle print texture. Top left exact heading "BASIC HEALTH CHECK", show engine running with small vibration marks and a checkmark. Top right heading "COMPONENT TESTS", show mechanic testing brake sensor and fuel gauge separately on a workbench. Bottom left heading "E2E TEST", show a car following a small test-track route with turn and parking bay, clipboard inspection before delivery. Bottom right heading "SYNTHETIC CANARY", show same model car driven around a neighborhood block at sunrise, recurring circular arrow and small clock suggesting daily repetition after delivery. Adult technical editorial illustration, large readable headings, no other text, no logos, no watermark, no dense diagrams. Save generated image and return file path.
+

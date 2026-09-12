@@ -1,0 +1,39 @@
+---
+const systems = ["CPU", "Memory", "Server", "Database"];
+---
+
+<figure class="journey-status" aria-labelledby="journey-status-caption">
+  <div class="journey-status__comparison">
+    <div>
+      <div class="journey-status__label">Infrastructure dashboard</div>
+      <ul>
+        {systems.map(system => <li><strong>{system}</strong><span><b aria-hidden="true">✓</b> Healthy</span></li>)}
+      </ul>
+    </div>
+    <div class="journey-status__failed">
+      <div class="journey-status__label">Actual user journey</div>
+      <span class="journey-status__cross" aria-hidden="true">×</span>
+      <strong>Login failed</strong>
+      <span>Expired OAuth configuration</span>
+    </div>
+  </div>
+  <figcaption id="journey-status-caption">Every monitored box is green. The user still cannot log in.</figcaption>
+</figure>
+
+<style>
+  .journey-status { margin: 2rem 0; padding: 1.5rem; border: 1px solid var(--rule); background: var(--surface); font-family: "Manrope", sans-serif; }
+  .journey-status__comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .journey-status__label { color: var(--muted); font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .journey-status ul { list-style: none; padding: 0; margin: 1rem 0 0; }
+  .journey-status li { display: flex; justify-content: space-between; align-items: center; gap: .75rem; margin: 0; padding: .65rem 0; border-bottom: 1px solid var(--rule); font-size: .8rem; }
+  .journey-status li:last-child { border-bottom: 0; }
+  .journey-status li strong { color: var(--ink); }
+  .journey-status li span { color: var(--teal); }
+  .journey-status li b { margin-right: .3rem; }
+  .journey-status__failed { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border: 1px solid var(--rule); border-top: 3px solid var(--clay); background: var(--bg); text-align: center; }
+  .journey-status__cross { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; margin: 1rem 0 .6rem; border: 1px solid var(--clay); color: var(--clay); font-size: 1.7rem; line-height: 1; }
+  .journey-status__failed strong { color: var(--ink); font-size: 1.1rem; }
+  .journey-status__failed > span:last-child { margin-top: .35rem; color: var(--body); font-size: .75rem; line-height: 1.5; }
+  .journey-status figcaption { margin-top: 1.2rem; color: var(--muted); font-size: .75rem; line-height: 1.5; }
+  @media (max-width: 600px) { .journey-status { padding: 1rem; } .journey-status__comparison { grid-template-columns: 1fr; gap: 1rem; } }
+</style>

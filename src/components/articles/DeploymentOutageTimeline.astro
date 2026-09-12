@@ -1,0 +1,37 @@
+<figure class="deployment-outage" aria-labelledby="deployment-outage-caption">
+  <div class="deployment-outage__lane">
+    <strong class="deployment-outage__label">CI / E2E</strong>
+    <div class="deployment-outage__passed"><time>10:00</time><strong>✓ Tests pass</strong><span>This run is finished.</span></div>
+    <div class="deployment-outage__finished">No further checks from this run</div>
+  </div>
+  <div class="deployment-outage__lane">
+    <strong class="deployment-outage__label">Production</strong>
+    <ol>
+      <li><time>10:15</time><strong>✓ Deployed</strong><span>Journey works</span></li>
+      <li><time>11:00</time><strong>✓ Working</strong><span>Same release</span></li>
+      <li class="deployment-outage__failure"><time>14:00</time><strong>× Journey fails</strong><span>Dependency outage</span></li>
+    </ol>
+  </div>
+  <figcaption id="deployment-outage-caption">The code did not change. The production environment did.</figcaption>
+</figure>
+
+<style>
+  .deployment-outage { margin: 2rem 0; padding: 1.5rem; border: 1px solid var(--rule); background: var(--surface); font-family: "Manrope", sans-serif; }
+  .deployment-outage__lane { display: grid; grid-template-columns: 6rem minmax(0, 1fr) minmax(0, 2fr); gap: 1rem; align-items: center; }
+  .deployment-outage__lane + .deployment-outage__lane { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+  .deployment-outage__label { color: var(--muted); font-size: .75rem; }
+  .deployment-outage__passed, .deployment-outage li { padding: .75rem; background: var(--bg); border-top: 2px solid var(--teal); }
+  .deployment-outage time { display: block; color: var(--muted); font-size: .8rem; font-variant-numeric: tabular-nums; }
+  .deployment-outage__passed strong, .deployment-outage li strong { display: block; color: var(--ink); font-size: .8rem; margin-top: .3rem; }
+  .deployment-outage span { display: block; color: var(--body); font-size: .7rem; line-height: 1.5; margin-top: .3rem; }
+  .deployment-outage__finished { border-top: 1px dashed var(--rule); padding-top: .5rem; color: var(--muted); font-size: .75rem; }
+  .deployment-outage ol { grid-column: 2 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; list-style: none; margin: 0; padding: 0; }
+  .deployment-outage li { margin: 0; }
+  .deployment-outage .deployment-outage__failure { border-color: var(--clay); }
+  .deployment-outage figcaption { margin-top: 1.2rem; color: var(--muted); font-size: .75rem; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .deployment-outage { padding: 1rem; }
+    .deployment-outage__lane { grid-template-columns: 1fr; gap: .75rem; }
+    .deployment-outage ol { grid-column: 1; grid-template-columns: 1fr; }
+  }
+</style>

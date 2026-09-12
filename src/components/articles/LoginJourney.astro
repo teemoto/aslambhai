@@ -1,0 +1,39 @@
+---
+const steps = [
+  ["Open login", "Load the login page."],
+  ["Enter credentials", "Fill in username and password."],
+  ["Submit", "Send the login request."],
+  ["Authenticate", "The backend checks the credentials."],
+  ["Load dashboard", "Show the signed-in page."],
+  ["Verify", "Assert the expected content is visible."],
+];
+---
+
+<figure class="login-journey" aria-labelledby="login-journey-caption">
+  <div class="login-journey__heading">One test, start to finish</div>
+  <ol>
+    {steps.map(([title, detail], index) => (
+      <li>
+        <span class="login-journey__number" aria-hidden="true">{index + 1}</span>
+        <div><strong>{title}</strong><span>{detail}</span></div>
+      </li>
+    ))}
+  </ol>
+  <figcaption id="login-journey-caption">The journey ends with an assertion, not just a click.</figcaption>
+</figure>
+
+<style>
+  .login-journey { margin: 2rem 0; padding: 1.5rem; border: 1px solid var(--rule); background: var(--surface); font-family: "Manrope", sans-serif; }
+  .login-journey__heading { color: var(--teal); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+  .login-journey ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; padding: 0; margin: 1.2rem 0; list-style: none; }
+  .login-journey li { display: flex; align-items: flex-start; gap: .65rem; margin: 0; padding: 1rem .75rem; background: var(--bg); border-top: 2px solid var(--teal); }
+  .login-journey__number { flex: 0 0 1.4rem; color: var(--teal); font-size: 1.1rem; line-height: 1.4; }
+  .login-journey strong { display: block; color: var(--ink); font-size: .85rem; line-height: 1.4; }
+  .login-journey li div span { display: block; margin-top: .4rem; color: var(--body); font-size: .75rem; line-height: 1.5; }
+  .login-journey figcaption { color: var(--muted); font-size: .75rem; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .login-journey { padding: 1rem; }
+    .login-journey ol { grid-template-columns: 1fr; gap: .5rem; }
+    .login-journey li { padding: .75rem; }
+  }
+</style>

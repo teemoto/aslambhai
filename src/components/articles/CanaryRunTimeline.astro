@@ -1,0 +1,42 @@
+---
+const runs = [
+  { time: "12:00", passed: true },
+  { time: "12:05", passed: true },
+  { time: "12:10", passed: true },
+  { time: "12:15", passed: false },
+  { time: "12:20", passed: false },
+];
+---
+
+<figure class="canary-runs" aria-labelledby="canary-runs-caption">
+  <div class="canary-runs__heading">Same journey · every five minutes</div>
+  <ol>
+    {runs.map(({ time, passed }) => (
+      <li class:list={{ "canary-runs__failure": !passed }}>
+        <time>{time}</time>
+        <span class="canary-runs__mark" aria-hidden="true">{passed ? "✓" : "×"}</span>
+        <strong>{passed ? "Success" : "Failure"}</strong>
+      </li>
+    ))}
+  </ol>
+  <figcaption id="canary-runs-caption">12:10: last successful check. 12:15: first observed failure.</figcaption>
+</figure>
+
+<style>
+  .canary-runs { margin: 2rem 0; padding: 1.5rem; border: 1px solid var(--rule); background: var(--surface); font-family: "Manrope", sans-serif; }
+  .canary-runs__heading { color: var(--muted); font-size: .75rem; font-weight: 700; letter-spacing: .04em; }
+  .canary-runs ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 0; margin: 1.5rem 0; list-style: none; }
+  .canary-runs li { position: relative; display: grid; justify-items: center; gap: .65rem; margin: 0; color: var(--teal); }
+  .canary-runs li:not(:last-child)::after { content: ""; position: absolute; top: 3.2rem; left: 50%; width: 100%; border-top: 1px solid var(--rule); }
+  .canary-runs time { color: var(--ink); font-size: .85rem; font-variant-numeric: tabular-nums; }
+  .canary-runs__mark { z-index: 1; display: grid; place-items: center; width: 2rem; height: 2rem; border: 1px solid currentColor; background: var(--surface); font-size: 1.15rem; line-height: 1; }
+  .canary-runs strong { color: var(--ink); font-size: .75rem; }
+  .canary-runs .canary-runs__failure { color: var(--clay); }
+  .canary-runs figcaption { color: var(--muted); font-size: .75rem; line-height: 1.5; }
+  @media (max-width: 480px) {
+    .canary-runs { padding: 1rem; }
+    .canary-runs ol { grid-template-columns: 1fr; gap: .65rem; margin: 1rem 0; }
+    .canary-runs li { grid-template-columns: 3.5rem 2rem 1fr; justify-items: start; align-items: center; gap: 1rem; }
+    .canary-runs li:not(:last-child)::after { top: 2rem; left: 5.5rem; width: 0; height: .65rem; border-top: 0; border-left: 1px solid var(--rule); }
+  }
+</style>
