@@ -15,10 +15,9 @@ const topics = ["All", ...articleTopics];
 <BaseLayout active="home">
   <main class="home-grid">
     <section class="content-column">
-      <div class="intro"><h1>Engineering at scale.<br />Systems, software, and signal.</h1><p>Articles on resilient frontend systems, applied AI for engineers, and the ad tech stack.</p></div>
       <div class="discovery" role="search">
-        <label class="search-box"><Icon name="search" /><span class="sr-only">Search articles</span><input data-search-input placeholder="Search articles" /></label>
         <div class="filter-scroller" aria-label="Filter by topic">{topics.map((topic) => <button class:list={["chip", { selected: topic === "All" }]} data-topic={topic}>{topic}</button>)}</div>
+        <label class="search-box"><Icon name="search" /><span class="sr-only">Search articles</span><input data-search-input placeholder="Search articles" /></label>
       </div>
       <section class="featured" data-article data-search={`${featured.data.title} ${featured.data.description} ${featured.data.topic}`.toLowerCase()} data-topic-value={featured.data.topic} aria-labelledby="featured-title">
         <div class:list={["featured-copy", { "has-cover": Boolean(featured.data.cover) }]}><span class="eyebrow">Featured article</span><a href={`/articles/${featured.id}`}><h2 id="featured-title">{featured.data.title}</h2></a><p>{featured.data.description}</p>

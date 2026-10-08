@@ -25,9 +25,24 @@ test("renders metadata and article content", async () => {
   assert.match(home, /name="codex-preview" content="development"/);
   assert.match(home, /class="logo-mark"/);
   assert.match(home, /property="og:image"/);
-  assert.match(home, /Engineering at scale/);
+  assert.match(home, /class="tagline">Articles on resilient frontends, AI, and ad tech\.<\/span>/);
+  assert.doesNotMatch(home, /class="intro"|Engineering at scale/);
   assert.match(article, /Join the discussion/);
   assert.match(article, /giscus-container/);
+});
+
+test("uses a compact search that expands on focus", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
+  assert.ok(stylesheet, "Expected a generated stylesheet");
+  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
+
+  assert.match(styles, /\.search-box\{width:50px;min-width:50px;height:48px/);
+  assert.match(styles, /\.search-box:hover\{color:var\(--teal\)\}/);
+  assert.match(styles, /\.search-box:hover>svg\{transform:scale\(1\.1\);stroke-width:1\.75\}/);
+  assert.match(styles, /\.search-box:focus-within,\.search-box:has\(input:not\(:placeholder-shown\)\)\{width:min\(320px,36vw\)/);
+  assert.match(styles, /\.search-box:focus-within input,\.search-box:has\(input:not\(:placeholder-shown\)\) input\{width:100%;opacity:1\}/);
+  assert.doesNotMatch(styles, /\.discovery\{[^}]*border-bottom/);
 });
 
 test("renders article code samples with dual-theme Shiki output", async () => {
