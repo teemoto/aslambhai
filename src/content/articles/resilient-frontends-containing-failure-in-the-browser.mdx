@@ -1,0 +1,254 @@
+---
+title: "The Art of Resilient Frontends, Part 2: Containing Failure in the Browser"
+description: "How boundaries, feature-oriented architecture, explicit state ownership, and graceful degradation keep browser failures from spreading."
+publishedAt: 2026-10-07
+minutes: 7
+topic: Frontend
+icon: code
+featured: false
+draft: false
+---
+
+import CapabilityOrganization from "../../components/articles/CapabilityOrganization.astro";
+import ComparisonTable from "../../components/articles/ComparisonTable.astro";
+import ConcernSeams from "../../components/articles/ConcernSeams.astro";
+import DashboardFailureBoundary from "../../components/articles/DashboardFailureBoundary.astro";
+import ExplicitUiStates from "../../components/articles/ExplicitUiStates.astro";
+import FailureCompartments from "../../components/articles/FailureCompartments.astro";
+
+[Part 1](/articles/resilient-frontend-architecture/) built the mental model. The browser is a node in a distributed system that happens to have a screen attached, and a resilient frontend runs on a five-part habit called ECORE: expect failure, contain it, observe it, recover from it, and evolve. Part 1 lived in the first letter.
+
+Expecting failure changes nothing on its own. This part is where containment starts, and it does so in the browser.
+
+## Draw the watertight compartments
+
+In a ship, if one section has a leak, does it make sense to let the whole ship sink because of it? The smart answer is no. You build the ship with watertight compartments so that a leak in compartment A is contained within it and does not cause the ship to sink.
+
+<FailureCompartments />
+
+The same principle applies to your UI. Let's dive deeper with an example. Consider a dashboard with several independently useful regions:
+
+<DashboardFailureBoundary />
+
+If the Revenue Chart feature throws an error, should the whole screen go blank? Absolutely not. The chart is an independent feature, and the other features can function without it. So it gets its own watertight compartment, also known as an error boundary.
+
+```tsx
+function Dashboard() {
+  return (
+    <>
+      <Header />
+      <ErrorBoundary fallback={<ChartError />}>
+        <RevenueChart />
+      </ErrorBoundary>
+      <ErrorBoundary fallback={<TableError />}>
+        <InventoryTable />
+      </ErrorBoundary>
+      <Notifications />
+      <AccountMenu />
+    </>
+  );
+}
+```
+
+Now the Revenue Chart shows `ChartError`, while the Inventory Table, Notifications, and Account Menu remain available.
+
+Error boundaries are the watertight compartments of your UI. There is a tradeoff, however: boundary size. One giant boundary is simple and useless:
+
+```tsx
+<ErrorBoundary>
+  <EntireApplication /> {/* One error blanks everything */}
+</ErrorBoundary>
+```
+
+Too many boundaries create the opposite failure: noise and complexity. The rough rule of thumb is coupling. If two elements always succeed or fail together, they should share a boundary.
+
+## Organize by what code is for, not what it is
+
+A frontend gets hard to change when it is organized only by what things are instead of what they are for.
+
+Organizing by technical type looks tidy on day one. By month seven, unrelated features are tangled together inside every folder, and a change to billing risks breaking reporting. Organize by business capability instead:
+
+<CapabilityOrganization />
+
+Now, when billing changes, an engineer reasons mostly within the billing folder, and accidental coupling drops.
+
+Conway's law tells us that system structure tends to reflect an organization's communication paths. The inverse Conway maneuver uses that relationship deliberately: shape team and software boundaries so they reinforce the architecture you want. Do not ask, "Which components look similar?" Ask, "Which code changes together for the same business reason?" Code that changes together should live together.
+
+## Give every concern its own seam
+
+Here is a component that is doing far too much:
+
+```tsx
+function OrdersPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    fetch("/api/orders")
+      .then((response) => response.json())
+      .then(setOrders);
+  }, []);
+
+  return orders.map((order) => (
+    <button
+      key={order.id}
+      type="button"
+      onClick={() => fetch(`/api/orders/${order.id}/approve`)}
+    >
+      {order.name}
+    </button>
+  ));
+}
+```
+
+That one function handles fetching, serialization, state, a business action, rendering, and user interaction. It is hard to test and harder to evolve because there is no seam where one concern can change without touching the rest. Split it into layers, each with a single job.
+
+```ts
+// ordersApi.ts: the only layer that speaks HTTP
+export async function getOrders(): Promise<Order[]> {
+  const response = await fetch("/api/orders");
+
+  if (!response.ok) {
+    throw new Error(`Failed to load orders: ${response.status}`);
+  }
+
+  return response.json();
+}
+```
+
+```ts
+// useOrders.ts: application logic for caching and refetching this data
+export function useOrders() {
+  return useQuery({ queryKey: ["orders"], queryFn: getOrders });
+}
+```
+
+```tsx
+// OrdersPage.tsx: presentation, where every state has a face
+export function OrdersPage() {
+  const { isPending, isError, data, refetch } = useOrders();
+
+  if (isPending) return <OrdersSkeleton />;
+  if (isError) return <OrdersError onRetry={refetch} />;
+
+  return <OrdersList orders={data} />;
+}
+```
+
+The payoff shows up at migration time. When REST becomes GraphQL, only `ordersApi.ts` changes. When the design system changes, only `OrdersPage.tsx` changes. The seams are where the future gets to enter without a complete rewrite.
+
+<ConcernSeams />
+
+## Every piece of state has a rightful owner
+
+Most fragility traces back to one habit: dumping all state into one global store. Looking at you, Redux. Not all state is global. Give each piece the narrowest owner that works.
+
+<ComparisonTable
+  columns={["State", "Rightful owner"]}
+  rows={[
+    ["Button hover state", "The component"],
+    ["Modal open state", "A nearby parent"],
+    ["Form draft", "The form"],
+    ["Server data", "A query cache"],
+    ["Authenticated user", "Application scope"],
+    ["URL filters", "The URL"],
+    ["Cross-page workflow", "A shared store"],
+  ]}
+/>
+
+State that lives close to where it is used is easier to understand and far less likely to create invisible dependencies across the app.
+
+The distinction that fixes many bugs is this: **server state and client state are not the same thing.**
+
+<ComparisonTable
+  columns={["Concern", "Server state", "Client state"]}
+  rows={[
+    ["Owned by", "The backend", "The frontend"],
+    ["Examples", "Users, orders, reports, notifications", "Selected tab, open modal, draft text, collapsed sidebar"],
+    ["Staleness", "Can go stale", "Cannot go stale relative to a remote source"],
+    ["Handling", "Must be fetched, cached, invalidated, and synchronized", "Set it and read it"],
+    ["Belongs in", "A query cache", "Local or component state"],
+  ]}
+/>
+
+Treating server data as if it were plain client data is the root of "I updated my profile, and it still shows the old name." Server data is a local view of something another system owns, so give it a tool that understands staleness, such as TanStack Query, rather than a plain store you have to synchronize by hand forever.
+
+## Every state deserves a face
+
+Fragile apps model only the happy path: if data exists, render the page.
+
+Real apps live in more states than that, and a blank area is ambiguous. Is it loading? Empty? Broken? The user cannot tell.
+
+Give each meaningful state its own face:
+
+<ExplicitUiStates />
+
+```tsx
+function CustomerList() {
+  const { isPending, isError, data, refetch } = useCustomers();
+
+  if (isPending) return <CustomerListSkeleton />;
+
+  if (isError) {
+    return (
+      <ErrorState
+        title="Customers could not be loaded"
+        actionLabel="Try again"
+        onAction={() => refetch()}
+      />
+    );
+  }
+
+  if (data.length === 0) return <EmptyCustomers />;
+  return <CustomerTable customers={data} />;
+}
+```
+
+## When the ideal fails, serve the useful
+
+Graceful degradation means that when the ideal experience is unavailable, you serve the best useful alternative instead of nothing.
+
+<ComparisonTable
+  columns={["When this fails", "Serve this instead"]}
+  rows={[
+    ["A chart", "The summarized numbers"],
+    ["An image", "A placeholder"],
+    ["Live updates", "A manual refresh button"],
+    ["Search", "The results already on screen"],
+    ["Analytics", "Nothing visible; never block the user"],
+  ]}
+/>
+
+This forces a ranking of what actually matters. Take a checkout feature:
+
+<ComparisonTable
+  columns={["Path", "Priority"]}
+  rows={[
+    ["Payment submission", "Critical"],
+    ["Product image zoom", "Non-critical"],
+    ["Recommendation carousel", "Non-critical"],
+    ["Analytics tracking", "Non-critical"],
+  ]}
+/>
+
+The critical path must not depend on non-critical paths. Fire and forget the telemetry so that a broken analytics call cannot break a purchase:
+
+```ts
+async function completePurchase(order: Order) {
+  const result = await submitOrder(order);
+
+  void trackPurchase(result).catch((error) => {
+    // Analytics failing must never fail the sale.
+    logNonCriticalFailure(error);
+  });
+
+  return result;
+}
+```
+
+This connects directly to the failure boundaries discussed above. Partial success at the data layer, degradation at the UX layer, and boundaries at the component layer are the same instinct applied at three altitudes. Contain the damage and keep the core alive.
+
+## Next: the unreliable network
+
+Everything we discussed so far assumed the failure was yours to catch inside the browser: a component that throws, a store that sprawls, or a state you forgot to render. The nastier failures come over the wire. Requests hang, fail halfway, return a shape you never agreed to, or arrive in the wrong order and overwrite fresh data with stale data.
+
+Part 3 is about that boundary: treating the network as unreliable by default. We will cover timeouts and safe retries, validate what the network sends before trusting it, design for partial success when one of several services fails, protect against out-of-order responses, and observe all of it so that a failure on a stranger's phone still leaves you something to investigate.

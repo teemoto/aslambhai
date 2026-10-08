@@ -30,6 +30,15 @@ test("renders metadata and article content", async () => {
   assert.match(article, /giscus-container/);
 });
 
+test("renders article code samples with dual-theme Shiki output", async () => {
+  const article = await readFile(new URL("../dist/articles/resilient-frontends-containing-failure-in-the-browser/index.html", import.meta.url), "utf8");
+
+  assert.match(article, /class="astro-code astro-code-themes github-light github-dark"/);
+  assert.match(article, /--shiki-light:/);
+  assert.match(article, /--shiki-dark:/);
+  assert.match(article, /data-language="tsx"/);
+});
+
 test("publishes the TIL and WTF article categories", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const contentConfig = await readFile(new URL("../src/content.config.ts", import.meta.url), "utf8");

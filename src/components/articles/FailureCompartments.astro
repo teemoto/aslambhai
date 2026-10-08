@@ -1,0 +1,59 @@
+<figure class="failure-compartments" aria-labelledby="failure-compartments-caption">
+  <div class="failure-compartments__panels">
+    <section class="failure-compartments__panel failure-compartments__panel--fragile">
+      <header>
+        <span>One open hull</span>
+        <strong>One leak spreads everywhere</strong>
+      </header>
+      <div class="failure-compartments__ship" aria-hidden="true">
+        <div class="failure-compartments__deck"></div>
+        <div class="failure-compartments__hull">
+          <span class="failure-compartments__water failure-compartments__water--wide"></span>
+          <span class="failure-compartments__leak">✦</span>
+        </div>
+      </div>
+      <p>A local failure becomes a system-wide failure.</p>
+    </section>
+
+    <section class="failure-compartments__panel failure-compartments__panel--resilient">
+      <header>
+        <span>Watertight compartments</span>
+        <strong>The damage stays local</strong>
+      </header>
+      <div class="failure-compartments__ship" aria-hidden="true">
+        <div class="failure-compartments__deck"></div>
+        <div class="failure-compartments__hull failure-compartments__hull--divided">
+          <span></span><span></span><span class="failure-compartments__water"></span><span></span>
+          <span class="failure-compartments__leak">✦</span>
+        </div>
+      </div>
+      <p>Independent boundaries keep the rest of the system useful.</p>
+    </section>
+  </div>
+  <figcaption id="failure-compartments-caption">
+    A useful boundary limits the blast radius without fragmenting the system into needless pieces.
+  </figcaption>
+</figure>
+
+<style>
+  .failure-compartments { margin: 2rem 0; }
+  .failure-compartments__panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .failure-compartments__panel { border: 1px solid var(--rule); background: color-mix(in srgb, var(--surface) 70%, transparent); overflow: hidden; }
+  .failure-compartments__panel--resilient { border-color: var(--teal); }
+  .failure-compartments header { padding: 1rem; border-bottom: 1px solid var(--rule); }
+  .failure-compartments header span { display: block; margin-bottom: 0.3rem; color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .failure-compartments__panel--resilient header span { color: var(--teal); }
+  .failure-compartments header strong { color: var(--ink); font-family: "Source Serif 4", serif; font-size: 1.1rem; font-weight: 600; }
+  .failure-compartments__ship { position: relative; margin: 2.25rem auto 1.2rem; width: min(78%, 16rem); }
+  .failure-compartments__deck { width: 72%; height: 1.2rem; margin-left: 14%; border: 2px solid var(--ink); border-bottom: 0; border-radius: 0.25rem 0.25rem 0 0; }
+  .failure-compartments__hull { position: relative; height: 5.5rem; border: 2px solid var(--ink); border-radius: 0 0 45% 45%; overflow: hidden; }
+  .failure-compartments__hull--divided { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .failure-compartments__hull--divided > span:not(.failure-compartments__leak) { border-right: 2px solid var(--ink); }
+  .failure-compartments__hull--divided > span:nth-child(4) { border-right: 0; }
+  .failure-compartments__water { align-self: end; height: 58%; background: color-mix(in srgb, var(--teal) 38%, transparent); }
+  .failure-compartments__water--wide { position: absolute; right: 0; bottom: 0; left: 0; height: 72%; }
+  .failure-compartments__leak { position: absolute; right: 32%; bottom: 1.4rem; color: var(--clay); font-size: 1.2rem; line-height: 1; }
+  .failure-compartments__panel p { margin: 0; padding: 0 1rem 1rem; color: var(--body); font-family: "Manrope", sans-serif; font-size: 0.76rem; line-height: 1.5; text-align: center; }
+  .failure-compartments figcaption { margin-top: 0.65rem; color: var(--muted); font-size: 0.82rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 640px) { .failure-compartments__panels { grid-template-columns: 1fr; } }
+</style>

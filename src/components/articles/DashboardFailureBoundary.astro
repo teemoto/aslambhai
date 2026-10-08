@@ -1,0 +1,31 @@
+<figure class="dashboard-boundary" aria-labelledby="dashboard-boundary-caption">
+  <div class="dashboard-boundary__frame">
+    <header><span>Dashboard</span><small>Four independently useful regions</small></header>
+    <div class="dashboard-boundary__grid">
+      <section class="dashboard-boundary__feature dashboard-boundary__feature--wide"><span>Shared shell</span><strong>Header</strong><small>Available</small></section>
+      <section class="dashboard-boundary__feature dashboard-boundary__feature--error"><span>Chart boundary</span><strong>Revenue chart</strong><small>ChartError fallback</small></section>
+      <section class="dashboard-boundary__feature"><span>Table boundary</span><strong>Inventory table</strong><small>Available</small></section>
+      <section class="dashboard-boundary__feature"><span>Independent feature</span><strong>Notifications</strong><small>Available</small></section>
+      <section class="dashboard-boundary__feature"><span>Independent feature</span><strong>Account menu</strong><small>Available</small></section>
+    </div>
+  </div>
+  <figcaption id="dashboard-boundary-caption">The revenue chart fails inside its own boundary while the rest of the dashboard remains available.</figcaption>
+</figure>
+
+<style>
+  .dashboard-boundary { margin: 2rem 0; }
+  .dashboard-boundary__frame { border: 1px solid var(--rule); background: color-mix(in srgb, var(--surface) 70%, transparent); }
+  .dashboard-boundary__frame > header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.85rem 1rem; border-bottom: 1px solid var(--rule); }
+  .dashboard-boundary__frame > header span { color: var(--ink); font-family: "Source Serif 4", serif; font-size: 1.1rem; font-weight: 600; }
+  .dashboard-boundary__frame > header small { color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.68rem; }
+  .dashboard-boundary__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; padding: 1rem; }
+  .dashboard-boundary__feature { padding: 0.8rem; border: 1px solid var(--rule); border-left: 3px solid var(--teal); background: var(--bg); }
+  .dashboard-boundary__feature--wide { grid-column: 1 / -1; }
+  .dashboard-boundary__feature--error { border-color: color-mix(in srgb, var(--clay) 65%, var(--rule)); border-left-color: var(--clay); }
+  .dashboard-boundary__feature span { display: block; margin-bottom: 0.25rem; color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+  .dashboard-boundary__feature strong { display: block; color: var(--ink); font-family: "Source Serif 4", serif; font-size: 0.95rem; font-weight: 600; }
+  .dashboard-boundary__feature small { display: block; margin-top: 0.35rem; color: var(--teal); font-family: "Manrope", sans-serif; font-size: 0.65rem; }
+  .dashboard-boundary__feature--error small { color: var(--clay); }
+  .dashboard-boundary figcaption { margin-top: 0.65rem; color: var(--muted); font-size: 0.82rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 560px) { .dashboard-boundary__frame > header { align-items: flex-start; flex-direction: column; gap: 0.2rem; } .dashboard-boundary__grid { grid-template-columns: 1fr; } .dashboard-boundary__feature--wide { grid-column: auto; } }
+</style>

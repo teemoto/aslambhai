@@ -1,0 +1,47 @@
+<figure class="capability-organization" aria-labelledby="capability-organization-caption">
+  <div class="capability-organization__panels">
+    <section class="capability-organization__panel">
+      <header><span>Organized by technical type</span><strong>One change crosses every folder</strong></header>
+      <div class="capability-organization__types" aria-label="Technical folders shared by all features">
+        <span>components</span><span>hooks</span><span>services</span><span>types</span>
+      </div>
+      <div class="capability-organization__changes"><span>Authentication</span><span>Billing</span><span>Reporting</span></div>
+    </section>
+    <section class="capability-organization__panel capability-organization__panel--preferred">
+      <header><span>Organized by capability</span><strong>Changes stay inside a feature</strong></header>
+      <div class="capability-organization__features">
+        <div><b>authentication/</b><small>UI · API · hooks · types</small></div>
+        <div class="capability-organization__active"><b>billing/</b><small>UI · API · hooks · types</small></div>
+        <div><b>reporting/</b><small>UI · API · hooks · types</small></div>
+      </div>
+      <p><span>Shared deliberately</span> UI · network · analytics · errors</p>
+    </section>
+  </div>
+  <figcaption id="capability-organization-caption">
+    Business boundaries reduce the number of unrelated places an engineer must touch to change one capability.
+  </figcaption>
+</figure>
+
+<style>
+  .capability-organization { margin: 2rem 0; }
+  .capability-organization__panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .capability-organization__panel { border: 1px solid var(--rule); background: color-mix(in srgb, var(--surface) 70%, transparent); overflow: hidden; }
+  .capability-organization__panel--preferred { border-color: var(--teal); }
+  .capability-organization header { padding: 1rem; border-bottom: 1px solid var(--rule); }
+  .capability-organization header span, .capability-organization__panel p span { display: block; margin-bottom: 0.3rem; color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .capability-organization__panel--preferred header span, .capability-organization__panel p span { color: var(--teal); }
+  .capability-organization header strong { color: var(--ink); font-family: "Source Serif 4", serif; font-size: 1.05rem; font-weight: 600; }
+  .capability-organization__types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.35rem; padding: 1rem 1rem 0.65rem; }
+  .capability-organization__types span { padding: 0.55rem 0.2rem; border-top: 3px solid var(--rule); background: var(--bg); color: var(--body); font-family: monospace; font-size: 0.62rem; text-align: center; }
+  .capability-organization__changes { display: flex; justify-content: center; gap: 0.35rem; padding: 0 1rem 1rem; }
+  .capability-organization__changes span { padding: 0.35rem 0.45rem; color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.62rem; }
+  .capability-organization__changes span::before { display: block; width: 100%; margin-bottom: 0.25rem; border-top: 1px solid var(--clay); content: ""; transform: rotate(-8deg); }
+  .capability-organization__features { display: grid; gap: 0.45rem; padding: 1rem; }
+  .capability-organization__features div { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; padding: 0.55rem 0.65rem; border-left: 3px solid var(--rule); background: var(--bg); }
+  .capability-organization__features .capability-organization__active { border-left-color: var(--teal); }
+  .capability-organization__features b { color: var(--ink); font-family: monospace; font-size: 0.72rem; }
+  .capability-organization__features small { color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.62rem; }
+  .capability-organization__panel p { margin: 0 1rem 1rem; padding-top: 0.7rem; border-top: 1px solid var(--rule); color: var(--body); font-family: "Manrope", sans-serif; font-size: 0.68rem; line-height: 1.45; }
+  .capability-organization figcaption { margin-top: 0.65rem; color: var(--muted); font-size: 0.82rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 640px) { .capability-organization__panels { grid-template-columns: 1fr; } .capability-organization__types { grid-template-columns: repeat(2, 1fr); } }
+</style>

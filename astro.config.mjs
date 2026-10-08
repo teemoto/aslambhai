@@ -6,6 +6,15 @@ import AstroPWA from "@vite-pwa/astro";
 export default defineConfig({
   site: "https://tanviraslam.com",
   output: "static",
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+      defaultColor: false,
+    },
+  },
   integrations: [
     mdx(),
     sitemap({

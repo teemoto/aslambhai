@@ -1,0 +1,26 @@
+<figure class="explicit-states" aria-labelledby="explicit-states-caption">
+  <div class="explicit-states__comparison">
+    <section class="explicit-states__fragile"><span>Fragile model</span><strong>Data exists</strong><small>Render the page</small><p>Everything else becomes a blank, ambiguous space.</p></section>
+    <section class="explicit-states__resilient"><span>Explicit model</span><div class="explicit-states__grid"><div><b>Loading</b><small>Skeleton</small></div><div><b>Error</b><small>Retry path</small></div><div><b>Empty</b><small>Next action</small></div><div><b>Ready</b><small>Customer table</small></div></div></section>
+  </div>
+  <figcaption id="explicit-states-caption">Every meaningful application state gives the user an explanation and, where possible, a next step.</figcaption>
+</figure>
+
+<style>
+  .explicit-states { margin: 2rem 0; }
+  .explicit-states__comparison { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: 1rem; }
+  .explicit-states__comparison > section { padding: 1rem; border: 1px solid var(--rule); background: color-mix(in srgb, var(--surface) 70%, transparent); }
+  .explicit-states__resilient { border-color: var(--teal) !important; }
+  .explicit-states__comparison > section > span { display: block; margin-bottom: 0.55rem; color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .explicit-states__resilient > span { color: var(--teal) !important; }
+  .explicit-states__fragile strong { display: block; padding: 0.7rem; border-left: 3px solid var(--clay); background: var(--bg); color: var(--ink); font-family: "Source Serif 4", serif; font-size: 1rem; }
+  .explicit-states__fragile small { display: block; margin: 0.4rem 0 0 0.7rem; color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.68rem; }
+  .explicit-states__fragile p { margin: 1rem 0 0; color: var(--body); font-family: "Manrope", sans-serif; font-size: 0.72rem; line-height: 1.45; }
+  .explicit-states__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+  .explicit-states__grid div { padding: 0.65rem; border-left: 3px solid var(--teal); background: var(--bg); }
+  .explicit-states__grid b, .explicit-states__grid small { display: block; }
+  .explicit-states__grid b { color: var(--ink); font-family: "Source Serif 4", serif; font-size: 0.88rem; }
+  .explicit-states__grid small { margin-top: 0.25rem; color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.64rem; }
+  .explicit-states figcaption { margin-top: 0.65rem; color: var(--muted); font-size: 0.82rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 600px) { .explicit-states__comparison { grid-template-columns: 1fr; } }
+</style>

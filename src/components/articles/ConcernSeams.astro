@@ -1,0 +1,20 @@
+<figure class="concern-seams" aria-labelledby="concern-seams-caption">
+  <div class="concern-seams__layers">
+    <section><span>Presentation</span><strong>OrdersPage.tsx</strong><small>Changes with the design</small></section>
+    <section><span>Application logic</span><strong>useOrders.ts</strong><small>Changes with caching rules</small></section>
+    <section><span>Infrastructure</span><strong>ordersApi.ts</strong><small>Changes with the network</small></section>
+  </div>
+  <figcaption id="concern-seams-caption">Each concern has a named seam, so one kind of change does not require rewriting every layer.</figcaption>
+</figure>
+
+<style>
+  .concern-seams { margin: 2rem 0; }
+  .concern-seams__layers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; }
+  .concern-seams section { position: relative; padding: 1rem; border: 1px solid var(--rule); border-top: 3px solid var(--teal); background: color-mix(in srgb, var(--surface) 70%, transparent); }
+  .concern-seams section:not(:last-child)::after { position: absolute; top: 50%; left: calc(100% + 1px); width: 0.7rem; border-top: 1px solid var(--teal); content: ""; }
+  .concern-seams span { display: block; margin-bottom: 0.4rem; color: var(--muted); font-family: "Manrope", sans-serif; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .concern-seams strong { display: block; color: var(--ink); font-family: monospace; font-size: 0.78rem; }
+  .concern-seams small { display: block; margin-top: 0.5rem; color: var(--body); font-family: "Manrope", sans-serif; font-size: 0.68rem; line-height: 1.4; }
+  .concern-seams figcaption { margin-top: 0.65rem; color: var(--muted); font-size: 0.82rem; line-height: 1.45; text-align: center; }
+  @media (max-width: 640px) { .concern-seams__layers { grid-template-columns: 1fr; } .concern-seams section:not(:last-child)::after { top: 100%; left: 50%; width: 0; height: 0.7rem; border-top: 0; border-left: 1px solid var(--teal); } }
+</style>
