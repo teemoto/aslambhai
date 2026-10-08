@@ -32,42 +32,6 @@ document.querySelector("[data-menu-toggle]")?.addEventListener("click", (event) 
   document.querySelector('[data-menu-icon="close"]')?.toggleAttribute("hidden", !open);
 });
 
-const homeGrid = document.querySelector("[data-home-grid]");
-const rail = document.querySelector("[data-side-rail]");
-const reopen = document.querySelector("[data-rail-reopen]");
-let railTransitionTimer;
-function setRail(open, animate = true) {
-  clearTimeout(railTransitionTimer);
-  rail?.removeAttribute("hidden");
-  reopen?.removeAttribute("hidden");
-  homeGrid?.classList.toggle("rail-closed", !open);
-  rail?.setAttribute("aria-hidden", String(!open));
-  reopen?.setAttribute("aria-hidden", String(open));
-  document.querySelector("[data-rail-toggle]")?.setAttribute("aria-expanded", String(open));
-
-  const finishTransition = () => {
-    rail?.toggleAttribute("hidden", !open);
-    reopen?.toggleAttribute("hidden", open);
-  };
-  if (animate && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    railTransitionTimer = setTimeout(finishTransition, 500);
-  } else {
-    finishTransition();
-  }
-  localStorage.setItem("aslam-rail", open ? "open" : "closed");
-}
-if (homeGrid) setRail(localStorage.getItem("aslam-rail") !== "closed", false);
-document.querySelector("[data-rail-toggle]")?.addEventListener("click", () => setRail(false));
-reopen?.addEventListener("click", () => setRail(true));
-
-document.querySelector("[data-mobile-rail-toggle]")?.addEventListener("click", (event) => {
-  const button = event.currentTarget;
-  const content = document.querySelector("[data-mobile-rail]");
-  const open = button.getAttribute("aria-expanded") !== "true";
-  button.setAttribute("aria-expanded", String(open));
-  content?.toggleAttribute("hidden", !open);
-});
-
 const search = document.querySelector("[data-search-input]");
 const chips = [...document.querySelectorAll("[data-topic]")];
 let selectedTopic = "All";

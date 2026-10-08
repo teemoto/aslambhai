@@ -95,37 +95,16 @@ test("keeps article metadata aligned with accessible actions and generated conte
   assert.match(script, /label\.textContent\s*=\s*"Copied"/);
 });
 
-test("keeps the side-panel reopen control hidden while the panel is expanded", async () => {
-  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
-  const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
-  assert.ok(stylesheet, "Expected a generated stylesheet");
-  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
-
-  assert.match(home, /data-rail-reopen[^>]*hidden/);
-  assert.match(styles, /\[hidden\]\{display:none!important\}/);
-});
-
-test("animates the desktop side panel over half a second", async () => {
+test("keeps project controls out of the article-focused homepage", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
   assert.ok(stylesheet, "Expected a generated stylesheet");
   const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
   const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
 
-  assert.match(styles, /transition:grid-template-columns \.5s ease/);
-  assert.match(styles, /\.home-grid\.rail-closed\{grid-template-columns:minmax\(0,1fr\) minmax\(0,0fr\)\}/);
-  assert.match(script, /setTimeout\(finishTransition, 500\)/);
-});
-
-test("uses an unobstructed minimalist side-panel control", async () => {
-  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
-  const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
-  assert.ok(stylesheet, "Expected a generated stylesheet");
-  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
-
-  assert.match(home, /aria-label="Collapse side panel"[^>]*>.*m9 18 6-6-6-6/s);
-  assert.match(styles, /\.rail-toggle\{[^}]*left:12px[^}]*width:32px[^}]*border:0/);
-  assert.doesNotMatch(home, /panelClose|panelOpen/);
+  assert.doesNotMatch(home, /data-(?:side|mobile)-rail|Project status|Collapse side panel|Open project status/);
+  assert.doesNotMatch(script, /data-(?:side|mobile)-rail|aslam-rail|railTransitionTimer/);
+  assert.match(styles, /\.home-grid\{display:block\}/);
 });
 
 test("renders the personal footer message", async () => {

@@ -4,7 +4,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/ui/Icon.astro";
 import ArticleIcon from "../components/articles/ArticleIcon.astro";
 import ArticleRow from "../components/articles/ArticleRow.astro";
-import RailContent from "../components/layout/RailContent.astro";
 import { articleTopics } from "../content.config";
 
 const articles = (await getCollection("articles", ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
@@ -14,7 +13,7 @@ const date = featured.data.publishedAt.toLocaleDateString("en-US", { month: "sho
 const topics = ["All", ...articleTopics];
 ---
 <BaseLayout active="home">
-  <main class="home-grid" data-home-grid>
+  <main class="home-grid">
     <section class="content-column">
       <div class="intro"><h1>Engineering at scale.<br />Systems, software, and signal.</h1><p>Articles on resilient frontend systems, applied AI for engineers, and the ad tech stack.</p></div>
       <div class="discovery" role="search">
@@ -26,11 +25,7 @@ const topics = ["All", ...articleTopics];
           <div class="meta"><span><ArticleIcon kind={featured.data.icon} />{featured.data.topic}</span><span><Icon name="calendar" />{date}</span><span><Icon name="clock" />{featured.data.minutes} min read</span></div></div>
         {featured.data.cover && <a class="featured-cover" href={`/articles/${featured.id}`} aria-label={`Read ${featured.data.title}`}><img src={featured.data.cover.src} alt={featured.data.cover.alt} width="1672" height="941" loading="eager" /></a>}
       </section>
-      <button class="mobile-rail-toggle" data-mobile-rail-toggle aria-expanded="false">Projects <Icon name="chevronDown" /></button>
-      <div data-mobile-rail hidden><RailContent /></div>
       <section class="recent" aria-label="Recent writing">{rest.length > 0 && <span class="eyebrow">Recent writing</span>}{rest.map((article) => <ArticleRow article={article} />)}<p class="empty-state" data-empty-state hidden>No articles match those filters.</p></section>
     </section>
-    <aside class="side-rail" data-side-rail><button class="rail-toggle" data-rail-toggle aria-label="Collapse side panel" aria-expanded="true"><Icon name="chevronRight" size={18} /></button><RailContent /></aside>
-    <button class="rail-reopen" data-rail-reopen aria-label="Open project status" hidden><Icon name="chevronLeft" size={18} /></button>
   </main>
 </BaseLayout>
