@@ -107,6 +107,16 @@ test("keeps project controls out of the article-focused homepage", async () => {
   assert.match(styles, /\.home-grid\{display:block\}/);
 });
 
+test("keeps the homepage header visible while scrolling", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
+  assert.ok(stylesheet, "Expected a generated stylesheet");
+  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
+
+  assert.match(home, /class="site-shell home-site"/);
+  assert.match(styles, /\.article-site \.site-header,\.home-site \.site-header\{position:sticky;top:0;z-index:30/);
+});
+
 test("renders the personal footer message", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   assert.match(home, /Built with ❤️ and ☕/);

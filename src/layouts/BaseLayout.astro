@@ -43,7 +43,7 @@ const registerServiceWorker = import.meta.env.PROD;
     </script>
   </head>
   <body>
-    <div class:list={["site-shell", article && "article-site"]}>
+    <div class:list={["site-shell", article && "article-site", active === "home" && "home-site"]}>
       <Header active={active} />
       <slot />
       <Footer />
