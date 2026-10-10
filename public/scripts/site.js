@@ -54,6 +54,25 @@ chips.forEach((chip) => chip.addEventListener("click", () => {
   filterArticles();
 }));
 
+const editorialLead = document.querySelector("[data-editorial-lead]");
+if (editorialLead) {
+  const leadPanels = [...editorialLead.querySelectorAll("[data-lead-panel]")];
+  const leadTriggers = [...editorialLead.querySelectorAll("[data-lead-trigger]")];
+  const leadStatus = editorialLead.querySelector("[data-lead-status]");
+
+  leadTriggers.forEach((trigger) => trigger.addEventListener("click", () => {
+    const selectedPanel = leadPanels.find((panel) => panel.dataset.leadPanel === trigger.dataset.leadTrigger);
+    if (!selectedPanel) return;
+
+    leadPanels.forEach((panel) => panel.toggleAttribute("hidden", panel !== selectedPanel));
+    leadTriggers.forEach((item) => item.setAttribute("aria-pressed", String(item === trigger)));
+    editorialLead.dataset.search = selectedPanel.dataset.leadSearch;
+    editorialLead.dataset.topicValue = selectedPanel.dataset.leadTopic;
+    if (leadStatus) leadStatus.textContent = `Showing ${selectedPanel.querySelector("h1")?.textContent ?? "selected article"}`;
+    filterArticles();
+  }));
+}
+
 document.querySelector("[data-print]")?.addEventListener("click", () => window.print());
 document.querySelector("[data-copy-link]")?.addEventListener("click", async (event) => {
   await navigator.clipboard.writeText(location.href);

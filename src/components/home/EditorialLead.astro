@@ -1,0 +1,78 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ArticleCover from "../articles/ArticleCover.astro";
+import ArticleIcon from "../articles/ArticleIcon.astro";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  featured: CollectionEntry<"articles">;
+  latest: CollectionEntry<"articles">[];
+}
+
+const { featured, latest } = Astro.props;
+const stories = [featured, ...latest];
+const formatDate = (date: Date) => date.toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+---
+
+<section
+  class="editorial-lead"
+  data-editorial-lead
+  data-article
+  data-search={`${featured.data.title} ${featured.data.description} ${featured.data.topic}`.toLowerCase()}
+  data-topic-value={featured.data.topic}
+  aria-label="Featured and latest writing"
+>
+  <div class="lead-stage">
+    {stories.map((article, index) => (
+      <article
+        class="lead-panel"
+        id={`lead-${article.id}`}
+        data-lead-panel={article.id}
+        data-lead-search={`${article.data.title} ${article.data.description} ${article.data.topic}`.toLowerCase()}
+        data-lead-topic={article.data.topic}
+        hidden={index !== 0}
+      >
+        <a class="lead-cover" href={`/articles/${article.id}`} aria-label={`Read ${article.data.title}`}>
+          <ArticleCover article={article} loading={index === 0 ? "eager" : "lazy"} />
+        </a>
+        <div class="lead-copy">
+          <span class="eyebrow">{index === 0 ? "Featured article" : "Latest article"}</span>
+          <div class="lead-meta">
+            <span><ArticleIcon kind={article.data.icon} />{article.data.topic}</span>
+            <span><Icon name="calendar" />{formatDate(article.data.publishedAt)}</span>
+            <span><Icon name="clock" />{article.data.minutes} min read</span>
+          </div>
+          <a href={`/articles/${article.id}`}><h1>{article.data.title}</h1></a>
+          <p>{article.data.description}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <aside class="latest-writing" aria-labelledby="latest-writing-title">
+    <span class="eyebrow" id="latest-writing-title">Latest writing</span>
+    <ol>
+      {latest.map((article, index) => (
+        <li>
+          <button
+            type="button"
+            data-lead-trigger={article.id}
+            aria-controls={`lead-${article.id}`}
+            aria-pressed="false"
+          >
+            <span class="latest-index">{String(index + 1).padStart(2, "0")}</span>
+            <span class="latest-topic">{article.data.topic}</span>
+            <strong>{article.data.title}</strong>
+            <time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt)}</time>
+          </button>
+        </li>
+      ))}
+    </ol>
+    <p class="sr-only" aria-live="polite" data-lead-status></p>
+  </aside>
+</section>

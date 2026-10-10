@@ -2,28 +2,24 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/ui/Icon.astro";
-import ArticleIcon from "../components/articles/ArticleIcon.astro";
 import ArticleRow from "../components/articles/ArticleRow.astro";
+import EditorialLead from "../components/home/EditorialLead.astro";
 import { articleTopics } from "../content.config";
 
 const articles = (await getCollection("articles", ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 const featured = articles.find(({ data }) => data.featured) ?? articles[0];
 const rest = articles.filter(({ id }) => id !== featured.id);
-const date = featured.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+const latest = rest.slice(0, 4);
 const topics = ["All", ...articleTopics];
 ---
 <BaseLayout active="home">
   <main class="home-grid">
     <section class="content-column">
+      <EditorialLead featured={featured} latest={latest} />
       <div class="discovery" role="search">
         <div class="filter-scroller" aria-label="Filter by topic">{topics.map((topic) => <button class:list={["chip", { selected: topic === "All" }]} data-topic={topic}>{topic}</button>)}</div>
         <label class="search-box"><Icon name="search" /><span class="sr-only">Search articles</span><input data-search-input placeholder="Search articles" /></label>
       </div>
-      <section class="featured" data-article data-search={`${featured.data.title} ${featured.data.description} ${featured.data.topic}`.toLowerCase()} data-topic-value={featured.data.topic} aria-labelledby="featured-title">
-        <div class:list={["featured-copy", { "has-cover": Boolean(featured.data.cover) }]}><span class="eyebrow">Featured article</span><a href={`/articles/${featured.id}`}><h2 id="featured-title">{featured.data.title}</h2></a><p>{featured.data.description}</p>
-          <div class="meta"><span><ArticleIcon kind={featured.data.icon} />{featured.data.topic}</span><span><Icon name="calendar" />{date}</span><span><Icon name="clock" />{featured.data.minutes} min read</span></div></div>
-        {featured.data.cover && <a class="featured-cover" href={`/articles/${featured.id}`} aria-label={`Read ${featured.data.title}`}><img src={featured.data.cover.src} alt={featured.data.cover.alt} width="1672" height="941" loading="eager" /></a>}
-      </section>
       <section class="recent" aria-label="Recent writing">{rest.length > 0 && <span class="eyebrow">Recent writing</span>}{rest.map((article) => <ArticleRow article={article} />)}<p class="empty-state" data-empty-state hidden>No articles match those filters.</p></section>
     </section>
   </main>

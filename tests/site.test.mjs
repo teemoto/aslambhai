@@ -49,6 +49,21 @@ test("uses a compact search that expands on focus", async () => {
   assert.doesNotMatch(styles, /\.discovery\{[^}]*border-bottom/);
 });
 
+test("renders a progressively enhanced featured and latest editorial lead", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
+
+  assert.match(home, /class="editorial-lead"[^>]*data-editorial-lead/);
+  assert.match(home, /data-lead-panel="resilient-frontend-architecture"(?![^>]*hidden)/);
+  assert.equal((home.match(/data-lead-trigger=/g) ?? []).length, 4);
+  assert.match(home, /data-lead-trigger="resilient-frontends-containing-failure-in-the-browser"/);
+  assert.match(home, /class="article-cover-fallback article-cover-frontend"/);
+  assert.ok(home.indexOf("data-editorial-lead") < home.indexOf('class="discovery"'));
+  assert.match(script, /leadPanels\.forEach\(\(panel\) => panel\.toggleAttribute\("hidden"/);
+  assert.match(script, /setAttribute\("aria-pressed"/);
+  assert.doesNotMatch(script, /setInterval\([^)]*lead/);
+});
+
 test("renders article code samples with dual-theme Shiki output", async () => {
   const article = await readFile(new URL("../dist/articles/resilient-frontends-containing-failure-in-the-browser/index.html", import.meta.url), "utf8");
 
