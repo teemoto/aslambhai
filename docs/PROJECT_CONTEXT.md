@@ -4,7 +4,7 @@ Last updated: August 4, 2026
 
 ## Purpose
 
-Aslam Bhai is Tanvir Aslam's public technical-writing and project platform. It is part of Anabasis, a year-long program focused on deep engineering learning, shipping useful products, preparing for Principal or Senior Staff roles, building a respected public brand, and creating the possibility of a second income stream.
+`tanviraslam.com` is Tanvir Aslam's public technical-writing and project platform. It is part of Anabasis, a year-long program focused on deep engineering learning, shipping useful products, preparing for Principal or Senior Staff roles, building a respected public brand, and creating the possibility of a second income stream.
 
 Tanvir has at most three hours a day alongside a full-time job and a toddler. Favor focused scope, weekly shipping, and learning through real deliverables over endless polish cycles.
 
@@ -13,7 +13,7 @@ The primary audience is mid-level and senior frontend engineers. Content covers 
 ## Product direction
 
 - Keep the site static-first, content-first, and dependency-light.
-- Preserve the established Aslam Bhai visual identity and responsive behavior.
+- Preserve the established editorial visual identity and responsive behavior while presenting Tanvir Aslam as the public brand.
 - The homepage emphasizes published articles. Core sections are Home, Projects, and About.
 - About uses a mode chooser: a readable profile at `/about/read` and a separate Pretend Terminal experience at `/about/terminal`.
 - Publishing remains Git-based until a concrete requirement justifies a CMS integration.

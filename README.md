@@ -1,4 +1,4 @@
-# Aslam Bhai
+# Tanvir Aslam
 
 A static, content-first personal publishing site built with Astro.
 

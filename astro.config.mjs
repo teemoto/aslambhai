@@ -33,7 +33,7 @@ export default defineConfig({
           "offline/index.html",
           "_astro/**/*.{css,js}",
           "scripts/**/*.js",
-          "brand/aslam-bhai-mark.png",
+          "brand/tanvir-aslam-mark.svg",
           "apple-touch-icon.png",
           "icon-192.png",
           "icon-512.png",

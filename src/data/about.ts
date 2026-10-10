@@ -1,11 +1,11 @@
 export const aboutProfile = {
-  title: "I’m Tanvir. Aslam Bhai is how I explain engineering.",
+  title: "I’m Tanvir. This is where I explain engineering.",
   intro:
     "I’m a senior frontend engineer and technical lead focused on frontend architecture, engineering systems, ad tech, and AI-native products.",
   summary: "Senior frontend engineer and technical lead.",
   whyThisExists: [
     "Most engineering resources explain what a technology does. I’m more interested in why it exists, which constraints shaped it, where it breaks, and how teams should reason about the tradeoffs.",
-    "Aslam Bhai is my public notebook for that work—and Anabasis is the year-long expedition behind it: learning deeply, building real products, and growing from senior craft into broader engineering leadership.",
+    "This site is my public notebook for that work. Anabasis is the year-long expedition behind it: learning deeply, building real products, and growing from senior craft into broader engineering leadership.",
   ],
   focusAreas: [
     { name: "Frontend systems and architecture", perspective: "Architecture, resilience, and tradeoffs" },

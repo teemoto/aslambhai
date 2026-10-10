@@ -25,7 +25,11 @@ test("renders metadata and article content", async () => {
   assert.match(home, /name="codex-preview" content="development"/);
   assert.match(home, /class="logo-mark"/);
   assert.match(home, /property="og:image"/);
-  assert.match(home, /class="tagline">Articles on resilient frontends, AI, and ad tech\.<\/span>/);
+  assert.match(home, /class="brand-name">Tanvir Aslam<\/a>/);
+  assert.match(home, /Engineer \/ Technical Writer<\/span>/);
+  assert.doesNotMatch(home, />Home<\/a>/);
+  assert.match(home, /<title>Tanvir Aslam — Frontend Architecture, AI, and Ad Tech<\/title>/);
+  assert.doesNotMatch(home, /Aslam Bhai/);
   assert.doesNotMatch(home, /class="intro"|Engineering at scale/);
   assert.match(article, /Join the discussion/);
   assert.match(article, /giscus-container/);
@@ -141,7 +145,7 @@ test("renders the personal footer message", async () => {
 test("links public projects to their GitHub repositories", async () => {
   const projects = await readFile(new URL("../dist/projects/index.html", import.meta.url), "utf8");
   for (const [name, repository] of [
-    ["Aslam Bhai", "aslambhai"],
+    ["tanviraslam.com", "aslambhai"],
     ["JSON Bourne", "json-bourne"],
     ["Sakka", "Sakka"],
     ["Pretend Terminal", "pretend-terminal"],
@@ -158,7 +162,11 @@ test("links public projects to their GitHub repositories", async () => {
 });
 
 test("publishes the complete logo identity", async () => {
-  for (const file of ["brand/aslam-bhai-mark.png", "brand/social-card.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png"]) {
+  assert.ok((await stat(new URL("../dist/brand/tanvir-aslam-mark.svg", import.meta.url))).size > 100);
+  assert.ok((await stat(new URL("../dist/brand/tanvir-avatar.png", import.meta.url))).size > 1_000);
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  assert.match(home, /src="\/brand\/tanvir-avatar\.png"/);
+  for (const file of ["brand/social-card.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png"]) {
     assert.ok((await stat(new URL(`../dist/${file}`, import.meta.url))).size > 1_000);
   }
 });

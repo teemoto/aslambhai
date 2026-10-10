@@ -1,6 +1,6 @@
 export const site = {
-  name: "Aslam Bhai",
-  title: "Aslam Bhai — Engineering and Ad Tech, explained",
+  name: "Tanvir Aslam",
+  title: "Tanvir Aslam — Frontend Architecture, AI, and Ad Tech",
   description: "Deep, practical essays on frontend architecture, AI for engineers, ad tech, and engineering leadership.",
   url: "https://tanviraslam.com",
   author: "Tanvir Aslam",

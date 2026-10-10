@@ -6,11 +6,12 @@ const { active } = Astro.props;
 ---
 <header class="site-header">
   <div class="brand-lockup">
-    <a href="/" class="monogram" aria-label="Aslam Bhai home"><LogoMark /></a>
-    <div><a href="/" class="brand-name">Aslam Bhai</a><span class="tagline">Articles on resilient frontends, AI, and ad tech.</span></div>
+    <a href="/" class="monogram" aria-label="Tanvir Aslam home">
+      <LogoMark />
+    </a>
+    <div><a href="/" class="brand-name">Tanvir Aslam</a><span class="tagline"><span class="tagline-prefix">Frontend </span>Engineer / Technical Writer</span></div>
   </div>
   <nav class="main-nav" id="main-nav" aria-label="Primary navigation">
-    <a class:list={{ active: active === "home" }} href="/">Home</a>
     <a class:list={{ active: active === "projects" }} href="/projects">Projects</a>
     <a class:list={{ active: active === "about" }} href="/about">About</a>
   </nav>
