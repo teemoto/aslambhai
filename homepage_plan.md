@@ -69,7 +69,7 @@ Checkpoint: homepage begins directly with the editorial lead story.
 
 ### Step 3: Build the featured/latest editorial section
 
-**Status: Implemented, awaiting visual review.**
+**Status: Complete.**
 
 Replace the existing featured section with a two-column composition.
 
@@ -105,6 +105,8 @@ Mobile:
 Checkpoint: desktop and mobile hero review before building the remainder of the page.
 
 ### Step 4: Create a reusable article-cover system
+
+**Status: Implemented, awaiting visual review.**
 
 Only one current article has a dedicated cover. A card-based homepage needs a coherent fallback system.
 

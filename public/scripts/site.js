@@ -58,19 +58,29 @@ const editorialLead = document.querySelector("[data-editorial-lead]");
 if (editorialLead) {
   const leadPanels = [...editorialLead.querySelectorAll("[data-lead-panel]")];
   const leadTriggers = [...editorialLead.querySelectorAll("[data-lead-trigger]")];
+  const featuredPanel = leadPanels[0];
+  const featuredTrigger = editorialLead.querySelector("[data-featured-trigger]");
   const leadStatus = editorialLead.querySelector("[data-lead-status]");
 
-  leadTriggers.forEach((trigger) => trigger.addEventListener("click", () => {
-    const selectedPanel = leadPanels.find((panel) => panel.dataset.leadPanel === trigger.dataset.leadTrigger);
-    if (!selectedPanel) return;
-
+  const selectLeadPanel = (selectedPanel, activeTrigger) => {
     leadPanels.forEach((panel) => panel.toggleAttribute("hidden", panel !== selectedPanel));
-    leadTriggers.forEach((item) => item.setAttribute("aria-pressed", String(item === trigger)));
+    leadTriggers.forEach((item) => item.setAttribute("aria-pressed", String(item === activeTrigger)));
+    featuredTrigger?.toggleAttribute("hidden", selectedPanel === featuredPanel);
     editorialLead.dataset.search = selectedPanel.dataset.leadSearch;
     editorialLead.dataset.topicValue = selectedPanel.dataset.leadTopic;
     if (leadStatus) leadStatus.textContent = `Showing ${selectedPanel.querySelector("h1")?.textContent ?? "selected article"}`;
     filterArticles();
+  };
+
+  leadTriggers.forEach((trigger) => trigger.addEventListener("click", () => {
+    const selectedPanel = leadPanels.find((panel) => panel.dataset.leadPanel === trigger.dataset.leadTrigger);
+    if (!selectedPanel) return;
+    selectLeadPanel(selectedPanel, trigger);
   }));
+
+  featuredTrigger?.addEventListener("click", () => {
+    if (featuredPanel) selectLeadPanel(featuredPanel, null);
+  });
 }
 
 document.querySelector("[data-print]")?.addEventListener("click", () => window.print());

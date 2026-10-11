@@ -1,14 +1,21 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import ArticleIcon from "./ArticleIcon.astro";
+import Icon from "../ui/Icon.astro";
 
 interface Props {
   article: CollectionEntry<"articles">;
   loading?: "eager" | "lazy";
+  mode?: "standard" | "lead";
+  label?: string;
 }
 
-const { article, loading = "lazy" } = Astro.props;
-const { cover, icon, title, topic } = article.data;
+const { article, loading = "lazy", mode = "standard", label } = Astro.props;
+const { cover, description, icon, minutes, publishedAt, title, topic } = article.data;
+const isLead = mode === "lead";
+const titleHash = [...title].reduce((total, character) => ((total * 31) + (character.codePointAt(0) ?? 0)) >>> 0, 0);
+const pattern = ["orbit", "grid", "signal"][titleHash % 3];
+const seriesMarker = topic === "TIL" || topic === "WTF" ? topic : undefined;
 const palette = topic === "AI"
   ? "ai"
   : topic === "Ad Tech"
@@ -18,30 +25,76 @@ const palette = topic === "AI"
       : topic === "TIL" || topic === "WTF"
         ? "series"
         : "frontend";
+const formattedDate = publishedAt.toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
 ---
 
-{cover ? (
-  <img
-    class="article-cover-image"
-    src={cover.src}
-    alt={cover.alt}
-    width="1672"
-    height="941"
-    loading={loading}
-    decoding="async"
-  />
-) : (
-  <div class:list={["article-cover-fallback", `article-cover-${palette}`]} aria-hidden="true">
-    <span class="article-cover-topic">{topic}</span>
-    <span class="article-cover-icon"><ArticleIcon kind={icon} size={30} /></span>
-    <strong>{title}</strong>
-    <span class="article-cover-rule"></span>
-  </div>
-)}
+<figure
+  class:list={["article-cover", { "article-cover-lead": isLead }]}
+  data-cover-kind={cover ? "image" : "fallback"}
+>
+  {cover ? (
+    <img
+      class="article-cover-image"
+      src={cover.src}
+      alt={cover.alt}
+      width="1672"
+      height="941"
+      loading={loading}
+      decoding="async"
+    />
+  ) : (
+    <div
+      class:list={["article-cover-fallback", `article-cover-${palette}`, `article-cover-${pattern}`]}
+      data-cover-pattern={pattern}
+      aria-hidden="true"
+    >
+      <span class="article-cover-decoration article-cover-decoration-one"></span>
+      <span class="article-cover-decoration article-cover-decoration-two"></span>
+      {!isLead && <span class="article-cover-topic">{topic}</span>}
+      <span class="article-cover-icon"><ArticleIcon kind={icon} size={30} /></span>
+      {seriesMarker && <span class="article-cover-series-mark">{seriesMarker}</span>}
+      {!isLead && <strong>{title}</strong>}
+      <span class="article-cover-rule"></span>
+    </div>
+  )}
+  {isLead && (
+    <figcaption class="article-cover-details">
+      {label && <span class="article-cover-label">{label}</span>}
+      <div class="article-cover-meta">
+        <span><ArticleIcon kind={icon} />{topic}</span>
+        <span><Icon name="calendar" />{formattedDate}</span>
+        <span><Icon name="clock" />{minutes} min read</span>
+      </div>
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </figcaption>
+  )}
+</figure>
 
 <style>
+  .article-cover {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    container-type: inline-size;
+  }
+
+  .article-cover-lead {
+    aspect-ratio: 4 / 3;
+    background: #102521;
+  }
+
   .article-cover-image,
   .article-cover-fallback {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
@@ -51,43 +104,107 @@ const palette = topic === "AI"
     object-fit: cover;
   }
 
+  .article-cover-lead::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(5 19 17 / .02) 12%, rgb(5 19 17 / .42) 47%, rgb(5 19 17 / .97) 100%);
+    content: "";
+    pointer-events: none;
+  }
+
   .article-cover-fallback {
     --cover-accent: var(--teal);
-    position: relative;
     overflow: hidden;
-    padding: clamp(24px, 4vw, 46px);
+    padding: clamp(20px, 5cqw, 46px);
     background:
       linear-gradient(135deg, color-mix(in srgb, var(--cover-accent) 18%, var(--surface)), var(--surface) 62%),
       var(--surface);
     color: var(--ink);
   }
 
-  .article-cover-fallback::before,
-  .article-cover-fallback::after {
-    content: "";
+  .article-cover-ai {
+    --cover-accent: color-mix(in srgb, var(--teal) 48%, #8069c5);
+  }
+
+  .article-cover-ad-tech {
+    --cover-accent: var(--clay);
+  }
+
+  .article-cover-leadership {
+    --cover-accent: color-mix(in srgb, var(--clay) 62%, #9a8128);
+  }
+
+  .article-cover-series {
+    --cover-accent: color-mix(in srgb, var(--teal) 56%, #557a9c);
+  }
+
+  .article-cover-decoration {
     position: absolute;
     border: 1px solid color-mix(in srgb, var(--cover-accent) 42%, transparent);
+    pointer-events: none;
+  }
+
+  .article-cover-orbit .article-cover-decoration {
     border-radius: 50%;
   }
 
-  .article-cover-fallback::before {
+  .article-cover-orbit .article-cover-decoration-one {
     width: 54%;
     aspect-ratio: 1;
     right: -12%;
     top: -30%;
   }
 
-  .article-cover-fallback::after {
+  .article-cover-orbit .article-cover-decoration-two {
     width: 38%;
     aspect-ratio: 1;
     right: 4%;
     top: -20%;
   }
 
-  .article-cover-ai { --cover-accent: #7a63b8; }
-  .article-cover-ad-tech { --cover-accent: var(--clay); }
-  .article-cover-leadership { --cover-accent: #a47a2b; }
-  .article-cover-series { --cover-accent: #557a9c; }
+  .article-cover-grid {
+    background:
+      linear-gradient(color-mix(in srgb, var(--cover-accent) 12%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--cover-accent) 12%, transparent) 1px, transparent 1px),
+      linear-gradient(135deg, color-mix(in srgb, var(--cover-accent) 16%, var(--surface)), var(--surface) 62%);
+    background-size: 36px 36px, 36px 36px, auto;
+  }
+
+  .article-cover-grid .article-cover-decoration {
+    width: 24%;
+    aspect-ratio: 1;
+    right: 9%;
+    transform: rotate(45deg);
+  }
+
+  .article-cover-grid .article-cover-decoration-one { top: -8%; }
+  .article-cover-grid .article-cover-decoration-two { top: 21%;right: -5%; }
+
+  .article-cover-signal .article-cover-decoration {
+    right: 8%;
+    width: 4px;
+    bottom: 25%;
+    border: 0;
+    background: color-mix(in srgb, var(--cover-accent) 44%, transparent);
+  }
+
+  .article-cover-signal .article-cover-decoration-one {
+    height: 42%;
+    box-shadow:
+      18px 18px 0 color-mix(in srgb, var(--cover-accent) 34%, transparent),
+      36px -12px 0 color-mix(in srgb, var(--cover-accent) 24%, transparent),
+      54px 28px 0 color-mix(in srgb, var(--cover-accent) 18%, transparent);
+  }
+
+  .article-cover-signal .article-cover-decoration-two {
+    right: auto;
+    bottom: auto;
+    top: 24%;
+    left: 0;
+    width: 44%;
+    height: 1px;
+  }
 
   .article-cover-topic {
     position: relative;
@@ -103,11 +220,11 @@ const palette = topic === "AI"
   .article-cover-icon {
     position: absolute;
     z-index: 1;
-    top: clamp(22px, 3vw, 38px);
-    right: clamp(22px, 3vw, 38px);
+    top: clamp(20px, 4cqw, 38px);
+    right: clamp(20px, 4cqw, 38px);
     display: grid;
-    width: 52px;
-    height: 52px;
+    width: clamp(42px, 7cqw, 56px);
+    height: clamp(42px, 7cqw, 56px);
     place-items: center;
     border: 1px solid color-mix(in srgb, var(--cover-accent) 54%, var(--rule));
     background: color-mix(in srgb, var(--surface) 78%, transparent);
@@ -117,15 +234,32 @@ const palette = topic === "AI"
   .article-cover-fallback strong {
     position: absolute;
     z-index: 1;
-    right: clamp(24px, 4vw, 46px);
-    bottom: clamp(28px, 4vw, 46px);
-    left: clamp(24px, 4vw, 46px);
+    right: clamp(20px, 5cqw, 46px);
+    bottom: clamp(26px, 5cqw, 46px);
+    left: clamp(20px, 5cqw, 46px);
     max-width: 82%;
+    display: -webkit-box;
+    overflow: hidden;
     font-family: "Source Serif 4", serif;
-    font-size: clamp(25px, 3.1vw, 43px);
+    font-size: clamp(20px, 5.2cqw, 43px);
     font-weight: 500;
     letter-spacing: -.035em;
     line-height: 1.04;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .article-cover-series-mark {
+    position: absolute;
+    z-index: 0;
+    right: 8%;
+    bottom: 6%;
+    color: color-mix(in srgb, var(--cover-accent) 12%, transparent);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: clamp(74px, 24cqw, 210px);
+    font-weight: 700;
+    letter-spacing: -.12em;
+    line-height: .75;
   }
 
   .article-cover-rule {
@@ -137,15 +271,76 @@ const palette = topic === "AI"
     background: linear-gradient(90deg, var(--cover-accent) 28%, color-mix(in srgb, var(--cover-accent) 18%, transparent) 28%);
   }
 
-  @media (max-width: 720px) {
-    .article-cover-icon {
-      width: 44px;
-      height: 44px;
-    }
+  .article-cover-details {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: clamp(26px, 4.8cqw, 50px);
+    color: #fffaf2;
+  }
 
-    .article-cover-fallback strong {
-      max-width: 88%;
-      font-size: clamp(24px, 7vw, 34px);
-    }
+  .article-cover-label {
+    display: block;
+    margin-bottom: clamp(12px, 2cqw, 18px);
+    color: #78d1c2;
+    font-size: clamp(9px, 1.25cqw, 12px);
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+
+  .article-cover-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px 20px;
+    margin-bottom: clamp(12px, 1.7cqw, 17px);
+    color: rgb(255 250 242 / .72);
+    font-size: clamp(9px, 1.2cqw, 11px);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .article-cover-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .article-cover-details h1 {
+    max-width: 20ch;
+    margin: 0;
+    color: inherit;
+    font-family: "Source Serif 4", serif;
+    font-size: clamp(34px, 4.8cqw, 52px);
+    font-weight: 500;
+    letter-spacing: -.04em;
+    line-height: 1.01;
+    text-wrap: balance;
+  }
+
+  .article-cover-details p {
+    max-width: 64ch;
+    margin: clamp(12px, 1.8cqw, 18px) 0 0;
+    color: rgb(255 250 242 / .76);
+    font-size: clamp(13px, 1.65cqw, 16px);
+    line-height: 1.55;
+  }
+
+  :global(.lead-cover:hover) .article-cover-details h1,
+  :global(.lead-cover:focus-visible) .article-cover-details h1 {
+    color: #9fe1d5;
+  }
+
+  @container (max-width: 440px) {
+    .article-cover-lead { aspect-ratio: 3 / 4; }
+    .article-cover-fallback strong { max-width: 90%; }
+    .article-cover-topic { font-size: 9px; }
+    .article-cover-rule { bottom: 12px;height: 3px; }
+    .article-cover-details { padding: 24px 22px; }
+    .article-cover-meta { gap: 8px 13px; }
+    .article-cover-details h1 { max-width: 15ch;font-size: clamp(32px, 9.5cqw, 42px); }
+    .article-cover-details p { display:-webkit-box;overflow:hidden;font-size:14px;-webkit-box-orient:vertical;-webkit-line-clamp:4; }
   }
 </style>

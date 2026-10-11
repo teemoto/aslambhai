@@ -1,7 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import ArticleCover from "../articles/ArticleCover.astro";
-import ArticleIcon from "../articles/ArticleIcon.astro";
 import Icon from "../ui/Icon.astro";
 
 interface Props {
@@ -38,24 +37,31 @@ const formatDate = (date: Date) => date.toLocaleDateString("en-US", {
         hidden={index !== 0}
       >
         <a class="lead-cover" href={`/articles/${article.id}`} aria-label={`Read ${article.data.title}`}>
-          <ArticleCover article={article} loading={index === 0 ? "eager" : "lazy"} />
+          <ArticleCover
+            article={article}
+            loading={index === 0 ? "eager" : "lazy"}
+            mode="lead"
+            label={index === 0 ? "Featured article" : "Latest article"}
+          />
         </a>
-        <div class="lead-copy">
-          <span class="eyebrow">{index === 0 ? "Featured article" : "Latest article"}</span>
-          <div class="lead-meta">
-            <span><ArticleIcon kind={article.data.icon} />{article.data.topic}</span>
-            <span><Icon name="calendar" />{formatDate(article.data.publishedAt)}</span>
-            <span><Icon name="clock" />{article.data.minutes} min read</span>
-          </div>
-          <a href={`/articles/${article.id}`}><h1>{article.data.title}</h1></a>
-          <p>{article.data.description}</p>
-        </div>
       </article>
     ))}
   </div>
 
   <aside class="latest-writing" aria-labelledby="latest-writing-title">
-    <span class="eyebrow" id="latest-writing-title">Latest writing</span>
+    <div class="latest-writing-header">
+      <span class="eyebrow" id="latest-writing-title">Latest writing</span>
+      <button
+        class="featured-return"
+        type="button"
+        data-featured-trigger
+        aria-controls={`lead-${featured.id}`}
+        hidden
+      >
+        <Icon name="arrowLeft" size={16} />
+        Back to featured
+      </button>
+    </div>
     <ol>
       {latest.map((article, index) => (
         <li>

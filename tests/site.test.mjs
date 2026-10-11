@@ -52,16 +52,45 @@ test("uses a compact search that expands on focus", async () => {
 test("renders a progressively enhanced featured and latest editorial lead", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../src/styles/global.css", import.meta.url), "utf8");
 
   assert.match(home, /class="editorial-lead"[^>]*data-editorial-lead/);
   assert.match(home, /data-lead-panel="resilient-frontend-architecture"(?![^>]*hidden)/);
   assert.equal((home.match(/data-lead-trigger=/g) ?? []).length, 4);
   assert.match(home, /data-lead-trigger="resilient-frontends-containing-failure-in-the-browser"/);
-  assert.match(home, /class="article-cover-fallback article-cover-frontend"/);
+  assert.match(home, /data-featured-trigger[^>]*aria-controls="lead-resilient-frontend-architecture"[^>]*hidden/);
+  assert.match(home, /class="article-cover-fallback article-cover-frontend article-cover-orbit"/);
+  assert.match(home, /class="article-cover article-cover-lead"/);
+  assert.match(home, /class="article-cover-details"/);
+  assert.match(home, /<h1[^>]*>The Art of Resilient Frontends, Part 1: The Mental Model<\/h1>/);
+  assert.doesNotMatch(home, /class="lead-copy"/);
   assert.ok(home.indexOf("data-editorial-lead") < home.indexOf('class="discovery"'));
   assert.match(script, /leadPanels\.forEach\(\(panel\) => panel\.toggleAttribute\("hidden"/);
   assert.match(script, /setAttribute\("aria-pressed"/);
+  assert.match(script, /featuredTrigger\?\.toggleAttribute\("hidden", selectedPanel === featuredPanel\)/);
+  assert.match(script, /selectLeadPanel\(featuredPanel, null\)/);
+  assert.match(styles, /\.latest-writing ol button \{/);
+  assert.doesNotMatch(styles, /\.latest-writing button \{/);
   assert.doesNotMatch(script, /setInterval\([^)]*lead/);
+});
+
+test("builds deterministic article covers with real-image and decorative fallback modes", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/components/articles/ArticleCover.astro", import.meta.url), "utf8");
+
+  assert.match(home, /data-cover-kind="image"/);
+  assert.match(home, /alt="The ECORE resilience cycle, illustrated with five connected stages\."/);
+  assert.match(home, /data-cover-kind="fallback"/);
+  for (const pattern of ["orbit", "grid", "signal"]) {
+    assert.match(home, new RegExp(`data-cover-pattern="${pattern}"`));
+  }
+  assert.match(home, /class="article-cover-series-mark"[^>]*>TIL<\/span>/);
+  assert.match(source, /titleHash = \[\.\.\.title\]\.reduce/);
+  assert.match(source, /aspect-ratio: 16 \/ 9/);
+  assert.match(source, /aspect-ratio: 4 \/ 3/);
+  assert.match(source, /aspect-ratio: 3 \/ 4/);
+  assert.match(source, /aria-hidden="true"/);
+  assert.match(source, /container-type: inline-size/);
 });
 
 test("renders article code samples with dual-theme Shiki output", async () => {
