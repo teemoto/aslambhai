@@ -75,7 +75,7 @@ test("renders a progressively enhanced featured and latest editorial lead", asyn
   assert.equal((home.match(/data-lead-trigger=/g) ?? []).length, 4);
   assert.match(home, /data-lead-trigger="resilient-frontends-containing-failure-in-the-browser"/);
   assert.match(home, /data-featured-trigger[^>]*aria-controls="lead-resilient-frontend-architecture"[^>]*hidden/);
-  assert.match(home, /class="article-cover-fallback article-cover-frontend article-cover-orbit"/);
+  assert.match(home, /src="\/images\/resilient-frontends-containing-failure-cover\.png"/);
   assert.match(home, /class="article-cover article-cover-lead"/);
   assert.match(home, /class="article-cover-details"/);
   assert.match(home, /<h1[^>]*>The Art of Resilient Frontends, Part 1: The Mental Model<\/h1>/);
@@ -90,18 +90,17 @@ test("renders a progressively enhanced featured and latest editorial lead", asyn
   assert.doesNotMatch(script, /setInterval\([^)]*lead/);
 });
 
-test("builds deterministic article covers with real-image and decorative fallback modes", async () => {
+test("supports real-image and deterministic decorative article covers", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const source = await readFile(new URL("../src/components/articles/ArticleCover.astro", import.meta.url), "utf8");
 
   assert.match(home, /data-cover-kind="image"/);
   assert.match(home, /alt="The ECORE resilience cycle, illustrated with five connected stages\."/);
-  assert.match(home, /data-cover-kind="fallback"/);
-  for (const pattern of ["orbit", "grid", "signal"]) {
-    assert.match(home, new RegExp(`data-cover-pattern="${pattern}"`));
-  }
-  assert.match(home, /class="article-cover-format-mark"[^>]*>TIL<\/span>/);
+  assert.match(home, /alt="A compartmentalized browser dashboard with one failed panel isolated from functioning panels\."/);
   assert.match(source, /titleHash = \[\.\.\.title\]\.reduce/);
+  assert.match(source, /\["orbit", "grid", "signal"\]/);
+  assert.match(source, /data-cover-kind=\{cover \? "image" : "fallback"\}/);
+  assert.match(source, /article-cover-format-mark/);
   assert.match(source, /aspect-ratio: 16 \/ 9/);
   assert.match(source, /aspect-ratio: 4 \/ 3/);
   assert.match(source, /aspect-ratio: 3 \/ 4/);
