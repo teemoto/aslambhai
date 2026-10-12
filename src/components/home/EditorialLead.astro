@@ -21,9 +21,6 @@ const formatDate = (date: Date) => date.toLocaleDateString("en-US", {
 <section
   class="editorial-lead"
   data-editorial-lead
-  data-article
-  data-search={`${featured.data.title} ${featured.data.description} ${featured.data.topic}`.toLowerCase()}
-  data-topic-value={featured.data.topic}
   aria-label="Featured and latest writing"
 >
   <div class="lead-stage">
@@ -32,8 +29,6 @@ const formatDate = (date: Date) => date.toLocaleDateString("en-US", {
         class="lead-panel"
         id={`lead-${article.id}`}
         data-lead-panel={article.id}
-        data-lead-search={`${article.data.title} ${article.data.description} ${article.data.topic}`.toLowerCase()}
-        data-lead-topic={article.data.topic}
         hidden={index !== 0}
       >
         <a class="lead-cover" href={`/articles/${article.id}`} aria-label={`Read ${article.data.title}`}>

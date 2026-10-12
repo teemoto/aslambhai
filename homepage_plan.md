@@ -106,7 +106,7 @@ Checkpoint: desktop and mobile hero review before building the remainder of the 
 
 ### Step 4: Create a reusable article-cover system
 
-**Status: Implemented, awaiting visual review.**
+**Status: Complete.**
 
 Only one current article has a dedicated cover. A card-based homepage needs a coherent fallback system.
 
@@ -118,7 +118,7 @@ Create a reusable `ArticleCover` component:
   - Topic
   - Article icon
   - Topic accent color
-  - Series marker such as `TIL` or `WTF`
+  - Format marker such as `TIL` or `WTF`
 - Keep fallback artwork code-native with HTML/CSS or SVG.
 - Avoid generic AI imagery for every article.
 - Preserve the existing visual language used by article diagrams.
@@ -130,6 +130,8 @@ This component will support the hero and the article feed.
 Checkpoint: compare real and fallback covers together to ensure the fallback does not look secondary.
 
 ### Step 5: Upgrade the topic and search rail
+
+**Status: Implemented, awaiting visual review.**
 
 Retain the current discovery controls but make them more informative:
 
@@ -146,7 +148,7 @@ Proposed subjects:
 - Ad Tech
 - Leadership
 
-`TIL` and `WTF` are formats rather than subject areas. For this homepage phase, visually separate them as series filters while preserving their existing behavior.
+`TIL` and `WTF` are formats rather than subject areas. For this homepage phase, visually separate them as format filters while preserving their existing behavior. Reserve “series” for actual multipart collections.
 
 We should not create `/topics` routes yet. The controls can become links when topic pages are introduced later.
 
@@ -169,7 +171,7 @@ The templates should remain data-driven and use the same article collection.
 Each story may include:
 
 - Cover or branded fallback
-- Topic or series
+- Topic or format
 - Date
 - Reading time
 - Title

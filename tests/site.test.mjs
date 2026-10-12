@@ -49,6 +49,22 @@ test("uses a compact search that expands on focus", async () => {
   assert.doesNotMatch(styles, /\.discovery\{[^}]*border-bottom/);
 });
 
+test("groups subject and format filters with published article counts", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
+
+  assert.match(home, />Subjects<\/span>/);
+  assert.match(home, />Formats<\/span>/);
+  assert.match(home, /data-topic="All" aria-pressed="true"/);
+  assert.match(home, /data-topic="All" aria-pressed="true"[\s\S]{0,180}class="chip-count"[^>]*>9<\/span>/);
+  assert.match(home, /data-topic="Frontend" aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>4<\/span>/);
+  assert.match(home, /data-topic="Leadership" aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>0<\/span>/);
+  assert.match(home, /class="chip chip-format"[^>]*data-topic="TIL"/);
+  assert.match(script, /setAttribute\("aria-pressed", String\(item === chip\)\)/);
+  assert.match(home, /class="recent"[^>]*data-filter-results/);
+  assert.match(script, /filterResults\?\.querySelectorAll\("\[data-article\]"\)/);
+});
+
 test("renders a progressively enhanced featured and latest editorial lead", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
@@ -84,7 +100,7 @@ test("builds deterministic article covers with real-image and decorative fallbac
   for (const pattern of ["orbit", "grid", "signal"]) {
     assert.match(home, new RegExp(`data-cover-pattern="${pattern}"`));
   }
-  assert.match(home, /class="article-cover-series-mark"[^>]*>TIL<\/span>/);
+  assert.match(home, /class="article-cover-format-mark"[^>]*>TIL<\/span>/);
   assert.match(source, /titleHash = \[\.\.\.title\]\.reduce/);
   assert.match(source, /aspect-ratio: 16 \/ 9/);
   assert.match(source, /aspect-ratio: 4 \/ 3/);

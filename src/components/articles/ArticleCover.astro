@@ -15,7 +15,7 @@ const { cover, description, icon, minutes, publishedAt, title, topic } = article
 const isLead = mode === "lead";
 const titleHash = [...title].reduce((total, character) => ((total * 31) + (character.codePointAt(0) ?? 0)) >>> 0, 0);
 const pattern = ["orbit", "grid", "signal"][titleHash % 3];
-const seriesMarker = topic === "TIL" || topic === "WTF" ? topic : undefined;
+const formatMarker = topic === "TIL" || topic === "WTF" ? topic : undefined;
 const palette = topic === "AI"
   ? "ai"
   : topic === "Ad Tech"
@@ -23,7 +23,7 @@ const palette = topic === "AI"
     : topic === "Leadership"
       ? "leadership"
       : topic === "TIL" || topic === "WTF"
-        ? "series"
+        ? "format"
         : "frontend";
 const formattedDate = publishedAt.toLocaleDateString("en-US", {
   month: "short",
@@ -57,7 +57,7 @@ const formattedDate = publishedAt.toLocaleDateString("en-US", {
       <span class="article-cover-decoration article-cover-decoration-two"></span>
       {!isLead && <span class="article-cover-topic">{topic}</span>}
       <span class="article-cover-icon"><ArticleIcon kind={icon} size={30} /></span>
-      {seriesMarker && <span class="article-cover-series-mark">{seriesMarker}</span>}
+      {formatMarker && <span class="article-cover-format-mark">{formatMarker}</span>}
       {!isLead && <strong>{title}</strong>}
       <span class="article-cover-rule"></span>
     </div>
@@ -135,7 +135,7 @@ const formattedDate = publishedAt.toLocaleDateString("en-US", {
     --cover-accent: color-mix(in srgb, var(--clay) 62%, #9a8128);
   }
 
-  .article-cover-series {
+  .article-cover-format {
     --cover-accent: color-mix(in srgb, var(--teal) 56%, #557a9c);
   }
 
@@ -249,7 +249,7 @@ const formattedDate = publishedAt.toLocaleDateString("en-US", {
     -webkit-line-clamp: 3;
   }
 
-  .article-cover-series-mark {
+  .article-cover-format-mark {
     position: absolute;
     z-index: 0;
     right: 8%;

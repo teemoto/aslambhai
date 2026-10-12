@@ -1,0 +1,171 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { articleTopics } from "../../content.config";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  articles: CollectionEntry<"articles">[];
+}
+
+const { articles } = Astro.props;
+const subjects = articleTopics.filter((topic) => topic !== "TIL" && topic !== "WTF");
+const formats = articleTopics.filter((topic) => topic === "TIL" || topic === "WTF");
+const articleCount = (topic: string) => topic === "All"
+  ? articles.length
+  : articles.filter(({ data }) => data.topic.includes(topic)).length;
+
+const groups = [
+  { label: "Subjects", topics: ["All", ...subjects] },
+  { label: "Formats", topics: formats },
+];
+---
+
+<section class="discovery" role="search" aria-label="Find an article">
+  <div class="filter-scroller">
+    {groups.map((group) => (
+      <div class:list={["filter-group", { "filter-group-formats": group.label === "Formats" }]}>
+        <span class="filter-kind">{group.label}</span>
+        <div class="filter-options" aria-label={`Filter by ${group.label.toLowerCase()}`}>
+          {group.topics.map((topic) => {
+            const count = articleCount(topic);
+            return (
+              <button
+                class:list={["chip", { selected: topic === "All", "chip-format": group.label === "Formats" }]}
+                type="button"
+                data-topic={topic}
+                aria-pressed={topic === "All" ? "true" : "false"}
+              >
+                <span>{topic}</span>
+                <span class="chip-count" aria-hidden="true">{count}</span>
+                <span class="sr-only">{count} {count === 1 ? "article" : "articles"}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <label class="search-box">
+    <Icon name="search" />
+    <span class="sr-only">Search articles</span>
+    <input data-search-input type="search" placeholder="Search articles" autocomplete="off" />
+  </label>
+</section>
+
+<style>
+  .discovery {
+    align-items: flex-end;
+  }
+
+  .filter-scroller {
+    align-items: end;
+  }
+
+  .filter-group {
+    display: grid;
+    flex: 0 0 auto;
+    gap: 7px;
+  }
+
+  .filter-group-formats {
+    margin-left: 4px;
+    padding-left: 14px;
+    border-left: 1px solid var(--rule);
+  }
+
+  .filter-kind {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .filter-options {
+    display: flex;
+    gap: 8px;
+  }
+
+  .chip {
+    --chip-accent: var(--teal);
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .chip[data-topic="AI"] {
+    --chip-accent: color-mix(in srgb, var(--teal) 52%, #8069c5);
+  }
+
+  .chip[data-topic="Ad Tech"] {
+    --chip-accent: var(--clay);
+  }
+
+  .chip[data-topic="Leadership"] {
+    --chip-accent: color-mix(in srgb, var(--clay) 66%, #9a8128);
+  }
+
+  .chip[data-topic="TIL"] {
+    --chip-accent: color-mix(in srgb, var(--teal) 58%, #557a9c);
+  }
+
+  .chip[data-topic="WTF"] {
+    --chip-accent: color-mix(in srgb, var(--clay) 72%, var(--teal));
+  }
+
+  .chip:not(.selected):hover,
+  .chip:not(.selected):focus-visible {
+    border-color: var(--chip-accent);
+    background: color-mix(in srgb, var(--chip-accent) 8%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--chip-accent) 24%, transparent);
+    color: var(--chip-accent);
+  }
+
+  .chip.selected {
+    border-color: var(--chip-accent);
+    background: var(--chip-accent);
+  }
+
+  .chip-format {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-weight: 700;
+    letter-spacing: .02em;
+  }
+
+  .chip-count {
+    display: grid;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+    border-radius: 999px;
+    font-family: "Manrope", sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .chip.selected .chip-count {
+    border-color: color-mix(in srgb, var(--surface) 38%, transparent);
+    background: color-mix(in srgb, var(--surface) 14%, transparent);
+  }
+
+  @media (max-width: 720px) {
+    .filter-scroller {
+      align-items: end;
+      margin-right: -8px;
+      padding-right: 18px;
+    }
+
+    .filter-group-formats {
+      padding-left: 12px;
+    }
+
+    .filter-options {
+      gap: 7px;
+    }
+  }
+</style>

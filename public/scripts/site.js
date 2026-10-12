@@ -34,11 +34,12 @@ document.querySelector("[data-menu-toggle]")?.addEventListener("click", (event) 
 
 const search = document.querySelector("[data-search-input]");
 const chips = [...document.querySelectorAll("[data-topic]")];
+const filterResults = document.querySelector("[data-filter-results]");
 let selectedTopic = "All";
 function filterArticles() {
   const query = search?.value.trim().toLowerCase() ?? "";
   let visible = 0;
-  document.querySelectorAll("[data-article]").forEach((article) => {
+  filterResults?.querySelectorAll("[data-article]").forEach((article) => {
     const topic = article.dataset.topicValue ?? article.dataset.search ?? "";
     const topicMatch = selectedTopic === "All" || topic.includes(selectedTopic);
     const textMatch = (article.dataset.search ?? "").includes(query);
@@ -51,6 +52,7 @@ search?.addEventListener("input", filterArticles);
 chips.forEach((chip) => chip.addEventListener("click", () => {
   selectedTopic = chip.dataset.topic;
   chips.forEach((item) => item.classList.toggle("selected", item === chip));
+  chips.forEach((item) => item.setAttribute("aria-pressed", String(item === chip)));
   filterArticles();
 }));
 
@@ -66,10 +68,7 @@ if (editorialLead) {
     leadPanels.forEach((panel) => panel.toggleAttribute("hidden", panel !== selectedPanel));
     leadTriggers.forEach((item) => item.setAttribute("aria-pressed", String(item === activeTrigger)));
     featuredTrigger?.toggleAttribute("hidden", selectedPanel === featuredPanel);
-    editorialLead.dataset.search = selectedPanel.dataset.leadSearch;
-    editorialLead.dataset.topicValue = selectedPanel.dataset.leadTopic;
     if (leadStatus) leadStatus.textContent = `Showing ${selectedPanel.querySelector("h1")?.textContent ?? "selected article"}`;
-    filterArticles();
   };
 
   leadTriggers.forEach((trigger) => trigger.addEventListener("click", () => {
