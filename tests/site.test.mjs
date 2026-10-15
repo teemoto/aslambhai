@@ -102,8 +102,8 @@ test("supports real-image and deterministic decorative article covers", async ()
   assert.match(source, /data-cover-kind=\{cover \? "image" : "fallback"\}/);
   assert.match(source, /article-cover-format-mark/);
   assert.match(source, /aspect-ratio: 16 \/ 9/);
-  assert.match(source, /aspect-ratio: 4 \/ 3/);
-  assert.match(source, /aspect-ratio: 3 \/ 4/);
+  assert.doesNotMatch(source, /aspect-ratio: 4 \/ 3/);
+  assert.doesNotMatch(source, /aspect-ratio: 3 \/ 4/);
   assert.match(source, /aria-hidden="true"/);
   assert.match(source, /container-type: inline-size/);
 });
