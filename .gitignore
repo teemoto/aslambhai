@@ -3,3 +3,12 @@ node_modules/
 .astro-dist/
 dist/
 .DS_Store
+
+# Impeccable machine-local configuration and runtime artifacts
+.impeccable/config.local.json
+.impeccable/live/
+.impeccable/review/
+.impeccable/build/
+
+# Downloaded platform-specific Impeccable engine
+.github/skills/impeccable/scripts/bin/
