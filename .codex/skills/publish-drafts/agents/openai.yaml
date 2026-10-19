@@ -1,0 +1,6 @@
+interface:
+  display_name: "Publish Drafts"
+  short_description: "Turn finished drafts into polished site articles"
+  default_prompt: "Use $publish-drafts to publish all new drafts in this repository."
+policy:
+  allow_implicit_invocation: false
