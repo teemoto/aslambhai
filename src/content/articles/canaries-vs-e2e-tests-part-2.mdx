@@ -1,0 +1,221 @@
+---
+title: "Canaries vs E2E Tests, Part 2: Designing the Stack"
+description: "How to design a small, reliable production canary suite alongside E2E tests, alerting, synthetic users, and real-user monitoring."
+publishedAt: 2026-10-19
+minutes: 8
+topic: Frontend
+icon: code
+cover:
+  src: /images/canaries-vs-e2e-tests-part-2-cover.png
+  alt: A broad testing system narrows through a production boundary into a few glowing monitored paths surrounded by live operational signals.
+featured: false
+draft: false
+---
+
+import CanaryCoverageFlow from "../../components/articles/CanaryCoverageFlow.astro";
+import CanarySuiteScale from "../../components/articles/CanarySuiteScale.astro";
+import CanarySignalLayers from "../../components/articles/CanarySignalLayers.astro";
+import CanaryAlertTimeline from "../../components/articles/CanaryAlertTimeline.astro";
+import TestingObservabilityStack from "../../components/articles/TestingObservabilityStack.astro";
+import ProductionBlindSpots from "../../components/articles/ProductionBlindSpots.astro";
+import MonitoringPerspectives from "../../components/articles/MonitoringPerspectives.astro";
+import WorkflowPlacementDecision from "../../components/articles/WorkflowPlacementDecision.astro";
+import ComparisonTable from "../../components/articles/ComparisonTable.astro";
+import TestLifecycles from "../../components/articles/TestLifecycles.astro";
+
+# Canaries vs E2E Tests, Part 2: Designing the Stack
+
+[Part 1](/articles/canaries-vs-e2e-tests-part-1/) drew the line: E2E tests validate workflows before release, and canaries monitor live behavior after it. E2E answers "Does it work?" and a canary answers "Is it working?"
+
+Knowing the difference is the easy part. Now comes the harder part: building canaries that help and fitting them next to the tests, metrics, and monitoring you already have. This is where reliability engineering lives.
+
+## A canary should test almost nothing
+
+Read that again, because the instinct is the opposite. A canary should cover a small number of critical user journeys. Not everything.
+
+For an ecommerce app, that short list might be the homepage, search, product details, login, add-to-cart, and the path to payment.
+
+<CanaryCoverageFlow />
+
+You do not need 2,000 canaries. You need a few strong signals.
+
+## Why not run the whole E2E suite as canaries?
+
+It is tempting. You already wrote 800 E2E tests, so why not point them at production every five minutes? Because that would create:
+
+- Huge traffic
+- Expensive infrastructure usage
+- Noisy alerts
+- Test-account pollution
+- State-management complexity
+- Accidental data mutations
+- Flaky failures
+
+<CanarySuiteScale />
+
+The suites are sized differently on purpose. A full E2E suite might be 800 tests. A production canary suite might be eight critical journeys.
+
+## Read-only canaries are the easy ones
+
+A canary that logs in, opens a dashboard, and verifies a report is relatively safe. It only reads and does not change anything.
+
+Now compare a canary that does any of these against production, every five minutes, forever:
+
+- Place a real order
+- Transfer money
+- Delete an account
+- Send an email
+
+That is dangerous. For workflows that mutate state, you need dedicated test data and a cleanup strategy before the canary is safe to run.
+
+## Synthetic users
+
+Production canaries usually run as synthetic accounts, something like `canary-user@example.com`. That account is set up deliberately: predictable data, restricted permissions, special test inventory, monitoring exclusions, and cleanup automation. You do not want your monitoring workflow to affect real users, and you do not want real-user noise to affect your monitoring.
+
+## A canary measures more than pass or fail
+
+A good canary does not report only a green check. It can measure the whole shape of the experience because it runs the real user journey against the real system.
+
+<CanarySignalLayers />
+
+So a login canary reports something like:
+
+```text
+Login canary
+Success: 99.9%
+P50: 800ms
+P95: 1.6s
+P99: 3.2s
+```
+
+At that point, it is not only an availability check. It is a performance-monitoring mechanism too.
+
+## Alerting and the danger of crying wolf
+
+Say the canary runs every five minutes. A single failure might only be network noise. So you tier the response:
+
+- 1 failure: record a metric.
+- 2 consecutive failures: raise a warning.
+- 3 consecutive failures: page the on-call.
+
+How aggressive you make this depends on how critical the workflow is.
+
+And here is the trap that quietly kills canary programs. Imagine a flaky canary:
+
+<CanaryAlertTimeline />
+
+Engineers learn the lesson you do not want them to learn: "Ignore that alert." Then a real outage happens, and nobody moves. That is alert fatigue. A canary must therefore be deterministic, isolated, fast, reliable, and easy to diagnose. A noisy canary is worse than no canary at all.
+
+## Where E2E tests fit: the test pyramid
+
+You have probably seen the test pyramid: many unit tests, some integration tests, and few E2E tests. E2E sits at the narrow top because those tests are slower, more expensive, harder to debug, and more likely to be flaky. They earn their place anyway because they give strong confidence that the system works end to end.
+
+Canaries sit _outside_ this pyramid. They belong to observability and production monitoring, not to your build.
+
+<TestingObservabilityStack />
+
+That boundary is the useful distinction. It is the difference between verification and observability. Testing asks, "Before releasing this, do we believe it works?" Observability asks, "Now that it is released, is it working?" E2E lives in the first world. Canaries live in the second.
+
+## Two outages no unit tests would catch
+
+Consider this example. You release a new version of your product. Unit, integration, and E2E tests are green in CI. You deploy, and then the canary reports that login and search are healthy but checkout is failing.
+
+You investigate and find that the production payment gateway configuration has the wrong certificate. No CI test would necessarily catch that because the problem exists only in the production configuration. That is exactly what canaries are for.
+
+Here is another example. All your tests pass, but your production CDN accidentally serves `app.js` as a 404. The application cannot load. API, database, and server monitoring all look healthy, but a browser canary opens the homepage and fails immediately. Now you know the customer-facing system is broken even though every server-side box is green.
+
+<ProductionBlindSpots />
+
+## Synthetic monitoring vs. real users
+
+There is one more layer worth naming. A canary is synthetic monitoring: it simulates users. Real User Monitoring, or RUM, measures actual users.
+
+<MonitoringPerspectives />
+
+Why run both? Because your canary might run in Chrome, from US West, on a fast connection, while your real users are on Safari in India over slow 4G, Firefox in Germany, or an older Android device in Brazil. Canaries give you consistency. RUM gives you diversity. Together with E2E, you get three distinct questions answered:
+
+- E2E: "Does our software work before release?"
+- Canary: "Does production work right now?"
+- RUM: "Are real users successfully experiencing it?"
+
+## The honest ledger
+
+Neither tool is free. Here is what each one buys and costs.
+
+**E2E tests give you:**
+
+- Regressions caught before deployment, probably their biggest benefit.
+- A deterministic setup because you control the environment and the data.
+- Broad workflow coverage, including many edge cases.
+- Safe destructive testing: in a test environment, you can delete users, create thousands of records, and simulate payment failures.
+
+**And they cost you:** They are slow, expensive, and flaky if poorly designed, and the test environment may differ from production.
+
+**Canaries give you:**
+
+- A test of the real deployed system, which is the whole advantage.
+- Detection of environmental failures: network issues, DNS, CDN, certificates, production configuration, downstream services, and more.
+- Continuous coverage, catching failures that happen long after deployment.
+- Direct measurement of critical journeys.
+
+**And they cost you:** They detect only after the problem exists, they can affect production state, they need safe synthetic data, flaky ones cause noisy alerts, and they cannot safely exercise every failure scenario.
+
+Remember, tests and canaries catch different classes of failure.
+
+<ComparisonTable
+  columns={["Failure class", "E2E", "Canary"]}
+  rows={[
+    ["Code regression", "Yes", "Yes"],
+    ["Production configuration", "Sometimes", "Yes"],
+    ["Dependency outage", "Sometimes", "Yes"],
+    ["DNS", "No", "Yes"],
+    ["CDN", "Sometimes", "Yes"],
+    ["Certificate expiry", "No", "Yes"],
+    ["Edge cases", "Yes", "Sometimes"],
+    ["Destructive flows", "Yes", "No"],
+    ["Continuous outages", "No", "Yes"],
+  ]}
+/>
+
+## So which should you use?
+
+In almost any serious production system, both. Not E2E or canary. E2E and canary, because they protect different phases.
+
+A practical split for an app with 50 important workflows:
+
+- Unit tests: thousands
+- Integration tests: hundreds
+- E2E tests: 50 workflows
+- Production canaries: 5 to 10 critical journeys
+
+So the E2E list runs long: login, logout, reset password, create report, delete report, export report, edit account, change permissions, and so on. The canary list stays short on purpose: homepage, login, load dashboard, load report, critical transaction.
+
+## Two questions that decide where a workflow goes
+
+When you are not sure whether something should be a canary, ask: if this functionality stops working at 2 AM without a deployment, do I want someone to know? If yes, it is a strong candidate. Can users log in? Can customers check out? Can publishers serve ads? Can reports load? Can payments complete? Those are good canary targets.
+
+When you are unsure whether something should be an E2E test, ask a different question: could a code change break this behavior, and do I want to block the release if it does? If yes, it is an E2E candidate.
+
+<WorkflowPlacementDecision />
+
+## One more "canary" to keep straight
+
+Do not confuse canary testing with canary deployment. The latter is a release strategy, for example:
+
+1. Deploy the new version to 1% of users.
+2. Observe metrics.
+3. If it looks good, increase to 10%, then 50%, then 100%.
+
+Same bird, same idea: expose a small population first so problems show up before they hit everyone. It is a different mechanism from a synthetic canary, but it rests on the same resilience principle. Detect problems early. Limit the blast radius.
+
+## The distinction to carry with you
+
+If you take away just one thing from this article, take this:
+
+> E2E tests build confidence that a workflow works before release. Canaries repeatedly check whether the deployed workflow still works.
+
+<TestLifecycles />
+
+Neither is inherently better. They answer different questions. If I were designing a production system, I would build broad E2E coverage for release confidence and a small, highly reliable set of canaries around the most business-critical user journeys for continuous production confidence.
+
+Go ahead and do this. In your feature or product, pick the single most business-critical journey and make it a canary this week. Then look at what a code change could quietly break, and make sure that is an E2E test. Do that, and you stop asking which is better. You start asking the only question that matters for each workflow: is this one about "Does it work?" or "Is it working?"

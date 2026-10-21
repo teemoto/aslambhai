@@ -6,6 +6,11 @@
       "article": "src/content/articles/canaries-vs-e2e-tests-part-1.mdx",
       "processedAt": "2026-09-12"
     },
+    "src/content/drafts/Canaries vs E2E Tests, Part 2.md": {
+      "hash": "f8447ddcd236461fbff2c7085f5fef83301d68f405b32a74aaf9e23bef13350f",
+      "article": "src/content/articles/canaries-vs-e2e-tests-part-2.mdx",
+      "processedAt": "2026-10-21"
+    },
     "src/content/drafts/Keeping Empty Directories in Git with gitkeep.md": {
       "hash": "a9309a1f141a4029540709af551c03f9136e0be61a873041eaeaaef58d609cd7",
       "article": "src/content/articles/keeping-empty-directories-in-git-with-gitkeep.mdx",

@@ -1,0 +1,31 @@
+<figure class="placement" aria-labelledby="placement-caption">
+  <div class="placement__question">
+    <span>Question 01</span>
+    <strong>Could a code change break it?</strong>
+    <p>Would a failure block the release?</p>
+    <b>E2E candidate</b>
+  </div>
+  <div class="placement__both"><span aria-hidden="true">+</span><strong>Both when both answers are yes</strong></div>
+  <div class="placement__question placement__question--canary">
+    <span>Question 02</span>
+    <strong>Could it fail at 2 AM without a deploy?</strong>
+    <p>Would someone need to know?</p>
+    <b>Canary candidate</b>
+  </div>
+  <figcaption id="placement-caption">A workflow can belong in both places because release risk and production risk are separate decisions.</figcaption>
+</figure>
+
+<style>
+  .placement { display:grid;grid-template-columns:minmax(0,1fr) 8rem minmax(0,1fr);gap:1rem;align-items:stretch;margin:2rem 0;padding:1.5rem;border:1px solid var(--rule);background:var(--surface);font-family:"Manrope",sans-serif; }
+  .placement__question { display:flex;flex-direction:column;padding:1.2rem;border-top:3px solid var(--rule);background:var(--bg); }
+  .placement__question--canary { border-color:var(--teal); }
+  .placement__question>span { color:var(--muted);font-size:.65rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase; }
+  .placement__question>strong { margin:.7rem 0;color:var(--ink);font-family:"Source Serif 4",serif;font-size:1.15rem;line-height:1.25; }
+  .placement__question p { margin:0 0 1rem;color:var(--body);font-size:.74rem;line-height:1.5; }
+  .placement__question b { margin-top:auto;color:var(--teal);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase; }
+  .placement__both { display:grid;place-content:center;justify-items:center;gap:.4rem;color:var(--muted);text-align:center; }
+  .placement__both span { display:grid;place-items:center;width:2.2rem;height:2.2rem;border:1px solid var(--teal);color:var(--teal);font-size:1.25rem; }
+  .placement__both strong { font-size:.65rem;line-height:1.4; }
+  .placement figcaption { grid-column:1 / -1;color:var(--muted);font-size:.75rem;line-height:1.55; }
+  @media (max-width:640px) { .placement { grid-template-columns:1fr;padding:1rem; }.placement__both { grid-template-columns:auto 1fr;justify-items:start;text-align:left; }.placement figcaption { grid-column:1; } }
+</style>

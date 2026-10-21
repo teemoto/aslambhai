@@ -1,0 +1,32 @@
+---
+const signals = [
+  ["DNS", "Resolve"], ["Connection", "Connect"], ["Page", "Load"], ["API", "Respond"],
+  ["Authentication", "Complete"], ["Usable UI", "Ready"],
+];
+---
+
+<figure class="signal-layers" aria-labelledby="signal-layers-caption">
+  <div class="signal-layers__summary">
+    <div><span>Journey result</span><strong>Success rate</strong></div>
+    <div><span>End-to-end timing</span><strong>Total latency</strong></div>
+  </div>
+  <ol>
+    {signals.map(([label, event], index) => <li><span>{String(index + 1).padStart(2, "0")}</span><strong>{label}</strong><small>{event}</small></li>)}
+  </ol>
+  <figcaption id="signal-layers-caption">The pass or fail is the headline. Timing each layer helps explain where the experience slowed down.</figcaption>
+</figure>
+
+<style>
+  .signal-layers { margin:2rem 0;padding:1.5rem;border:1px solid var(--rule);background:var(--surface);font-family:"Manrope",sans-serif; }
+  .signal-layers__summary { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-bottom:1.25rem; }
+  .signal-layers__summary div { padding:1rem;border-left:3px solid var(--teal);background:var(--bg); }
+  .signal-layers__summary span { display:block;color:var(--muted);font-size:.67rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase; }
+  .signal-layers__summary strong { display:block;margin-top:.3rem;color:var(--ink);font-family:"Source Serif 4",serif;font-size:1.15rem; }
+  .signal-layers ol { display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.7rem;margin:0;padding:0;list-style:none; }
+  .signal-layers li { position:relative;margin:0;padding:.8rem .5rem;border-top:2px solid color-mix(in srgb,var(--teal) 60%,var(--rule));background:color-mix(in srgb,var(--bg) 70%,transparent);text-align:center; }
+  .signal-layers li span,.signal-layers li small { display:block;color:var(--muted);font-size:.62rem; }
+  .signal-layers li strong { display:block;margin:.35rem 0;color:var(--ink);font-size:.7rem; }
+  .signal-layers figcaption { margin-top:1.1rem;color:var(--muted);font-size:.75rem;line-height:1.55; }
+  @media (max-width:680px) { .signal-layers ol { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+  @media (max-width:440px) { .signal-layers { padding:1rem; }.signal-layers__summary { grid-template-columns:1fr; }.signal-layers ol { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+</style>

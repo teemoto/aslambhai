@@ -56,8 +56,8 @@ test("groups subject and format filters with published article counts", async ()
   assert.match(home, />Subjects<\/span>/);
   assert.match(home, />Formats<\/span>/);
   assert.match(home, /data-topic="All" aria-pressed="true"/);
-  assert.match(home, /data-topic="All" aria-pressed="true"[\s\S]{0,180}class="chip-count"[^>]*>9<\/span>/);
-  assert.match(home, /data-topic="Frontend" aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>4<\/span>/);
+  assert.match(home, /data-topic="All" aria-pressed="true"[\s\S]{0,180}class="chip-count"[^>]*>10<\/span>/);
+  assert.match(home, /data-topic="Frontend" aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>5<\/span>/);
   assert.match(home, /data-topic="Leadership" aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>0<\/span>/);
   assert.match(home, /class="chip chip-format"[^>]*data-topic="TIL"/);
   assert.match(script, /setAttribute\("aria-pressed", String\(item === chip\)\)/);

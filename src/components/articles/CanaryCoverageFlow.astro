@@ -1,0 +1,33 @@
+---
+const journeys = ["Homepage", "Search", "Product", "Login", "Cart", "Checkout"];
+const broaderCoverage = ["Account settings", "Returns", "Permissions", "Exports", "Edge cases"];
+---
+
+<figure class="canary-coverage" aria-labelledby="canary-coverage-caption">
+  <div class="canary-coverage__heading"><span>Production canaries</span><strong>Follow only the critical path</strong></div>
+  <ol>
+    {journeys.map((journey, index) => <li><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><strong>{journey}</strong></li>)}
+  </ol>
+  <div class="canary-coverage__remainder">
+    <span>Broader E2E coverage</span>
+    <p>{broaderCoverage.join(" · ")} · …</p>
+  </div>
+  <figcaption id="canary-coverage-caption">A small production suite watches the journeys the business cannot afford to lose. Broader scenarios stay in pre-release testing.</figcaption>
+</figure>
+
+<style>
+  .canary-coverage { margin:2rem 0;padding:1.5rem;border:1px solid var(--rule);background:var(--surface);font-family:"Manrope",sans-serif; }
+  .canary-coverage__heading { display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:1.4rem; }
+  .canary-coverage__heading span,.canary-coverage__remainder span { color:var(--teal);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase; }
+  .canary-coverage__heading strong { color:var(--ink);font-family:"Source Serif 4",serif;font-size:1.25rem; }
+  .canary-coverage ol { display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1rem;margin:0;padding:0;list-style:none; }
+  .canary-coverage li { position:relative;margin:0;padding:.9rem .65rem;border-top:2px solid var(--teal);background:var(--bg);text-align:center; }
+  .canary-coverage li:not(:last-child)::after { position:absolute;top:50%;left:100%;width:1rem;color:var(--teal);content:"→";transform:translateY(-50%); }
+  .canary-coverage li span { display:block;margin-bottom:.35rem;color:var(--muted);font-size:.65rem; }
+  .canary-coverage li strong { color:var(--ink);font-size:.72rem; }
+  .canary-coverage__remainder { margin-top:1.25rem;padding:1rem;border:1px dashed var(--rule);background:color-mix(in srgb,var(--bg) 68%,transparent); }
+  .canary-coverage__remainder p { margin:.4rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.55; }
+  .canary-coverage figcaption { margin-top:1.1rem;color:var(--muted);font-size:.75rem;line-height:1.55; }
+  @media (max-width:700px) { .canary-coverage ol { grid-template-columns:repeat(2,minmax(0,1fr)); }.canary-coverage li:not(:last-child)::after { display:none; } }
+  @media (max-width:480px) { .canary-coverage { padding:1rem; }.canary-coverage__heading { display:grid;gap:.25rem; }.canary-coverage ol { grid-template-columns:1fr; }.canary-coverage li { display:flex;align-items:center;gap:.75rem;text-align:left; }.canary-coverage li span { margin:0; } }
+</style>

@@ -1,0 +1,26 @@
+---
+const scenarios = [
+  { checks: ["Unit ✓", "Integration ✓", "E2E ✓"], failure: "Checkout ×", cause: "Wrong production payment certificate" },
+  { checks: ["API ✓", "Database ✓", "Servers ✓"], failure: "Homepage ×", cause: "CDN returns 404 for app.js" },
+];
+---
+
+<figure class="blind-spots" aria-labelledby="blind-spots-caption">
+  <div class="blind-spots__grid">
+    {scenarios.map((scenario) => <section><div class="blind-spots__checks">{scenario.checks.map(check => <span>{check}</span>)}</div><div class="blind-spots__failure"><strong>{scenario.failure}</strong><span>{scenario.cause}</span></div></section>)}
+  </div>
+  <figcaption id="blind-spots-caption">Every observed prerequisite can be green while the customer-facing journey is still broken.</figcaption>
+</figure>
+
+<style>
+  .blind-spots { margin:2rem 0;padding:1.5rem;border:1px solid var(--rule);background:var(--surface);font-family:"Manrope",sans-serif; }
+  .blind-spots__grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem; }
+  .blind-spots section { padding:1rem;border:1px solid var(--rule);background:var(--bg); }
+  .blind-spots__checks { display:flex;flex-wrap:wrap;gap:.45rem; }
+  .blind-spots__checks span { padding:.35rem .5rem;border:1px solid color-mix(in srgb,var(--teal) 35%,var(--rule));color:var(--teal);font-size:.65rem;font-weight:700; }
+  .blind-spots__failure { margin-top:1rem;padding:.85rem;border-left:3px solid var(--clay);background:color-mix(in srgb,var(--clay) 7%,var(--surface)); }
+  .blind-spots__failure strong,.blind-spots__failure span { display:block; }
+  .blind-spots__failure strong { color:var(--clay);font-size:.82rem; }.blind-spots__failure span { margin-top:.3rem;color:var(--body);font-size:.7rem;line-height:1.5; }
+  .blind-spots figcaption { margin-top:1.1rem;color:var(--muted);font-size:.75rem;line-height:1.55; }
+  @media (max-width:560px) { .blind-spots { padding:1rem; }.blind-spots__grid { grid-template-columns:1fr; } }
+</style>

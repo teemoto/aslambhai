@@ -1,0 +1,25 @@
+---
+const perspectives = [
+  { name: "E2E", question: "Does the software work before release?", coverage: "Controlled environment · broad workflows" },
+  { name: "Canary", question: "Does production work right now?", coverage: "Consistent probe · critical journeys" },
+  { name: "RUM", question: "What are real users experiencing?", coverage: "Real browsers · devices · networks · regions" },
+];
+---
+
+<figure class="perspectives" aria-labelledby="perspectives-caption">
+  <ol>{perspectives.map(({ name, question, coverage }, index) => <li class:list={{ "perspectives__canary": index === 1 }}><span>{name}</span><strong>{question}</strong><small>{coverage}</small></li>)}</ol>
+  <figcaption id="perspectives-caption">Consistency, diversity, and pre-release confidence come from different sources. The three signals complement one another.</figcaption>
+</figure>
+
+<style>
+  .perspectives { margin:2rem 0;padding:1.5rem;border:1px solid var(--rule);background:var(--surface);font-family:"Manrope",sans-serif; }
+  .perspectives ol { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:0;padding:0;list-style:none; }
+  .perspectives li { margin:0;padding:1.15rem;border-top:3px solid var(--rule);background:var(--bg); }
+  .perspectives li>span { color:var(--muted);font-size:.67rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase; }
+  .perspectives li strong { display:block;margin:.65rem 0;color:var(--ink);font-family:"Source Serif 4",serif;font-size:1.08rem;line-height:1.25; }
+  .perspectives li small { color:var(--body);font-size:.68rem;line-height:1.5; }
+  .perspectives .perspectives__canary { border-color:var(--teal);background:color-mix(in srgb,var(--teal) 6%,var(--bg)); }
+  .perspectives .perspectives__canary>span { color:var(--teal); }
+  .perspectives figcaption { margin-top:1.1rem;color:var(--muted);font-size:.75rem;line-height:1.55; }
+  @media (max-width:620px) { .perspectives { padding:1rem; }.perspectives ol { grid-template-columns:1fr; } }
+</style>
