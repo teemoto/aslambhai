@@ -4,18 +4,38 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ArticleRow from "../components/articles/ArticleRow.astro";
 import DiscoveryRail from "../components/home/DiscoveryRail.astro";
 import EditorialLead from "../components/home/EditorialLead.astro";
+import HomeAuthorCard from "../components/home/HomeAuthorCard.astro";
+import HomeSidebarResources from "../components/home/HomeSidebarResources.astro";
 
 const articles = (await getCollection("articles", ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 const featured = articles.find(({ data }) => data.featured) ?? articles[0];
 const rest = articles.filter(({ id }) => id !== featured.id);
 const latest = rest.slice(0, 4);
+const startHereIds = ["resilient-frontend-architecture", "resilient-frontends-containing-failure-in-the-browser", "working-with-ai-as-a-software-developer"];
+const startHere = startHereIds.flatMap((id) => {
+  const article = articles.find((entry) => entry.id === id);
+  return article ? [article] : [];
+});
 ---
 <BaseLayout active="home">
   <main class="home-grid">
     <section class="content-column">
       <EditorialLead featured={featured} latest={latest} />
       <DiscoveryRail articles={rest} />
-      <section class="recent" aria-label="Recent writing" data-filter-results>{rest.length > 0 && <span class="eyebrow">Recent writing</span>}{rest.map((article) => <ArticleRow article={article} />)}<p class="empty-state" data-empty-state hidden>No articles match those filters.</p></section>
+      <div class="home-content-layout">
+        <section class="recent" aria-label="Recent writing" data-filter-results>
+          {rest.length > 0 && <span class="eyebrow">Recent writing</span>}
+          {rest.map((article, index) => <><ArticleRow article={article} />{index === 2 && <div class="mobile-author-card"><HomeAuthorCard idPrefix="mobile-home-author" /></div>}</>)}
+          <p class="empty-state" data-empty-state hidden>No articles match those filters.</p>
+        </section>
+        <aside class="home-sidebar" aria-label="About the author and recommended links">
+          <HomeAuthorCard idPrefix="desktop-home-author" />
+          <HomeSidebarResources startHere={startHere} idPrefix="desktop-home-sidebar" />
+        </aside>
+        <aside class="mobile-sidebar-resources" aria-label="Recommended articles and projects">
+          <HomeSidebarResources startHere={startHere} idPrefix="mobile-home-sidebar" />
+        </aside>
+      </div>
     </section>
   </main>
 </BaseLayout>

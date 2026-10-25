@@ -1,0 +1,39 @@
+---
+import Icon from "../ui/Icon.astro";
+import { site } from "../../site.config";
+
+interface Props { idPrefix?: string }
+const { idPrefix = "home-author" } = Astro.props;
+---
+
+<section class="home-author-card" aria-labelledby={`${idPrefix}-name`}>
+  <img src="/brand/tanvir-avatar.png" width="128" height="128" loading="lazy" alt="Illustrated portrait of Tanvir Aslam" />
+  <div class="home-author-copy">
+    <span class="eyebrow">About the author</span>
+    <h2 id={`${idPrefix}-name`}>Tanvir Aslam</h2>
+    <p class="home-author-role">Technical Lead · Frontend Engineering Lead · AI Engineer</p>
+    <p>I explain the architectural decisions behind resilient frontend systems, applied AI, and ad technology.</p>
+  </div>
+  <nav class="home-author-links" aria-label="About Tanvir Aslam">
+    <a href="/about/" aria-label="About Tanvir Aslam"><span class="home-author-link-icon"><Icon name="user" size={18} /></span><span class="home-author-link-label">About</span></a>
+    <a href="/resume/" aria-label="View Tanvir Aslam's résumé"><span class="home-author-link-icon"><Icon name="fileText" size={18} /></span><span class="home-author-link-label">Résumé</span></a>
+    <a href={site.github} target="_blank" rel="noopener noreferrer" aria-label="Tanvir Aslam on GitHub (opens in a new tab)"><span class="home-author-link-icon"><Icon name="github" size={18} /></span><span class="home-author-link-label">GitHub</span></a>
+    <a href={site.linkedin} target="_blank" rel="noopener noreferrer" aria-label="Tanvir Aslam on LinkedIn (opens in a new tab)"><span class="home-author-link-icon"><Icon name="linkedin" size={18} /></span><span class="home-author-link-label">LinkedIn</span></a>
+  </nav>
+</section>
+
+<style>
+  .home-author-card { padding:24px;border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 58%,transparent); }
+  img { display:block;width:82px;height:82px;border:1px solid color-mix(in srgb,var(--teal) 48%,var(--rule));border-radius:50%;object-fit:cover; }
+  .home-author-copy { margin-top:22px; }
+  h2 { margin:8px 0 2px;color:var(--ink);font-family:"Source Serif 4",serif;font-size:29px;font-weight:500;letter-spacing:-.025em;line-height:1.08; }
+  .home-author-role { margin:0;color:var(--teal);font-size:12px;font-weight:700;line-height:1.45; }
+  .home-author-copy>p:last-child { margin:17px 0 0;color:var(--muted);font-size:14px;line-height:1.65; }
+  .home-author-links { display:flex;gap:12px;margin-top:23px;padding-bottom:22px; }
+  .home-author-links a { position:relative;display:grid;width:44px;height:44px;flex:0 0 44px;place-items:center;border:1px solid var(--rule);border-radius:50%;background:var(--surface);color:var(--teal);font-size:10px;font-weight:700;transition:border-color .16s ease,background-color .16s ease,color .16s ease,transform .16s ease; }
+  .home-author-link-icon { display:grid;place-items:center; }
+  .home-author-link-label { position:absolute;top:calc(100% + 6px);left:50%;color:var(--ink);letter-spacing:.02em;opacity:0;pointer-events:none;transform:translate(-50%,-3px);transition:opacity .16s ease,transform .16s ease;white-space:nowrap; }
+  .home-author-links a:hover,.home-author-links a:focus-visible { border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,var(--surface));color:var(--ink);transform:translateY(-2px); }
+  .home-author-links a:hover .home-author-link-label,.home-author-links a:focus-visible .home-author-link-label { opacity:1;transform:translate(-50%,0); }
+  @media(max-width:720px){.home-author-card{display:grid;grid-template-columns:72px minmax(0,1fr);gap:0 18px;padding:22px 20px}img{width:72px;height:72px}.home-author-copy{margin:0}h2{font-size:26px}.home-author-copy>p:last-child,.home-author-links{grid-column:1/-1}.home-author-copy>p:last-child{margin-top:19px}}
+</style>

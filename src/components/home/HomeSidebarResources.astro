@@ -1,0 +1,47 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Icon from "../ui/Icon.astro";
+
+interface Props { startHere: CollectionEntry<"articles">[]; idPrefix?: string }
+const { startHere, idPrefix = "home-sidebar" } = Astro.props;
+const projects = [
+  { name: "Pretend Terminal", description: "A safe, configurable pseudo-terminal for the web.", href: "https://teemoto.github.io/pretend-terminal/" },
+  { name: "IconKit", description: "A local-first generator for reproducible brand asset packs.", href: "https://github.com/teemoto/iconkit" },
+];
+---
+
+<div class="home-sidebar-resources">
+  <section class="home-sidebar-section" aria-labelledby={`${idPrefix}-start-here-heading`}>
+    <span class="eyebrow">Selected reading</span>
+    <h2 id={`${idPrefix}-start-here-heading`}>Start here</h2>
+    <ol class="start-here-list">
+      {startHere.map((article, index) => <li><a href={`/articles/${article.id}`}><span>{String(index + 1).padStart(2, "0")}</span><strong>{article.data.title}</strong></a></li>)}
+    </ol>
+  </section>
+  <section class="home-sidebar-section" aria-labelledby={`${idPrefix}-building-now-heading`}>
+    <span class="eyebrow">In progress</span>
+    <h2 id={`${idPrefix}-building-now-heading`}>Building now</h2>
+    <ul class="building-list">
+      {projects.map((project) => <li><a href={project.href} target="_blank" rel="noopener noreferrer"><span><strong>{project.name}</strong><small>{project.description}</small></span><Icon name="external" size={15} /></a></li>)}
+    </ul>
+    <a class="all-projects-link" href="/projects/">View all projects <Icon name="arrowRight" size={16} /></a>
+  </section>
+</div>
+
+<style>
+  .home-sidebar-resources { border-top:1px solid var(--rule); }
+  .home-sidebar-section { padding:27px 3px 30px;border-bottom:1px solid var(--rule); }
+  h2 { margin:6px 0 18px;color:var(--ink);font-family:"Source Serif 4",serif;font-size:25px;font-weight:500;letter-spacing:-.02em; }
+  ol,ul { margin:0;padding:0;list-style:none; }
+  .start-here-list li+li,.building-list li+li { border-top:1px solid var(--rule); }
+  .start-here-list a { display:grid;grid-template-columns:27px minmax(0,1fr);gap:10px;padding:13px 0; }
+  .start-here-list span { padding-top:3px;color:var(--teal);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:10px;font-weight:700; }
+  .start-here-list strong,.building-list strong { color:var(--ink);font-family:"Source Serif 4",serif;font-size:16px;font-weight:500;line-height:1.28;transition:color .16s ease; }
+  .building-list a { display:flex;min-height:72px;align-items:center;justify-content:space-between;gap:16px;padding:12px 0; }
+  .building-list a>span { display:grid;gap:4px; }
+  .building-list small { color:var(--muted);font-size:11px;line-height:1.45; }
+  .building-list svg { flex:0 0 auto;color:var(--teal); }
+  .start-here-list a:hover strong,.start-here-list a:focus-visible strong,.building-list a:hover strong,.building-list a:focus-visible strong { color:var(--teal); }
+  .all-projects-link { display:inline-flex;min-height:44px;align-items:center;gap:7px;margin-top:12px;color:var(--teal);font-size:12px;font-weight:700; }
+  @media(max-width:720px){.home-sidebar-section{padding-right:0;padding-left:0}.start-here-list strong,.building-list strong{font-size:18px}.building-list small{font-size:12px}}
+</style>
