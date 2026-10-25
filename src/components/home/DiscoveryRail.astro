@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { articles } = Astro.props;
-const subjects = articleTopics.filter((topic) => topic !== "TIL" && topic !== "WTF");
+const subjects = articleTopics.filter((topic) => topic !== "Leadership" && topic !== "TIL" && topic !== "WTF");
 const formats = articleTopics.filter((topic) => topic === "TIL" || topic === "WTF");
 const articleCount = (topic: string) => topic === "All"
   ? articles.length

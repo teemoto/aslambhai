@@ -56,12 +56,17 @@ test("groups subject and format filters with published article counts", async ()
   assert.match(home, />Subjects<\/span>/);
   assert.match(home, />Formats<\/span>/);
   assert.match(home, /data-topic="All" aria-pressed="true"/);
-  assert.match(home, /data-topic="All" aria-pressed="true"[\s\S]{0,180}class="chip-count"[^>]*>10<\/span>/);
-  assert.match(home, /data-topic="Frontend" aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>5<\/span>/);
-  assert.match(home, /data-topic="Leadership" aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>0<\/span>/);
+  assert.match(home, /data-topic="All" aria-pressed="true"[\s\S]{0,180}class="chip-count"[^>]*>11<\/span>/);
+  assert.match(home, /data-topic="Frontend" aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>6<\/span>/);
+  assert.doesNotMatch(home, /data-topic="Leadership"/);
   assert.match(home, /class="chip chip-format"[^>]*data-topic="TIL"/);
   assert.match(script, /setAttribute\("aria-pressed", String\(item === chip\)\)/);
-  assert.match(home, /class="recent"[^>]*data-filter-results/);
+  assert.match(home, /class="editorial-feed"[^>]*data-filter-results/);
+  assert.match(home, /data-curated-story="true" hidden/);
+  assert.match(script, /hasActiveFilter \|\| !curatedStory/);
+  assert.match(home, /data-feed-view="blocks" aria-label="Block view" aria-pressed="true"/);
+  assert.match(home, /data-feed-view="rows" aria-label="Row view" aria-pressed="false"/);
+  assert.match(script, /localStorage\.setItem\("home-feed-view", view\)/);
   assert.match(script, /filterResults\?\.querySelectorAll\("\[data-article\]"\)/);
 });
 

@@ -35,17 +35,35 @@ document.querySelector("[data-menu-toggle]")?.addEventListener("click", (event) 
 const search = document.querySelector("[data-search-input]");
 const chips = [...document.querySelectorAll("[data-topic]")];
 const filterResults = document.querySelector("[data-filter-results]");
+const feedEyebrow = document.querySelector("[data-feed-eyebrow]");
+const feedHeading = document.querySelector("[data-feed-heading]");
+const feedViewButtons = [...document.querySelectorAll("[data-feed-view]")];
 let selectedTopic = "All";
+function setFeedView(view) {
+  if (!filterResults) return;
+  filterResults.dataset.view = view;
+  feedViewButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.feedView === view)));
+  localStorage.setItem("home-feed-view", view);
+}
+const savedFeedView = localStorage.getItem("home-feed-view");
+setFeedView(savedFeedView === "rows" ? "rows" : "blocks");
+feedViewButtons.forEach((button) => button.addEventListener("click", () => setFeedView(button.dataset.feedView)));
 function filterArticles() {
   const query = search?.value.trim().toLowerCase() ?? "";
+  const hasActiveFilter = selectedTopic !== "All" || query.length > 0;
   let visible = 0;
+  filterResults?.toggleAttribute("data-filter-active", hasActiveFilter);
   filterResults?.querySelectorAll("[data-article]").forEach((article) => {
     const topic = article.dataset.topicValue ?? article.dataset.search ?? "";
     const topicMatch = selectedTopic === "All" || topic.includes(selectedTopic);
     const textMatch = (article.dataset.search ?? "").includes(query);
-    article.toggleAttribute("hidden", !(topicMatch && textMatch));
-    if (topicMatch && textMatch) visible += 1;
+    const curatedStory = article.hasAttribute("data-curated-story");
+    const matches = topicMatch && textMatch && (hasActiveFilter || !curatedStory);
+    article.toggleAttribute("hidden", !matches);
+    if (matches) visible += 1;
   });
+  if (feedEyebrow) feedEyebrow.textContent = hasActiveFilter ? "Filtered writing" : "From the archive";
+  if (feedHeading) feedHeading.textContent = hasActiveFilter ? `${visible} ${visible === 1 ? "result" : "results"}` : "More writing";
   document.querySelector("[data-empty-state]")?.toggleAttribute("hidden", visible > 0);
 }
 search?.addEventListener("input", filterArticles);

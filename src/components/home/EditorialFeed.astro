@@ -1,0 +1,443 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ArticleCover from "../articles/ArticleCover.astro";
+import ArticleIcon from "../articles/ArticleIcon.astro";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  articles: CollectionEntry<"articles">[];
+  curatedIds: string[];
+}
+
+const { articles, curatedIds } = Astro.props;
+const curatedStoryIds = new Set(curatedIds);
+const formatDate = (date: Date) => date.toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+const layouts = ["large", "compact", "compact", "text", "large"] as const;
+let feedIndex = 0;
+const stories = articles.map((article) => {
+  const curated = curatedStoryIds.has(article.id);
+  const feedPosition = curated ? undefined : feedIndex++;
+  const layout = curated ? "compact" : layouts[feedPosition! % layouts.length];
+  return { article, curated, feedPosition, layout };
+});
+---
+
+<section class="editorial-feed" aria-labelledby="editorial-feed-title" data-filter-results>
+  <header class="editorial-feed-header">
+    <div>
+      <span class="eyebrow" data-feed-eyebrow>From the archive</span>
+      <h2 id="editorial-feed-title" data-feed-heading aria-live="polite">More writing</h2>
+    </div>
+    <div class="feed-view-toggle" role="group" aria-label="Article view">
+      <button type="button" data-feed-view="blocks" aria-label="Block view" aria-pressed="true" title="Block view">
+        <Icon name="grid" size={17} />
+      </button>
+      <button type="button" data-feed-view="rows" aria-label="Row view" aria-pressed="false" title="Row view">
+        <Icon name="list" size={18} />
+      </button>
+    </div>
+  </header>
+
+  <div class="editorial-feed-grid">
+    {stories.map(({ article, curated, feedPosition, layout }) => {
+      return (
+        <>
+          <article
+            class:list={["editorial-story", `editorial-story-${layout}`]}
+            data-article
+            data-search={`${article.data.title} ${article.data.description} ${article.data.topic}`.toLowerCase()}
+            data-topic-value={article.data.topic}
+            data-curated-story={curated ? "true" : undefined}
+            hidden={curated}
+          >
+            <a href={`/articles/${article.id}`} aria-label={`Read ${article.data.title}`}>
+              {layout !== "text" && (
+                <div class="editorial-story-cover">
+                  <ArticleCover article={article} />
+                </div>
+              )}
+              <div class="editorial-story-copy">
+                <div class="editorial-story-meta">
+                  <span><ArticleIcon kind={article.data.icon} />{article.data.topic}</span>
+                  <time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt)}</time>
+                  <span>{article.data.minutes} min read</span>
+                </div>
+                <h3>{article.data.title}</h3>
+                <p>{article.data.description}</p>
+                <span class="editorial-story-read">Read article <Icon name="arrowRight" size={16} /></span>
+              </div>
+            </a>
+          </article>
+          {feedPosition === 2 && <div class="mobile-feed-interruption"><slot name="mobile-interruption" /></div>}
+        </>
+      );
+    })}
+  </div>
+
+  <p class="empty-state" data-empty-state hidden>No articles match those filters.</p>
+</section>
+
+<style>
+  .editorial-feed {
+    min-width: 0;
+  }
+
+  .editorial-feed-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 4px 0 22px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .editorial-feed-header h2 {
+    margin: 5px 0 0;
+    color: var(--ink);
+    font-family: "Source Serif 4", serif;
+    font-size: clamp(30px, 3vw, 40px);
+    font-weight: 500;
+    letter-spacing: -.03em;
+    line-height: 1.05;
+  }
+
+  .feed-view-toggle {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--surface) 54%, transparent);
+  }
+
+  .feed-view-toggle button {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    place-items: center;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .feed-view-toggle button:hover,
+  .feed-view-toggle button:focus-visible {
+    color: var(--teal);
+  }
+
+  .feed-view-toggle button[aria-pressed="true"] {
+    background: var(--teal);
+    color: var(--surface);
+  }
+
+  .editorial-feed-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 24px;
+  }
+
+  .editorial-story {
+    min-width: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .editorial-story > a {
+    display: block;
+    height: 100%;
+    padding: 24px 0;
+  }
+
+  .editorial-story-large,
+  .editorial-story-text {
+    grid-column: 1 / -1;
+  }
+
+  .editorial-story-large > a {
+    display: grid;
+    grid-template-columns: minmax(230px, .9fr) minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+  }
+
+  .editorial-story-cover {
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+  }
+
+  .editorial-story-cover :global(.article-cover) {
+    transition: transform .3s ease;
+  }
+
+  .editorial-story > a:hover .editorial-story-cover :global(.article-cover),
+  .editorial-story > a:focus-visible .editorial-story-cover :global(.article-cover) {
+    transform: scale(1.015);
+  }
+
+  .editorial-story-copy {
+    min-width: 0;
+  }
+
+  .editorial-story-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px 14px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+
+  .editorial-story-meta span:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--teal);
+  }
+
+  .editorial-story h3 {
+    margin: 11px 0 0;
+    color: var(--ink);
+    font-family: "Source Serif 4", serif;
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -.025em;
+    line-height: 1.08;
+    text-wrap: balance;
+    transition: color .16s ease;
+  }
+
+  .editorial-story-large h3,
+  .editorial-story-text h3 {
+    font-size: clamp(29px, 3vw, 38px);
+  }
+
+  .editorial-story p {
+    margin: 11px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .editorial-story-compact p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .editorial-story-text > a {
+    padding: 34px clamp(0px, 3vw, 30px);
+  }
+
+  .editorial-story-text .editorial-story-copy {
+    max-width: 720px;
+  }
+
+  .editorial-story-read {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 17px;
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .editorial-story-read :global(svg) {
+    transition: transform .16s ease;
+  }
+
+  .editorial-story > a:hover h3,
+  .editorial-story > a:focus-visible h3 {
+    color: var(--teal);
+  }
+
+  .editorial-story > a:hover .editorial-story-read :global(svg),
+  .editorial-story > a:focus-visible .editorial-story-read :global(svg) {
+    transform: translateX(4px);
+  }
+
+  .mobile-feed-interruption {
+    display: none;
+  }
+
+  .editorial-feed[data-filter-active] .editorial-feed-grid {
+    display: block;
+  }
+
+  .editorial-feed[data-filter-active] .editorial-story > a {
+    display: grid;
+    grid-template-columns: minmax(210px, .65fr) minmax(0, 1fr);
+    gap: 26px;
+    align-items: center;
+  }
+
+  .editorial-feed[data-filter-active] .editorial-story-text > a {
+    display: block;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-feed-grid {
+    display: block;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story {
+    grid-column: auto;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story > a {
+    display: grid;
+    grid-template-columns: 32px minmax(220px, 1fr) 130px 90px 24px;
+    gap: 14px;
+    align-items: center;
+    min-height: 76px;
+    padding: 14px 0;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story-cover,
+  .editorial-feed[data-view="rows"] .editorial-story p {
+    display: none;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story-copy,
+  .editorial-feed[data-view="rows"] .editorial-story-meta {
+    display: contents;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story-meta span:first-child {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    font-size: 0;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story-meta span:first-child :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story-meta time {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story-meta span:last-child {
+    grid-column: 4;
+    grid-row: 1;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story h3,
+  .editorial-feed[data-view="rows"] .editorial-story-large h3,
+  .editorial-feed[data-view="rows"] .editorial-story-text h3 {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .editorial-feed[data-view="rows"] .editorial-story-read {
+    grid-column: 5;
+    grid-row: 1;
+    justify-self: end;
+    margin: 0;
+    font-size: 0;
+  }
+
+  @media (max-width: 720px) {
+    .editorial-feed-header {
+      padding-top: 2px;
+    }
+
+    .editorial-feed-grid {
+      display: block;
+    }
+
+    .editorial-story > a,
+    .editorial-story-large > a,
+    .editorial-feed[data-filter-active] .editorial-story > a {
+      display: block;
+      padding: 22px 0 25px;
+    }
+
+    .editorial-story h3,
+    .editorial-story-large h3,
+    .editorial-story-text h3 {
+      font-size: 28px;
+    }
+
+    .editorial-story-text > a {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    .editorial-story-cover {
+      margin-bottom: 18px;
+    }
+
+    .editorial-story p,
+    .editorial-story-compact p {
+      display: block;
+      overflow: visible;
+      font-size: 14px;
+      -webkit-line-clamp: unset;
+    }
+
+    .mobile-feed-interruption {
+      display: block;
+      margin: 28px 0;
+    }
+
+    .editorial-feed[data-view="rows"] .editorial-story > a {
+      grid-template-columns: 28px minmax(0, 1fr) 24px;
+      gap: 6px 10px;
+      min-height: 76px;
+      padding: 14px 0;
+    }
+
+    .editorial-feed[data-view="rows"] .editorial-story h3,
+    .editorial-feed[data-view="rows"] .editorial-story-large h3,
+    .editorial-feed[data-view="rows"] .editorial-story-text h3 {
+      grid-column: 2;
+      grid-row: 1;
+      font-size: 18px;
+    }
+
+    .editorial-feed[data-view="rows"] .editorial-story-meta span:first-child {
+      grid-row: 1 / 3;
+    }
+
+    .editorial-feed[data-view="rows"] .editorial-story-meta time,
+    .editorial-feed[data-view="rows"] .editorial-story-meta span:last-child {
+      grid-column: 2;
+      grid-row: 2;
+      font-size: 9px;
+    }
+
+    .editorial-feed[data-view="rows"] .editorial-story-meta span:last-child {
+      margin-left: 102px;
+    }
+
+    .editorial-feed[data-view="rows"] .editorial-story-read {
+      grid-column: 3;
+      grid-row: 1 / 3;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .editorial-story-cover :global(.article-cover),
+    .editorial-story-read :global(svg) {
+      transition: none;
+    }
+  }
+</style>
