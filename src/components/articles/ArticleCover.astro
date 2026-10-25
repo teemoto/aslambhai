@@ -341,4 +341,52 @@ const formattedDate = publishedAt.toLocaleDateString("en-US", {
     .article-cover-details h1 { max-width: 15ch;font-size: clamp(32px, 9.5cqw, 42px); }
     .article-cover-details p { display:-webkit-box;overflow:hidden;font-size:14px;-webkit-box-orient:vertical;-webkit-line-clamp:4; }
   }
+
+  @media (max-width: 720px) {
+    .article-cover-lead {
+      aspect-ratio: auto;
+    }
+
+    .article-cover-lead::after {
+      display: none;
+    }
+
+    .article-cover-lead .article-cover-image,
+    .article-cover-lead .article-cover-fallback {
+      position: relative;
+      inset: auto;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+
+    .article-cover-lead .article-cover-details {
+      position: relative;
+      padding: 22px 20px 24px;
+      background: #102521;
+    }
+
+    .article-cover-lead .article-cover-label {
+      margin-bottom: 11px;
+    }
+
+    .article-cover-lead .article-cover-meta {
+      margin-bottom: 13px;
+    }
+
+    .article-cover-lead .article-cover-details h1 {
+      max-width: 18ch;
+      font-size: clamp(31px, 9.2vw, 40px);
+      line-height: 1.04;
+    }
+
+    .article-cover-lead .article-cover-details p {
+      display: block;
+      overflow: visible;
+      margin-top: 13px;
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-line-clamp: unset;
+    }
+  }
 </style>
