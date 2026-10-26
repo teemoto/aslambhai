@@ -107,9 +107,17 @@ const formattedDate = publishedAt.toLocaleDateString("en-US", {
     position: absolute;
     z-index: 1;
     inset: 0;
-    background: linear-gradient(180deg, rgb(5 19 17 / .02) 12%, rgb(5 19 17 / .42) 47%, rgb(5 19 17 / .97) 100%);
+    background:
+      linear-gradient(90deg, rgb(5 19 17 / .94) 0%, rgb(5 19 17 / .78) 34%, rgb(5 19 17 / .34) 62%, rgb(5 19 17 / .05) 84%),
+      linear-gradient(180deg, rgb(5 19 17 / .02) 18%, rgb(5 19 17 / .24) 48%, rgb(5 19 17 / .94) 100%);
     content: "";
     pointer-events: none;
+  }
+
+  @media (min-width: 721px) {
+    .article-cover-lead[data-cover-kind="image"] .article-cover-image {
+      transform: scale(1.04) translateX(2%);
+    }
   }
 
   .article-cover-fallback {
