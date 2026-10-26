@@ -32,6 +32,22 @@ document.querySelector("[data-menu-toggle]")?.addEventListener("click", (event) 
   document.querySelector('[data-menu-icon="close"]')?.toggleAttribute("hidden", !open);
 });
 
+const scrollRails = [...document.querySelectorAll("[data-scroll-rail]")];
+function syncScrollRail(rail) {
+  const viewport = rail.querySelector("[data-scroll-viewport]");
+  if (!viewport) return;
+  const endPadding = Number.parseFloat(getComputedStyle(viewport).paddingRight) || 0;
+  const hasMore = viewport.scrollWidth - viewport.scrollLeft - viewport.clientWidth > endPadding + 2;
+  rail.toggleAttribute("data-scroll-more", hasMore);
+}
+scrollRails.forEach((rail) => {
+  const viewport = rail.querySelector("[data-scroll-viewport]");
+  syncScrollRail(rail);
+  viewport?.addEventListener("scroll", () => syncScrollRail(rail), { passive: true });
+});
+addEventListener("resize", () => scrollRails.forEach(syncScrollRail), { passive: true });
+document.fonts?.ready.then(() => scrollRails.forEach(syncScrollRail));
+
 const search = document.querySelector("[data-search-input]");
 const chips = [...document.querySelectorAll("[data-topic]")];
 const filterResults = document.querySelector("[data-filter-results]");

@@ -68,6 +68,10 @@ test("groups subject and format filters with published article counts", async ()
   assert.match(home, /data-feed-view="rows" aria-label="Row view" aria-pressed="false"/);
   assert.match(script, /localStorage\.setItem\("home-feed-view", view\)/);
   assert.match(script, /filterResults\?\.querySelectorAll\("\[data-article\]"\)/);
+  assert.equal((home.match(/data-scroll-rail/g) ?? []).length, 2);
+  assert.equal((home.match(/data-scroll-viewport/g) ?? []).length, 2);
+  assert.match(script, /rail\.toggleAttribute\("data-scroll-more", hasMore\)/);
+  assert.match(script, /getComputedStyle\(viewport\)\.paddingRight/);
 });
 
 test("renders a progressively enhanced featured and latest editorial lead", async () => {

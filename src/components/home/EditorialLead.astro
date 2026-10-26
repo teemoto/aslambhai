@@ -57,23 +57,47 @@ const formatDate = (date: Date) => date.toLocaleDateString("en-US", {
         Back to featured
       </button>
     </div>
-    <ol>
-      {latest.map((article, index) => (
-        <li>
-          <button
-            type="button"
-            data-lead-trigger={article.id}
-            aria-controls={`lead-${article.id}`}
-            aria-pressed="false"
-          >
-            <span class="latest-index">{String(index + 1).padStart(2, "0")}</span>
-            <span class="latest-topic">{article.data.topic}</span>
-            <strong>{article.data.title}</strong>
-            <time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt)}</time>
-          </button>
-        </li>
-      ))}
-    </ol>
+    <div class="latest-writing-rail" data-scroll-rail>
+      <ol data-scroll-viewport>
+        {latest.map((article, index) => (
+          <li>
+            <button
+              type="button"
+              data-lead-trigger={article.id}
+              aria-controls={`lead-${article.id}`}
+              aria-pressed="false"
+            >
+              <span class="latest-index">{String(index + 1).padStart(2, "0")}</span>
+              <span class="latest-topic">{article.data.topic}</span>
+              <strong>{article.data.title}</strong>
+              <time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt)}</time>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </div>
     <p class="sr-only" aria-live="polite" data-lead-status></p>
   </aside>
 </section>
+
+<style>
+  .latest-writing-rail { min-width:0; }
+
+  @media(max-width:720px){
+    .latest-writing-rail { position:relative; }
+    .latest-writing-rail::after {
+      position:absolute;
+      z-index:2;
+      top:0;
+      right:0;
+      bottom:5px;
+      width:34px;
+      background:linear-gradient(90deg,transparent,var(--bg) 88%);
+      content:"";
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .16s ease;
+    }
+    .latest-writing-rail[data-scroll-more]::after { opacity:1; }
+  }
+</style>
