@@ -102,6 +102,23 @@ test("renders a progressively enhanced featured and latest editorial lead", asyn
   assert.doesNotMatch(script, /setInterval\([^)]*lead/);
 });
 
+test("keeps evergreen entry points distinct from the hero", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/pages/index.astro", import.meta.url), "utf8");
+
+  assert.match(home, />From the archive<\/span>/);
+  assert.match(home, />Explore by subject<\/h2>/);
+  assert.match(home, />Frontend<\/span>[\s\S]{0,180}>Building a Safe, Configurable Terminal UI for the Web<\/strong>/);
+  assert.match(home, />AI<\/span>[\s\S]{0,180}>Working with AI as a Software Developer<\/strong>/);
+  assert.match(home, />Ad Tech<\/span>[\s\S]{0,180}>Lifecycle of an Ad: What Happens After You Open a Webpage\?<\/strong>/);
+  assert.match(home, /class="entry-point-icon"[^>]*>[\s\S]{0,180}<svg/);
+  assert.match(home, /class="entry-point-list"[\s\S]*data-topic="AI"/);
+  assert.doesNotMatch(home, />Selected reading<\/span>|>Start here<\/h2>/);
+  assert.match(source, /article && !leadStoryIds\.has\(article\.id\)/);
+  assert.match(source, /new Set\(\[\.\.\.leadStoryIds, \.\.\.entryPoints\.map/);
+  assert.match(source, /curatedIds=\{\[\.\.\.curatedStoryIds\]\}/);
+});
+
 test("supports real-image and deterministic decorative article covers", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const source = await readFile(new URL("../src/components/articles/ArticleCover.astro", import.meta.url), "utf8");

@@ -12,11 +12,12 @@ const featured = articles.find(({ data }) => data.featured) ?? articles[0];
 const rest = articles.filter(({ id }) => id !== featured.id);
 const latest = rest.slice(0, 4);
 const leadStoryIds = new Set([featured.id, ...latest.map(({ id }) => id)]);
-const startHereIds = ["resilient-frontend-architecture", "resilient-frontends-containing-failure-in-the-browser", "working-with-ai-as-a-software-developer"];
-const startHere = startHereIds.flatMap((id) => {
+const entryPointIds = ["building-a-safe-terminal-ui-for-the-web", "working-with-ai-as-a-software-developer", "ad-lifecycle-browser"];
+const entryPoints = entryPointIds.flatMap((id) => {
   const article = articles.find((entry) => entry.id === id);
-  return article ? [article] : [];
+  return article && !leadStoryIds.has(article.id) ? [article] : [];
 });
+const curatedStoryIds = new Set([...leadStoryIds, ...entryPoints.map(({ id }) => id)]);
 ---
 <BaseLayout active="home">
   <main class="home-grid">
@@ -24,15 +25,15 @@ const startHere = startHereIds.flatMap((id) => {
       <EditorialLead featured={featured} latest={latest} />
       <DiscoveryRail articles={articles} />
       <div class="home-content-layout">
-        <EditorialFeed articles={articles} curatedIds={[...leadStoryIds]}>
+        <EditorialFeed articles={articles} curatedIds={[...curatedStoryIds]}>
           <HomeAuthorCard slot="mobile-interruption" idPrefix="mobile-home-author" />
         </EditorialFeed>
         <aside class="home-sidebar" aria-label="About the author and recommended links">
           <HomeAuthorCard idPrefix="desktop-home-author" />
-          <HomeSidebarResources startHere={startHere} idPrefix="desktop-home-sidebar" />
+          <HomeSidebarResources entryPoints={entryPoints} idPrefix="desktop-home-sidebar" />
         </aside>
         <aside class="mobile-sidebar-resources" aria-label="Recommended articles and projects">
-          <HomeSidebarResources startHere={startHere} idPrefix="mobile-home-sidebar" />
+          <HomeSidebarResources entryPoints={entryPoints} idPrefix="mobile-home-sidebar" />
         </aside>
       </div>
     </section>
