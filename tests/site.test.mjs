@@ -72,6 +72,9 @@ test("groups subject and format filters with published article counts", async ()
   assert.equal((home.match(/data-scroll-viewport/g) ?? []).length, 2);
   assert.match(script, /rail\.toggleAttribute\("data-scroll-more", hasMore\)/);
   assert.match(script, /getComputedStyle\(viewport\)\.paddingRight/);
+  assert.match(home, /data-clear-filters[^>]*>Clear search and filters<\/button>/);
+  assert.match(script, /clearFilters\?\.addEventListener\("click"/);
+  assert.match(script, /allChip\?\.focus\(\)/);
 });
 
 test("renders a progressively enhanced featured and latest editorial lead", async () => {

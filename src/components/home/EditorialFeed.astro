@@ -79,7 +79,10 @@ const stories = articles.map((article) => {
     })}
   </div>
 
-  <p class="empty-state" data-empty-state hidden>No articles match those filters.</p>
+  <div class="empty-state" data-empty-state hidden>
+    <p role="status">No articles match those filters.</p>
+    <button type="button" data-clear-filters>Clear search and filters</button>
+  </div>
 </section>
 
 <style>
@@ -272,6 +275,37 @@ const stories = articles.map((article) => {
     display: none;
   }
 
+  .empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .empty-state p {
+    margin: 0;
+  }
+
+  .empty-state button {
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--teal);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color .16s ease, color .16s ease;
+  }
+
+  .empty-state button:hover,
+  .empty-state button:focus-visible {
+    background: var(--teal);
+    color: var(--surface);
+  }
+
   .editorial-feed[data-filter-active] .editorial-feed-grid {
     display: block;
   }
@@ -396,6 +430,11 @@ const stories = articles.map((article) => {
     .mobile-feed-interruption {
       display: block;
       margin: 28px 0;
+    }
+
+    .empty-state {
+      align-items: flex-start;
+      flex-direction: column;
     }
 
     .editorial-feed[data-view="rows"] .editorial-story > a {

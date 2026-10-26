@@ -54,6 +54,7 @@ const filterResults = document.querySelector("[data-filter-results]");
 const feedEyebrow = document.querySelector("[data-feed-eyebrow]");
 const feedHeading = document.querySelector("[data-feed-heading]");
 const feedViewButtons = [...document.querySelectorAll("[data-feed-view]")];
+const clearFilters = document.querySelector("[data-clear-filters]");
 let selectedTopic = "All";
 function setFeedView(view) {
   if (!filterResults) return;
@@ -89,6 +90,15 @@ chips.forEach((chip) => chip.addEventListener("click", () => {
   chips.forEach((item) => item.setAttribute("aria-pressed", String(item === chip)));
   filterArticles();
 }));
+clearFilters?.addEventListener("click", () => {
+  selectedTopic = "All";
+  if (search) search.value = "";
+  const allChip = chips.find((chip) => chip.dataset.topic === "All");
+  chips.forEach((chip) => chip.classList.toggle("selected", chip === allChip));
+  chips.forEach((chip) => chip.setAttribute("aria-pressed", String(chip === allChip)));
+  filterArticles();
+  allChip?.focus();
+});
 
 const editorialLead = document.querySelector("[data-editorial-lead]");
 if (editorialLead) {
