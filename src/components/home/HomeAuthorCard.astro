@@ -11,7 +11,7 @@ const { idPrefix = "home-author" } = Astro.props;
   <div class="home-author-copy">
     <span class="eyebrow">About the author</span>
     <h2 id={`${idPrefix}-name`}>Tanvir Aslam</h2>
-    <p class="home-author-role">Technical Lead · Frontend Engineering Lead · AI Engineer</p>
+    <p class="home-author-role"><span>Technical Lead</span><span>Frontend Engineering Lead</span><span>AI Engineer</span></p>
     <p>I explain the architectural decisions behind resilient frontend systems, applied AI, and ad technology.</p>
   </div>
   <nav class="home-author-links" aria-label="About Tanvir Aslam">
@@ -35,5 +35,81 @@ const { idPrefix = "home-author" } = Astro.props;
   .home-author-link-label { position:absolute;top:calc(100% + 6px);left:50%;color:var(--ink);letter-spacing:.02em;opacity:0;pointer-events:none;transform:translate(-50%,-3px);transition:opacity .16s ease,transform .16s ease;white-space:nowrap; }
   .home-author-links a:hover,.home-author-links a:focus-visible { border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,var(--surface));color:var(--ink);transform:translateY(-2px); }
   .home-author-links a:hover .home-author-link-label,.home-author-links a:focus-visible .home-author-link-label { opacity:1;transform:translate(-50%,0); }
-  @media(max-width:720px){.home-author-card{display:grid;grid-template-columns:72px minmax(0,1fr);gap:0 18px;padding:22px 20px}img{width:72px;height:72px}.home-author-copy{margin:0}h2{font-size:26px}.home-author-copy>p:last-child,.home-author-links{grid-column:1/-1}.home-author-copy>p:last-child{margin-top:19px}}
+  .home-author-role span + span::before { content:" · "; }
+
+  @media(max-width:720px){
+    .home-author-card {
+      display:grid;
+      grid-template-columns:56px minmax(0,1fr);
+      gap:0 14px;
+      padding:18px;
+    }
+
+    img { width:56px;height:56px; }
+    .home-author-copy { margin:0; }
+    .home-author-copy .eyebrow { font-size:10px; }
+    h2 { margin-top:5px;font-size:24px; }
+    .home-author-role { display:flex;flex-wrap:wrap;gap:1px 8px;font-size:10px;line-height:1.35; }
+    .home-author-role span { white-space:nowrap; }
+    .home-author-role span + span::before { content:none; }
+    .home-author-copy>p:last-child,.home-author-links { grid-column:1/-1; }
+    .home-author-copy>p:last-child { margin-top:14px;font-size:13px;line-height:1.5; }
+
+    .home-author-links {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+      margin-top:15px;
+      padding:0;
+    }
+
+    .home-author-links a {
+      display:flex;
+      width:auto;
+      height:auto;
+      min-height:60px;
+      flex-direction:column;
+      gap:5px;
+      border:0;
+      border-radius:0;
+      background:transparent;
+    }
+
+    .home-author-link-icon {
+      width:40px;
+      height:40px;
+      border:1px solid var(--rule);
+      border-radius:50%;
+      background:var(--surface);
+      transition:border-color .16s ease,background-color .16s ease,color .16s ease,transform .16s ease;
+    }
+
+    .home-author-link-label {
+      position:static;
+      color:var(--muted);
+      opacity:1;
+      transform:none;
+    }
+
+    .home-author-links a:hover,
+    .home-author-links a:focus-visible {
+      border-color:transparent;
+      background:transparent;
+      color:var(--ink);
+      transform:none;
+    }
+
+    .home-author-links a:hover .home-author-link-icon,
+    .home-author-links a:focus-visible .home-author-link-icon {
+      border-color:var(--teal);
+      background:color-mix(in srgb,var(--teal) 10%,var(--surface));
+      transform:translateY(-2px);
+    }
+
+    .home-author-links a:hover .home-author-link-label,
+    .home-author-links a:focus-visible .home-author-link-label {
+      color:var(--ink);
+      transform:none;
+    }
+  }
 </style>
