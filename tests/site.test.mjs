@@ -373,6 +373,19 @@ test("publishes only complete articles", async () => {
   assert.doesNotMatch(articles, /Component Boundaries and the Cost of Change|Modern Advertising Stack|RAG, Tooling/);
 });
 
+test("serves large article illustrations in a compressed format", async () => {
+  for (const articlePath of [
+    "articles/ad-lifecycle-browser/index.html",
+    "articles/til-usedebugvalue/index.html",
+    "articles/working-with-ai-as-a-software-developer/index.html",
+    "articles/resilient-frontend-architecture/index.html",
+    "articles/wtf-are-portals-in-react/index.html",
+  ]) {
+    const article = await readFile(new URL(`../dist/${articlePath}`, import.meta.url), "utf8");
+    assert.doesNotMatch(article, /(?:ad-lifecycle-publisher-page|useDebugValue_example-v2|brilliant-intern-ai-coding-illustration|frontend-resilience-layers|portal-dashboard-dropdown)\.png/);
+  }
+});
+
 test("formats article dates consistently in UTC", async () => {
   const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
   const article = await readFile(new URL("../dist/articles/resilient-frontend-architecture/index.html", import.meta.url), "utf8");
