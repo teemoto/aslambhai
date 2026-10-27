@@ -14,7 +14,7 @@ async function resilientArticleDates() {
 }
 
 test("builds the key static routes", async () => {
-  for (const file of ["index.html", "projects/index.html", "about/index.html", "about/read/index.html", "about/terminal/index.html", "rss/index.html", "articles/resilient-frontend-architecture/index.html", "rss.xml", "sitemap-index.xml"]) {
+  for (const file of ["index.html", "projects/index.html", "about/index.html", "about/read/index.html", "about/terminal/index.html", "rss/index.html", "articles/resilient-frontend-architecture/index.html", "rss.xml", "sitemap-index.xml", "fonts/manrope/manrope-latin-variable.woff2", "fonts/source-serif-4/source-serif-4-latin-variable.woff2"]) {
     await access(new URL(`../dist/${file}`, import.meta.url));
   }
 });
@@ -31,6 +31,9 @@ test("renders metadata and article content", async () => {
   assert.match(home, /<title>Tanvir Aslam — Frontend Architecture, AI, and Ad Tech<\/title>/);
   assert.doesNotMatch(home, /Aslam Bhai/);
   assert.doesNotMatch(home, /class="intro"|Engineering at scale/);
+  assert.doesNotMatch(home, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
+  assert.match(home, /rel="preload" href="\/fonts\/manrope\/manrope-latin-variable\.woff2" as="font" type="font\/woff2" crossorigin/);
+  assert.match(home, /rel="preload" href="\/fonts\/source-serif-4\/source-serif-4-latin-variable\.woff2" as="font" type="font\/woff2" crossorigin/);
   assert.match(article, /Join the discussion/);
   assert.match(article, /giscus-container/);
 });
@@ -47,6 +50,9 @@ test("uses a compact search that expands on focus", async () => {
   assert.match(styles, /\.search-box:focus-within,\.search-box:has\(input:not\(:placeholder-shown\)\)\{width:min\(320px,36vw\)/);
   assert.match(styles, /\.search-box:focus-within input,\.search-box:has\(input:not\(:placeholder-shown\)\) input\{width:100%;opacity:1\}/);
   assert.doesNotMatch(styles, /\.discovery\{[^}]*border-bottom/);
+  assert.doesNotMatch(styles, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
+  assert.match(styles, /url\("?\/fonts\/manrope\/manrope-latin-variable\.woff2"?\)/);
+  assert.match(styles, /url\("?\/fonts\/source-serif-4\/source-serif-4-latin-variable\.woff2"?\)/);
 });
 
 test("groups subject and format filters with published article counts", async () => {
