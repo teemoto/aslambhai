@@ -17,7 +17,6 @@ const entryPoints = entryPointIds.flatMap((id) => {
   const article = articles.find((entry) => entry.id === id);
   return article && !leadStoryIds.has(article.id) ? [article] : [];
 });
-const curatedStoryIds = new Set([...leadStoryIds, ...entryPoints.map(({ id }) => id)]);
 ---
 <BaseLayout active="home">
   <main class="home-grid" id="main-content" tabindex="-1">
@@ -25,7 +24,7 @@ const curatedStoryIds = new Set([...leadStoryIds, ...entryPoints.map(({ id }) =>
       <EditorialLead featured={featured} latest={latest} />
       <DiscoveryRail articles={articles} />
       <div class="home-content-layout">
-        <EditorialFeed articles={articles} curatedIds={[...curatedStoryIds]}>
+        <EditorialFeed articles={articles} curatedIds={[...leadStoryIds]} noScriptIds={latest.map(({ id }) => id)}>
           <HomeAuthorCard slot="mobile-interruption" idPrefix="mobile-home-author" />
         </EditorialFeed>
         <aside class="home-sidebar" aria-label="About the author and recommended links">

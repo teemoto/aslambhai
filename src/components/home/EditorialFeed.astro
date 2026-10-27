@@ -7,10 +7,12 @@ import Icon from "../ui/Icon.astro";
 interface Props {
   articles: CollectionEntry<"articles">[];
   curatedIds: string[];
+  noScriptIds?: string[];
 }
 
-const { articles, curatedIds } = Astro.props;
+const { articles, curatedIds, noScriptIds = [] } = Astro.props;
 const curatedStoryIds = new Set(curatedIds);
+const noScriptStoryIds = new Set(noScriptIds);
 const formatDate = (date: Date) => date.toLocaleDateString("en-US", {
   month: "short",
   day: "numeric",
@@ -23,28 +25,28 @@ const stories = articles.map((article) => {
   const curated = curatedStoryIds.has(article.id);
   const feedPosition = curated ? undefined : feedIndex++;
   const layout = curated ? "compact" : layouts[feedPosition! % layouts.length];
-  return { article, curated, feedPosition, layout };
+  return { article, curated, noScriptStory: noScriptStoryIds.has(article.id), feedPosition, layout };
 });
 ---
 
-<section class="editorial-feed" aria-labelledby="editorial-feed-title" data-filter-results>
+<section class="editorial-feed" id="editorial-feed-results" aria-labelledby="editorial-feed-title" data-filter-results>
   <header class="editorial-feed-header">
     <div>
       <span class="eyebrow" data-feed-eyebrow>From the archive</span>
-      <h2 id="editorial-feed-title" data-feed-heading aria-live="polite">More writing</h2>
+      <h2 id="editorial-feed-title" data-feed-heading aria-live="polite" aria-atomic="true">More writing</h2>
     </div>
     <div class="feed-view-toggle" role="group" aria-label="Article view">
-      <button type="button" data-feed-view="blocks" aria-label="Block view" aria-pressed="true" title="Block view">
+      <button type="button" data-feed-view="blocks" aria-label="Block view" aria-controls="editorial-feed-grid" aria-pressed="true" title="Block view">
         <Icon name="grid" size={17} />
       </button>
-      <button type="button" data-feed-view="rows" aria-label="Row view" aria-pressed="false" title="Row view">
+      <button type="button" data-feed-view="rows" aria-label="Row view" aria-controls="editorial-feed-grid" aria-pressed="false" title="Row view">
         <Icon name="list" size={18} />
       </button>
     </div>
   </header>
 
-  <div class="editorial-feed-grid">
-    {stories.map(({ article, curated, feedPosition, layout }) => {
+  <div class="editorial-feed-grid" id="editorial-feed-grid">
+    {stories.map(({ article, curated, noScriptStory, feedPosition, layout }) => {
       return (
         <>
           <article
@@ -53,6 +55,7 @@ const stories = articles.map((article) => {
             data-search={`${article.data.title} ${article.data.description} ${article.data.topic}`.toLowerCase()}
             data-topic-value={article.data.topic}
             data-curated-story={curated ? "true" : undefined}
+            data-noscript-story={noScriptStory ? "true" : undefined}
             hidden={curated}
           >
             <a href={`/articles/${article.id}`} aria-label={`Read ${article.data.title}`}>
@@ -80,8 +83,8 @@ const stories = articles.map((article) => {
   </div>
 
   <div class="empty-state" data-empty-state hidden>
-    <p role="status">No articles match those filters.</p>
-    <button type="button" data-clear-filters>Clear search and filters</button>
+    <p role="status" aria-atomic="true">No articles match those filters.</p>
+    <button type="button" data-clear-filters aria-controls="editorial-feed-results">Clear search and filters</button>
   </div>
 </section>
 

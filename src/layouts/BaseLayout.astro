@@ -12,7 +12,7 @@ const socialImage = new URL("/brand/social-card.png", site.url);
 const registerServiceWorker = import.meta.env.PROD;
 ---
 <!doctype html>
-<html lang="en" data-theme={defaultTheme === "system" ? "light" : defaultTheme} data-theme-options={themeNames.join(",")} data-dark-themes={darkThemeNames.join(",")}>
+<html class="no-js" lang="en" data-theme={defaultTheme === "system" ? "light" : defaultTheme} data-theme-options={themeNames.join(",")} data-dark-themes={darkThemeNames.join(",")}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -37,6 +37,7 @@ const registerServiceWorker = import.meta.env.PROD;
     <meta name="twitter:image" content={socialImage} />
     <title>{title}</title>
     <script is:inline define:vars={{ defaultTheme, themeNames }}>
+      document.documentElement.classList.replace("no-js", "js");
       const savedTheme = localStorage.getItem("aslam-theme");
       const systemTheme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       document.documentElement.dataset.theme = themeNames.includes(savedTheme) ? savedTheme : defaultTheme === "system" ? systemTheme : defaultTheme;

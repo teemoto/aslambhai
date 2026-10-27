@@ -34,6 +34,7 @@ const groups = [
                   class:list={["chip", { selected: topic === "All", "chip-format": group.label === "Formats" }]}
                   type="button"
                   data-topic={topic}
+                  aria-controls="editorial-feed-results"
                   aria-pressed={topic === "All" ? "true" : "false"}
                 >
                   <span>{topic}</span>
@@ -51,7 +52,7 @@ const groups = [
   <label class="search-box">
     <Icon name="search" />
     <span class="sr-only">Search articles</span>
-    <input data-search-input type="search" placeholder="Search articles" autocomplete="off" />
+    <input data-search-input type="search" placeholder="Search articles" autocomplete="off" aria-controls="editorial-feed-results" />
   </label>
 </section>
 

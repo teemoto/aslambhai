@@ -55,17 +55,17 @@ test("groups subject and format filters with published article counts", async ()
 
   assert.match(home, />Subjects<\/span>/);
   assert.match(home, />Formats<\/span>/);
-  assert.match(home, /data-topic="All" aria-pressed="true"/);
-  assert.match(home, /data-topic="All" aria-pressed="true"[\s\S]{0,180}class="chip-count"[^>]*>11<\/span>/);
-  assert.match(home, /data-topic="Frontend" aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>6<\/span>/);
+  assert.match(home, /data-topic="All"[^>]*aria-pressed="true"/);
+  assert.match(home, /data-topic="All"[^>]*aria-pressed="true"[\s\S]{0,180}class="chip-count"[^>]*>11<\/span>/);
+  assert.match(home, /data-topic="Frontend"[^>]*aria-pressed="false"[\s\S]{0,180}class="chip-count"[^>]*>6<\/span>/);
   assert.doesNotMatch(home, /data-topic="Leadership"/);
   assert.match(home, /class="chip chip-format"[^>]*data-topic="TIL"/);
   assert.match(script, /setAttribute\("aria-pressed", String\(item === chip\)\)/);
   assert.match(home, /class="editorial-feed"[^>]*data-filter-results/);
   assert.match(home, /data-curated-story="true" hidden/);
   assert.match(script, /hasActiveFilter \|\| !curatedStory/);
-  assert.match(home, /data-feed-view="blocks" aria-label="Block view" aria-pressed="true"/);
-  assert.match(home, /data-feed-view="rows" aria-label="Row view" aria-pressed="false"/);
+  assert.match(home, /data-feed-view="blocks"[^>]*aria-pressed="true"/);
+  assert.match(home, /data-feed-view="rows"[^>]*aria-pressed="false"/);
   assert.match(script, /localStorage\.setItem\("home-feed-view", view\)/);
   assert.match(script, /filterResults\?\.querySelectorAll\("\[data-article\]"\)/);
   assert.equal((home.match(/data-scroll-rail/g) ?? []).length, 2);
@@ -115,8 +115,8 @@ test("keeps evergreen entry points distinct from the hero", async () => {
   assert.match(home, /class="entry-point-list"[\s\S]*data-topic="AI"/);
   assert.doesNotMatch(home, />Selected reading<\/span>|>Start here<\/h2>/);
   assert.match(source, /article && !leadStoryIds\.has\(article\.id\)/);
-  assert.match(source, /new Set\(\[\.\.\.leadStoryIds, \.\.\.entryPoints\.map/);
-  assert.match(source, /curatedIds=\{\[\.\.\.curatedStoryIds\]\}/);
+  assert.match(source, /curatedIds=\{\[\.\.\.leadStoryIds\]\}/);
+  assert.equal((home.match(/data-curated-story="true"[^>]*hidden/g) ?? []).length, 5);
 });
 
 test("supports real-image and deterministic decorative article covers", async () => {
@@ -241,6 +241,24 @@ test("supports keyboard navigation and accessible control groups", async () => {
   assert.match(styles, /\.skip-link\{position:fixed;z-index:100/);
   assert.match(styles, /\.search-box\{width:44px;min-width:44px;height:44px\}/);
   assert.match(styles, /\.chip\{height:44px;padding:0 14px\}/);
+});
+
+test("keeps homepage discovery understandable with and without JavaScript", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
+  assert.ok(stylesheet, "Expected a generated stylesheet");
+  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
+
+  assert.match(home, /<html class="no-js"/);
+  assert.match(home, /classList\.replace\("no-js", "js"\)/);
+  assert.equal((home.match(/data-noscript-story="true"/g) ?? []).length, 4);
+  assert.match(home, /id="editorial-feed-results"[^>]*aria-labelledby="editorial-feed-title"/);
+  assert.match(home, /data-topic="All"[^>]*aria-controls="editorial-feed-results"/);
+  assert.match(home, /data-search-input[^>]*aria-controls="editorial-feed-results"/);
+  assert.match(home, /data-feed-view="blocks"[^>]*aria-controls="editorial-feed-grid"/);
+  assert.match(home, /data-feed-heading[^>]*aria-live="polite"[^>]*aria-atomic="true"/);
+  assert.match(styles, /\.no-js \.home-site \.latest-writing,\.no-js \.home-site \.discovery,\.no-js \.home-site \.feed-view-toggle\{display:none\}/);
+  assert.match(styles, /\.no-js \.home-site \.editorial-story\[data-noscript-story\]\[hidden\]\{display:block!important\}/);
 });
 
 test("renders the personal footer message", async () => {
