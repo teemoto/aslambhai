@@ -49,10 +49,13 @@ When someone inspects a component using `useCheckoutStatus()` in React DevTools,
 <figure class="article-figure">
   <img
     src="/images/useDebugValue_example-v2.jpg"
+    srcset="/images/useDebugValue_example-v2-960.jpg 960w, /images/useDebugValue_example-v2.jpg 1536w"
+    sizes="(max-width: 720px) calc(100vw - 36px), 820px"
     alt="A checkout status example showing a nested checkout state without useDebugValue and a concise payment, cart, address, and coupon summary with it."
     width="1536"
     height="1024"
     loading="lazy"
+    decoding="async"
   />
   <figcaption>
     <code>useDebugValue</code> turns nested checkout state into the debugging

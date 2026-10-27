@@ -12,7 +12,7 @@ const articles = defineCollection({
     minutes: z.number().int().positive(),
     topic: z.string(),
     icon: z.enum(["code", "ai", "data", "leadership", "megaphone", "globe", "til", "wtf", "other"]),
-    cover: z.object({ src: z.string(), alt: z.string() }).optional(),
+    cover: z.object({ src: z.string(), srcSmall: z.string().optional(), alt: z.string() }).optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
   }).superRefine(({ minutes, topic }, context) => {

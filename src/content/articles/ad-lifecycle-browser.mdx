@@ -44,10 +44,13 @@ Imagine you visit a website like `example-news.com` and eventually see this:
 <figure class="article-figure">
   <img
     src="/images/ad-lifecycle-publisher-page.jpg"
+    srcset="/images/ad-lifecycle-publisher-page-960.jpg 960w, /images/ad-lifecycle-publisher-page.jpg 1672w"
+    sizes="(max-width: 720px) calc(100vw - 36px), 820px"
     alt="A fictional newspaper website with a breaking-news article and a clearly marked display advertisement in the right column."
     width="1672"
     height="941"
     loading="lazy"
+    decoding="async"
   />
   <figcaption>
     To the reader, the display ad appears to be a natural part of the

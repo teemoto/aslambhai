@@ -7,6 +7,7 @@ topic: Frontend Architecture
 icon: code
 cover:
   src: /images/ecore-resilience-cycle.jpg
+  srcSmall: /images/ecore-resilience-cycle-960.jpg
   alt: The ECORE resilience cycle, illustrated with five connected stages.
 featured: true
 ---
@@ -235,10 +236,13 @@ Frontend resilience works across several layers:
 <figure class="article-figure resilience-layers-figure">
   <img
     src="/images/frontend-resilience-layers.jpg"
+    srcset="/images/frontend-resilience-layers-960.jpg 960w, /images/frontend-resilience-layers.jpg 1672w"
+    sizes="(max-width: 720px) calc(100vw - 36px), 820px"
     alt="Frontend resilience shown as four complementary layers: Experience, Application, Data and Network, and Runtime and Delivery. A vertical observability spine crosses every layer and represents errors, metrics, traces, and user journeys."
     width="1672"
     height="941"
     loading="lazy"
+    decoding="async"
   />
   <figcaption>
     Resilience comes from complementary protections across the stack, with

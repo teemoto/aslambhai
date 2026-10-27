@@ -132,6 +132,8 @@ test("supports real-image and deterministic decorative article covers", async ()
 
   assert.match(home, /data-cover-kind="image"/);
   assert.match(home, /alt="The ECORE resilience cycle, illustrated with five connected stages\."/);
+  assert.match(home, /srcset="\/images\/ecore-resilience-cycle-960\.jpg 960w, \/images\/ecore-resilience-cycle\.jpg 1672w"/);
+  assert.match(home, /sizes="\(max-width: 720px\) calc\(100vw - 36px\), \(max-width: 1100px\) calc\(100vw - 60px\), 60vw"/);
   assert.match(home, /alt="A compartmentalized browser dashboard with one failed panel isolated from functioning panels\."/);
   assert.match(source, /titleHash = \[\.\.\.title\]\.reduce/);
   assert.match(source, /\["orbit", "grid", "signal"\]/);
@@ -383,6 +385,8 @@ test("serves large article illustrations in a compressed format", async () => {
   ]) {
     const article = await readFile(new URL(`../dist/${articlePath}`, import.meta.url), "utf8");
     assert.doesNotMatch(article, /(?:ad-lifecycle-publisher-page|useDebugValue_example-v2|brilliant-intern-ai-coding-illustration|frontend-resilience-layers|portal-dashboard-dropdown)\.png/);
+    assert.match(article, /srcset="\/images\/[^"]+-960\.jpg 960w, \/images\/[^"]+\.jpg (?:1536|1672)w"/);
+    assert.match(article, /sizes="\(max-width: 720px\) calc\(100vw - 36px\), 820px"/);
   }
 });
 

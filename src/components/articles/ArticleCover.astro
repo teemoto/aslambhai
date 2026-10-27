@@ -41,6 +41,8 @@ const formattedDate = publishedAt.toLocaleDateString("en-US", {
     <img
       class="article-cover-image"
       src={cover.src}
+      srcset={cover.srcSmall ? `${cover.srcSmall} 960w, ${cover.src} 1672w` : undefined}
+      sizes={cover.srcSmall ? "(max-width: 720px) calc(100vw - 36px), (max-width: 1100px) calc(100vw - 60px), 60vw" : undefined}
       alt={cover.alt}
       width="1672"
       height="941"
