@@ -20,7 +20,7 @@ const entryPoints = entryPointIds.flatMap((id) => {
 ---
 <BaseLayout active="home">
   <main class="home-grid" id="main-content" tabindex="-1">
-    <section class="content-column">
+    <div class="content-column">
       <EditorialLead featured={featured} latest={latest} />
       <DiscoveryRail articles={articles} />
       <div class="home-content-layout">
@@ -35,6 +35,6 @@ const entryPoints = entryPointIds.flatMap((id) => {
           <HomeSidebarResources entryPoints={entryPoints} idPrefix="mobile-home-sidebar" />
         </aside>
       </div>
-    </section>
+    </div>
   </main>
 </BaseLayout>

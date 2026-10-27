@@ -230,9 +230,13 @@ test("supports keyboard navigation and accessible control groups", async () => {
   assert.ok(stylesheet, "Expected a generated stylesheet");
   const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
   const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
+  const editorialFeed = await readFile(new URL("../src/components/home/EditorialFeed.astro", import.meta.url), "utf8");
+  const discoveryRail = await readFile(new URL("../src/components/home/DiscoveryRail.astro", import.meta.url), "utf8");
 
   assert.match(home, /class="skip-link" href="#main-content">Skip to main content<\/a>/);
   assert.match(home, /<main class="home-grid" id="main-content" tabindex="-1">/);
+  assert.match(home, /<div class="content-column">/);
+  assert.doesNotMatch(home, /<section class="content-column">/);
   assert.match(home, /class="brand-name" aria-current="page"/);
   assert.match(home, /class="filter-options" role="group" aria-label="Filter by subjects"/);
   assert.match(script, /function setMenuOpen\(open, moveFocus = false\)/);
@@ -241,6 +245,11 @@ test("supports keyboard navigation and accessible control groups", async () => {
   assert.match(styles, /\.skip-link\{position:fixed;z-index:100/);
   assert.match(styles, /\.search-box\{width:44px;min-width:44px;height:44px\}/);
   assert.match(styles, /\.chip\{height:44px;padding:0 14px\}/);
+  assert.match(styles, /\.icon-button\{width:44px;min-width:44px;height:44px/);
+  assert.match(styles, /footer a\{display:inline-flex;min-height:44px;align-items:center\}/);
+  assert.match(styles, /\.brand-name\{margin:-11px 0;padding:11px 0;font-size:18px\}/);
+  assert.match(editorialFeed, /\.feed-view-toggle button\s*\{\s*width: 44px;\s*height: 44px;/);
+  assert.match(discoveryRail, /\.filter-rail\s*\{\s*position:relative;\s*overflow:hidden;/);
 });
 
 test("keeps homepage discovery understandable with and without JavaScript", async () => {
