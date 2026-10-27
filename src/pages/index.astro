@@ -19,6 +19,18 @@ const entryPoints = entryPointIds.flatMap((id) => {
 });
 ---
 <BaseLayout active="home">
+  <Fragment slot="head">
+    {featured.data.cover?.srcSmall && (
+      <link
+        rel="preload"
+        as="image"
+        href={featured.data.cover.srcSmall}
+        imagesrcset={`${featured.data.cover.srcSmall} 960w, ${featured.data.cover.src} 1672w`}
+        imagesizes="(max-width: 720px) calc(100vw - 36px), (max-width: 1100px) calc(100vw - 60px), 60vw"
+        fetchpriority="high"
+      />
+    )}
+  </Fragment>
   <main class="home-grid" id="main-content" tabindex="-1">
     <div class="content-column">
       <EditorialLead featured={featured} latest={latest} />

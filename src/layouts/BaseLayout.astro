@@ -19,6 +19,7 @@ const registerServiceWorker = import.meta.env.PROD;
     <meta name="description" content={description} />
     <meta name="theme-color" content="#18342c" />
     <meta name="codex-preview" content="development" />
+    <slot name="head" />
     {robots && <meta name="robots" content={robots} />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />

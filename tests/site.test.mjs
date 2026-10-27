@@ -96,6 +96,7 @@ test("renders a progressively enhanced featured and latest editorial lead", asyn
   assert.match(home, /src="\/images\/resilient-frontends-containing-failure-cover\.jpg"/);
   assert.match(home, /src="\/images\/ecore-resilience-cycle\.jpg"[^>]*loading="eager"[^>]*fetchpriority="high"/);
   assert.match(home, /class="article-cover article-cover-lead"/);
+  assert.match(home, /rel="preload" as="image" href="\/images\/ecore-resilience-cycle-960\.jpg" imagesrcset="\/images\/ecore-resilience-cycle-960\.jpg 960w, \/images\/ecore-resilience-cycle\.jpg 1672w" imagesizes="\(max-width: 720px\) calc\(100vw - 36px\), \(max-width: 1100px\) calc\(100vw - 60px\), 60vw" fetchpriority="high"/);
   assert.match(home, /class="article-cover-details"/);
   assert.match(home, /<h1[^>]*>The Art of Resilient Frontends, Part 1: The Mental Model<\/h1>/);
   assert.doesNotMatch(home, /class="lead-copy"/);
