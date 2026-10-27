@@ -45,6 +45,7 @@ const formattedDate = publishedAt.toLocaleDateString("en-US", {
       width="1672"
       height="941"
       loading={loading}
+      fetchpriority={loading === "eager" ? "high" : undefined}
       decoding="async"
     />
   ) : (

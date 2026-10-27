@@ -87,7 +87,8 @@ test("renders a progressively enhanced featured and latest editorial lead", asyn
   assert.equal((home.match(/data-lead-trigger=/g) ?? []).length, 4);
   assert.match(home, /data-lead-trigger="resilient-frontends-containing-failure-in-the-browser"/);
   assert.match(home, /data-featured-trigger[^>]*aria-controls="lead-resilient-frontend-architecture"[^>]*hidden/);
-  assert.match(home, /src="\/images\/resilient-frontends-containing-failure-cover\.png"/);
+  assert.match(home, /src="\/images\/resilient-frontends-containing-failure-cover\.jpg"/);
+  assert.match(home, /src="\/images\/ecore-resilience-cycle\.jpg"[^>]*loading="eager"[^>]*fetchpriority="high"/);
   assert.match(home, /class="article-cover article-cover-lead"/);
   assert.match(home, /class="article-cover-details"/);
   assert.match(home, /<h1[^>]*>The Art of Resilient Frontends, Part 1: The Mental Model<\/h1>/);
