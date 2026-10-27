@@ -22,14 +22,24 @@ document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
   document.querySelector("iframe.giscus-frame")?.contentWindow?.postMessage({ giscus: { setConfig: { theme: isDarkTheme(theme) ? "dark" : "light" } } }, "https://giscus.app");
 });
 
-document.querySelector("[data-menu-toggle]")?.addEventListener("click", (event) => {
-  const button = event.currentTarget;
-  const open = button.getAttribute("aria-expanded") !== "true";
-  button.setAttribute("aria-expanded", String(open));
-  button.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-  document.querySelector("#main-nav")?.classList.toggle("open", open);
+const menuButton = document.querySelector("[data-menu-toggle]");
+const mainNav = document.querySelector("#main-nav");
+function setMenuOpen(open, moveFocus = false) {
+  if (!menuButton || !mainNav) return;
+  menuButton.setAttribute("aria-expanded", String(open));
+  menuButton.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  mainNav.classList.toggle("open", open);
   document.querySelector('[data-menu-icon="open"]')?.toggleAttribute("hidden", open);
   document.querySelector('[data-menu-icon="close"]')?.toggleAttribute("hidden", !open);
+  if (moveFocus) (open ? mainNav.querySelector("a") : menuButton)?.focus();
+}
+menuButton?.addEventListener("click", () => {
+  const open = menuButton.getAttribute("aria-expanded") !== "true";
+  setMenuOpen(open, true);
+});
+addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || menuButton?.getAttribute("aria-expanded") !== "true") return;
+  setMenuOpen(false, true);
 });
 
 const scrollRails = [...document.querySelectorAll("[data-scroll-rail]")];

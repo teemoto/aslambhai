@@ -43,6 +43,7 @@ const registerServiceWorker = import.meta.env.PROD;
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <div class:list={["site-shell", article && "article-site", active === "home" && "home-site"]}>
       <Header active={active} />
       <slot />

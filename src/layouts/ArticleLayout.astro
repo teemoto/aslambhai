@@ -16,7 +16,7 @@ const emailShare = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeUR
 ---
 <BaseLayout title={`${title} · Tanvir Aslam`} description={description} article>
   <div class="reading-progress" data-reading-progress></div>
-  <main class="article-page">
+  <main class="article-page" id="main-content" tabindex="-1">
     <a class="back-link" href="/"><Icon name="arrowLeft" />Back to articles</a>
     <header class="article-header"><span class="eyebrow">{topic}</span><h1>{title}</h1><p>{description}</p><div class="article-byline"><div class="avatar">TA</div><div class="article-author"><strong>Tanvir Aslam</strong><span>Senior frontend engineer · Technical writer</span></div><div class="article-meta"><span class="byline-meta"><Icon name="clock" />{minutes} min read</span><span class="byline-meta"><Icon name="calendar" />{formattedDate}</span></div></div></header>
     {headings.length > 0 && <ArticleTableOfContents headings={headings} />}

@@ -9,15 +9,15 @@ const { active } = Astro.props;
     <a href="/" class="monogram" aria-label="Tanvir Aslam home">
       <LogoMark />
     </a>
-    <div><a href="/" class="brand-name">Tanvir Aslam</a><span class="tagline"><span class="tagline-prefix">Frontend </span>Engineer / Technical Writer</span></div>
+    <div><a href="/" class="brand-name" aria-current={active === "home" ? "page" : undefined}>Tanvir Aslam</a><span class="tagline"><span class="tagline-prefix">Frontend </span>Engineer / Technical Writer</span></div>
   </div>
   <nav class="main-nav" id="main-nav" aria-label="Primary navigation">
-    <a class:list={{ active: active === "projects" }} href="/projects">Projects</a>
-    <a class:list={{ active: active === "about" }} href="/about">About</a>
+    <a class:list={{ active: active === "projects" }} href="/projects" aria-current={active === "projects" ? "page" : undefined}>Projects</a>
+    <a class:list={{ active: active === "about" }} href="/about" aria-current={active === "about" ? "page" : undefined}>About</a>
   </nav>
   <div class="header-tools">
     <a class="header-rss desktop-tool" href="/rss/" aria-label="RSS feed"><Icon name="rss" /><span>RSS</span></a>
-    <button class="icon-button" data-theme-toggle aria-label="Use dark theme"><span data-theme-icon="moon"><Icon name="moon" /></span><span data-theme-icon="sun" hidden><Icon name="sun" /></span></button>
-    <button class="icon-button mobile-menu" data-menu-toggle aria-label="Open menu" aria-controls="main-nav" aria-expanded="false"><span data-menu-icon="open"><Icon name="menu" /></span><span data-menu-icon="close" hidden><Icon name="close" /></span></button>
+    <button class="icon-button" type="button" data-theme-toggle aria-label="Use dark theme"><span data-theme-icon="moon"><Icon name="moon" /></span><span data-theme-icon="sun" hidden><Icon name="sun" /></span></button>
+    <button class="icon-button mobile-menu" type="button" data-menu-toggle aria-label="Open menu" aria-controls="main-nav" aria-expanded="false"><span data-menu-icon="open"><Icon name="menu" /></span><span data-menu-icon="close" hidden><Icon name="close" /></span></button>
   </div>
 </header>

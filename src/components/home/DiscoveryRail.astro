@@ -26,7 +26,7 @@ const groups = [
       {groups.map((group) => (
         <div class:list={["filter-group", { "filter-group-formats": group.label === "Formats" }]}>
           <span class="filter-kind">{group.label}</span>
-          <div class="filter-options" aria-label={`Filter by ${group.label.toLowerCase()}`}>
+          <div class="filter-options" role="group" aria-label={`Filter by ${group.label.toLowerCase()}`}>
             {group.topics.map((topic) => {
               const count = articleCount(topic);
               return (

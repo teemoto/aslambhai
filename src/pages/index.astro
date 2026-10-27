@@ -20,7 +20,7 @@ const entryPoints = entryPointIds.flatMap((id) => {
 const curatedStoryIds = new Set([...leadStoryIds, ...entryPoints.map(({ id }) => id)]);
 ---
 <BaseLayout active="home">
-  <main class="home-grid">
+  <main class="home-grid" id="main-content" tabindex="-1">
     <section class="content-column">
       <EditorialLead featured={featured} latest={latest} />
       <DiscoveryRail articles={articles} />

@@ -4,7 +4,7 @@ interface Props { active?: "projects" | "about"; eyebrow: string; title: string;
 const { active, eyebrow, title, intro, canonical, robots } = Astro.props;
 ---
 <BaseLayout active={active} title={`${title} · Tanvir Aslam`} description={intro} canonical={canonical} robots={robots}>
-  <main class="static-page">
+<main class="static-page" id="main-content" tabindex="-1">
     <span class="eyebrow">{eyebrow}</span>
     <h1>{title}</h1>
     {intro && <p class="page-intro">{intro}</p>}

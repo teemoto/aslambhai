@@ -25,7 +25,7 @@ test("renders metadata and article content", async () => {
   assert.match(home, /name="codex-preview" content="development"/);
   assert.match(home, /class="logo-mark"/);
   assert.match(home, /property="og:image"/);
-  assert.match(home, /class="brand-name">Tanvir Aslam<\/a>/);
+  assert.match(home, /class="brand-name"[^>]*>Tanvir Aslam<\/a>/);
   assert.match(home, /Engineer \/ Technical Writer<\/span>/);
   assert.doesNotMatch(home, />Home<\/a>/);
   assert.match(home, /<title>Tanvir Aslam — Frontend Architecture, AI, and Ad Tech<\/title>/);
@@ -222,6 +222,25 @@ test("keeps the homepage header visible while scrolling", async () => {
 
   assert.match(home, /class="site-shell home-site"/);
   assert.match(styles, /\.article-site \.site-header,\.home-site \.site-header\{position:sticky;top:0;z-index:30/);
+});
+
+test("supports keyboard navigation and accessible control groups", async () => {
+  const home = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const stylesheet = home.match(/href="([^"]+\.css)"/)?.[1];
+  assert.ok(stylesheet, "Expected a generated stylesheet");
+  const styles = await readFile(new URL(`../dist${stylesheet}`, import.meta.url), "utf8");
+  const script = await readFile(new URL("../dist/scripts/site.js", import.meta.url), "utf8");
+
+  assert.match(home, /class="skip-link" href="#main-content">Skip to main content<\/a>/);
+  assert.match(home, /<main class="home-grid" id="main-content" tabindex="-1">/);
+  assert.match(home, /class="brand-name" aria-current="page"/);
+  assert.match(home, /class="filter-options" role="group" aria-label="Filter by subjects"/);
+  assert.match(script, /function setMenuOpen\(open, moveFocus = false\)/);
+  assert.match(script, /open \? mainNav\.querySelector\("a"\) : menuButton/);
+  assert.match(script, /event\.key !== "Escape"/);
+  assert.match(styles, /\.skip-link\{position:fixed;z-index:100/);
+  assert.match(styles, /\.search-box\{width:44px;min-width:44px;height:44px\}/);
+  assert.match(styles, /\.chip\{height:44px;padding:0 14px\}/);
 });
 
 test("renders the personal footer message", async () => {
